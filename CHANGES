@@ -1,0 +1,138 @@
+4.0-0
+- rolled back R version dependency to 2.11-0
+- ezANOVA
+-    fixed bug that caused ezANOVA to return type-2 SS results even when type-3 SS results were requested
+-    fixed bug causing error when design is completely between-Ss and unbalanced
+-    corrected documentation, which previously reported an interpretation of a p-value as "the probability of the null hypothesis, given the data", when the proper interpretation is (of course) "probability of the data, given the null hypothesis".
+- ezMixed
+-     Added ability to estimate models in parallel using multiple cores
+-     Added the left-hand-side of the formula to the formulas returned by ezMixed (this makes it easier to use the formulas for follow-up exploration)
+-     Added ability to specify covariates
+-     Fixed bug that might cause an error with specifying "results_as_progress=TRUE"
+-     Fixed bug preventing exploration of polynomials greater than 9
+- ezResample
+-     Added ability to perform computation in parallel using multiple cores (affects ezBoot)
+-     Added "resample_between" argument
+-     eliminated superfluous "dv" argument
+- ezBoot
+-     Added ability to perform a residuals bootstrap
+-     Switched from "timeCI" progress bar to the simpler/faster "time" progress bar
+-     Fixed bug causing error when lmer=TRUE and only 1 predictor variable is supplied
+- ezBootPlot
+-     Added ability to suppress creating a plot object (useful when simply trying to obtain the bootstrap stats)
+- ezPerm
+-     Added ability to perform computation in parallel using multiple cores
+- ezPredict
+-     Fixed bug that prevented obtaining predictions when the name of one variable appeared in the name of other variables.
+-     Fixed bug preventing custom specification of to_predict
+
+3.0-0
+- added urls in all documentation pointing to the bug-report/feature-request site (https://github.com/mike-lawrence/ez/issues) and the discussion group (http://groups.google.com/group/ez4r).
+- changed reshape dependency to reshape2
+- ezANOVA
+-     fixed bug such that if detailed=F and car:Anova fails, the first line of results from stats:aov is cut off.
+-     Added more nuanced treatment of numeric variables
+-     Added type argument to specify sums-of-squares type selection (1,2, or 3)
+-     Added white.adjust argument to permit heteroscedasticity adjustment (see ?car:Anova)
+-     Added return_aov argument to permit returning a stats:aov object along with results (this was requested by a user seeking to use the aov object to compute contrasts)
+- ezMixed
+-     IMPORTANT: Fixed bug such that only the last specified random effect was implemented
+-     fixed bug such that an error occurred if only one fixed effect was specified
+-     changed output format to a list containing a summary data frame, a list of formulae, a list of errors, a list of warnings, and (optionally) a list of fitted models
+-     Changed format of summary output including removal of p-values (on the strong advice of many that the p-values from a likelihood ratio test of a fixed effect is highly questionable)
+-     removed the "return_anovas" argument
+-     added nuanced ability to explore non-linear effects via addition of "fixed_poly" and "fixed_poly_max" arguments
+- ezPredict
+-     Added ability to handle models fit with "I()"'d variables
+-     Added stop error when encountering models with "poly()" and no supplied prediction data frame
+- ezBoot
+-     Modified the resampling procedure to ensure that any given resampling of Subjects has at least 2 unique Subjects.
+- ezPerm
+-     Modified to return only the data frame containing the permutation test.
+- ezResample
+-     Added to "include" list for general use
+- progress_time
+-     Added to "include" list for general use
+-     fixed bug that prevented accurate timing
+- Added functions:
+-     progress_timeCI
+-         Computes bootstrapped time-remaining quantile estimates for long and heterogenous computations (eg. employed in ezMixed)
+
+2.1-0
+- fixed bug in ezBoot() (really attributable to ezResample() ) that caused an error when multiple between variables are supplied.
+- added option to ezBoot() to toggle resampling within the wid units (some suggest that such resampling yields CIs that are too wide)
+- fixed warning messages in ezBoot() so they now no longer refer to ANOVA.
+- added time estimation to the ezBoot() and ezPerm() functions.
+- changed name of ezPlotBoot() to ezBootPlot()
+- added "confidence" argument to ezBootPlot() to permit plotting arbitrary/multiple confidence intervals.
+- added ezMixed() function, which provides the output (p-value, likelihood ratios) of tests for each fixed effect in an lmer model against its respective null using anova().
+- added ezPredict() function, which provides computation of predicted values from an lmer mixed effects model.
+- reduced detail in default output of ezANOVA(), added "detailed" argument for ezANOVA() that returns everything
+- added report of data frame dimensions in output of ezPrecis()
+- added NA rows to subnum7 in the ANT2 data set
+
+2.0-0
+- CHANGE THAT MAY BREAK MOST PREVIOUS CODE: changed argument named 'sid' to 'wid' (within identifier), which may be more descriptive and consistent with terminology elsewhere in ez.
+- added ezPrecis(), which provides a data summary that combines and improves upon the traditional summary functions (e.g. summary() and str() )
+- added ezDesign(), which provides visualization of the balance of data in a given experimental design, which is useful for diagnosing missing data and other problematic data issues.
+- added ezBoot() and ezPlotBoot(), which compute and visualize (respectively) bootstrapped confidence intervals
+- ezANOVA() now reports generalized eta-squared (instead of partial eta-squared). See reference in ?ezANOVA for description of generalized eta-squared.
+- ezANOVA()/ezStats()/ezPlot() all automatically collapse to cell means if there are multiple observations per cell.
+- ezPlot() now accepts multiple dvs, which will be plotted across multiple facet rows.
+- added "diff" and "reverse_diff" parameters to ezANOVA()/ezStats()/ezPlot() for quick visualization of interactions involving a 2-level within-Ss variable that is collapsable to a difference score.
+- added "test_alpha" parameter to ezCor(), permitting specification of a custom significance level for color-labelling correlations.
+- changed ANT data set (error instead of accuracy, wid column named subnum instead of sid, single word labels for levels of cue and flanker)
+- added ANT2 data set (a "messy" version of the ANT data set)
+- fixed bug where missing data was not properly diagnosed when dealing with purely between-Ss designs
+- fixed bug where call to Anova() failed not because there were too few Ss as reported but because variables were mistakenly left un-factored.
+- cleaned up code a bit to reduce redundancy between ezANOVA(), ezStats() and ezPlot()
+- speed-up: ezANOVA()/ezStats()/ezPlot() now run faster thanks to the new/experimental idata.frame() function from plyr version 1.0.3.
+- added stringr dependency
+- added lme4 dependency (hopefully this won't cause too many troubles!)
+
+1.6.1:
+- Added check for intentional exclusion of whole levels from IVs.
+- Put check for misspecified variables (eg. not in data frame) at beginning of each command
+- fixed bug where within-Ss variables with level names containing an underscore threw an error
+
+1.6:
+- removed automatic addition of linespace to x & y axis labels.
+- fixed version number/date in documentation.
+- added feature to optionally collapse a within variable to a difference score (useful for plotting/describing mixed-between-and-within effects).
+- added ezCor() for plotting correlation matricies.
+
+1.5.1:
+- fixed a bug whereby removing a Ss from the data prior to analysis would yield a "One or more cells missing data" error if the Ss variable was factored before removing the Ss.
+
+1.5:
+- fixed a bug whereby FLSD was computed improperly when requesting stats/plots including a less-than-complete set of between-Ss variables. The solution requires specification of the full set of between-Ss variables in addition to the less-than-complete set for which stats/plots are requested.
+
+1.4.2:
+- fixed a persisting bug in setting error bar width when the x-axis variable is converted from factor to numeric
+
+1.4.1:
+- fixed bug in "ezStats_main()" that caused "ezStats()" and "ezPlot()" to fail when groups are uneven
+
+1.4:
+- removed "ezLev()" function (base function "factor()" suffices)
+- added "levels" argument to "ezPlot()" for easy reordering & renaming factor levels
+- tweaked the legend from "ezPlot()" to avoid over-plotting bug from ggplot2
+- fixed a bug in setting error bar width when the x-axis variable is converted from a factor to numeric
+- added note in "ezANOVA()" documentation indicating that tests of Sphericity will only be provided for tests of effects with >2 levels
+- added note in "ezStats()" & "ezPlot()" documentation describing the computation of FLSD
+- added warning in "ezStats_main()" to flag unbalanced designs and notify user that FLSD is computed from the mean N per group.
+- added check in "ezANOVA()" (and therefore "ezStats()" & "ezPlot()" for NA and missing cells after aggregation.
+
+1.3:
+- renamed "relev()" to "ezLev()" for package naming consistency
+- ezlev() parameter "levs" renamed "new_order" for clarity
+- cleaned up redundancy in ezANOVA_main code
+- added a feature whereby prior to computation, ezANOVA will collapse (using a mean) any variables not specified in "within" or "between".
+
+1.2:
+- Added "partial eta squared" column in ANOVA output
+- Where ezANOVA used to fail in the face of large total repeated measures df relative to N, it now uses an alternative approach in such cases that yields results (but no assumption tests).
+- Simplified the output of ezStats & ezPlot
+- Simplified the output of ezANOVA (removed levene tests for mixed within-and-between designs)
+- added the "relev()" command for easy reordering the levels of factors
+- implemented more reasonable default error bar hat widths when plotting categorical variables on the x-axis
