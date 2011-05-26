@@ -6,7 +6,6 @@ function(
 	, between = NULL
 	, resample_within = FALSE
 	, resample_between = TRUE
-	, parallel = FALSE
 ){
 	if(resample_between){
 		if(!is.null(between)){
