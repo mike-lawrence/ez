@@ -6,6 +6,7 @@ function(
 	, between = NULL
 	, resample_within = FALSE
 	, resample_between = TRUE
+	, parallel = FALSE
 ){
 	if(resample_between){
 		if(!is.null(between)){
@@ -26,35 +27,65 @@ function(
 			ids = unlist(ids)
 			names(ids) = NULL
 		}else{
-			ids = sample(as.character(unique(data[,names(data)==as.character(wid)])),replace=T)
+			done = FALSE
+			while(!done){
+				ids = sample(as.character(unique(data[,names(data)==as.character(wid)])),replace=T)
+				if(length(unique(ids))>1){
+					done = TRUE
+				}
+			}
 		}
 		id_list = list()
 		for(i in 1:length(ids)){
 			id_list[[i]] = list(num=i,this_id=ids[i])
 		}
-		resampled_data = ldply(
-			.data = id_list
+		resampled_data = dlply(
+			.data = data[data[,names(data)==as.character(wid)] %in% ids,]
+			, .variables = wid
 			, .fun = function(x){
-				to_return = data[as.character(data[,names(data)==as.character(wid)])==x$this_id,]
-				to_return[,names(to_return)==as.character(wid)] = x$num
+				to_return = NULL
+				for(i in which(ids==x[1,names(x)==as.character(wid)])){
+					x$id = id_list[[i]]$num
+					to_return = rbind(to_return,x)
+				}
 				return(to_return)
 			}
+			, .parallel = parallel
+			#, .progress = 'time'
 		)
-		resampled_data[,names(resampled_data)==as.character(wid)] = factor(resampled_data[,names(resampled_data)==as.character(wid)])
-	}else{
-		resampled_data = data
-	}
+		resampled_data = Filter(Negate(empty), resampled_data)
+	}	
 	if(resample_within){
-		to_return = ddply(
-			.data = resampled_data
-			, .variables = structure(as.list(c(wid,within)),class = 'quoted')
-			, .fun = function(x){
-	 			to_return = x[sample(1:nrow(x),nrow(x),replace=T),]
-				return(to_return)
-			}
-		)
-	}else{
-		to_return = resampled_data
+		if(!resample_between){
+			resampled_data = dlply(
+				.data = data
+				, .variables = structure(as.list(c(wid,within)),class = 'quoted')
+				, .fun = function(x){
+		 			to_return = x[sample(1:nrow(x),nrow(x),replace=T),]
+					return(to_return)
+				}
+				#, .progress = 'time'
+			)
+		}else{
+			resampled_data = llply(
+				.data = resampled_data
+				, .fun = function(z){
+					to_return = dlply(
+						.data = z
+						, .variables = within
+						, .fun = function(x){
+							to_return = x[sample(1:nrow(x),nrow(x),replace=T),]
+							return(to_return)
+						}
+					)
+					to_return = do.call(rbind,to_return)
+					return(to_return)
+				}
+				#, .progress = 'time'
+			)
+		}
 	}
-	return(to_return)
+	resampled_data = do.call(rbind,resampled_data)
+	resampled_data[,names(resampled_data)==as.character(wid)] = factor(resampled_data[,names(resampled_data)==as.character(wid)])
+	return(resampled_data)
 }

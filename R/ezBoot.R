@@ -10,6 +10,7 @@ function(
 	, lmer = TRUE
 	, use_residuals = TRUE
 	, family = 'gaussian'
+	, parallel = FALSE
 	, alarm = TRUE
 ){
 	start = proc.time()[3]
@@ -172,6 +173,7 @@ function(
 			return(cell_means)
 		}
 		, .progress = 'time'
+		, .parallel = parallel
 	)
 	to_return = list()
 	if(lmer){
@@ -179,7 +181,9 @@ function(
 	}
 	to_return$cells = cell_means
 	to_return$boots = boots
-	alarm()
+	if(alarm){
+		alarm()
+	}
 	return(to_return)
 }
 

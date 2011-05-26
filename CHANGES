@@ -11,10 +11,11 @@
 -     Fixed bug that might cause an error with specifying "results_as_progress=TRUE"
 -     Fixed bug preventing exploration of polynomials greater than 9
 - ezResample
--     Added ability to perform computation in parallel using multiple cores (affects ezBoot)
+-     Speed improvements achieved by more efficient code 
 -     Added "resample_between" argument
 -     eliminated superfluous "dv" argument
 - ezBoot
+-     Added ability to perform computation in parallel using multiple cores
 -     Added ability to perform a residuals bootstrap
 -     Switched from "timeCI" progress bar to the simpler/faster "time" progress bar
 -     Fixed bug causing error when lmer=TRUE and only 1 predictor variable is supplied
