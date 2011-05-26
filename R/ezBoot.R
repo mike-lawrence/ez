@@ -119,7 +119,7 @@ function(
 			}
 		)
 	}
-	boots = ldply(
+	boots = llply(
 		.data = 1:iterations
 		, .fun = function(x){
 			done = FALSE
@@ -175,6 +175,8 @@ function(
 		, .progress = 'time'
 		, .parallel = parallel
 	)
+	boots = Filter(Negate(empty), boots)
+	boots = do.call(rbind,boots)	
 	to_return = list()
 	if(lmer){
 		to_return$fit = fit

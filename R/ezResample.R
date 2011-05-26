@@ -49,7 +49,6 @@ function(
 				}
 				return(to_return)
 			}
-			, .parallel = parallel
 			#, .progress = 'time'
 		)
 		resampled_data = Filter(Negate(empty), resampled_data)
