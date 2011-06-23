@@ -12,6 +12,7 @@ function(
 	, family = 'gaussian'
 	, parallel = FALSE
 	, alarm = TRUE
+	, show_progress = TRUE
 ){
 	start = proc.time()[3]
 	vars = as.character(c(dv,wid,between,within))
@@ -64,7 +65,7 @@ function(
 				return(to_return)
 			}
 		)
-		if(any(cell_size_per_id$value<=1)){
+		if(all(cell_size_per_id$value<=1)){
 			stop(paste('There are no cells with multiple observations; please set the variable "resample_within" to FALSE.'))
 		}
 	}
@@ -172,7 +173,7 @@ function(
 			cell_means$iteration = x
 			return(cell_means)
 		}
-		, .progress = 'time'
+		, .progress = ifelse(show_progress,'time','none')
 		, .parallel = parallel
 	)
 	boots = Filter(Negate(empty), boots)
