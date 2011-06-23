@@ -299,7 +299,9 @@ function(
 		to_return$plot = p
 	}
 	#cat('\nezBootPlot: Done.\n')
-	alarm()
+	if(alarm){
+		alarm()
+	}
 	return(to_return)
 }
 
