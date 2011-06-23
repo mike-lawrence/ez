@@ -15,12 +15,14 @@
 -     Added "resample_between" argument
 -     eliminated superfluous "dv" argument
 - ezBoot
+-     Added "show_progress" argument that permits turning on/off the progress bar
 -     Added ability to perform computation in parallel using multiple cores
 -     Added ability to perform a residuals bootstrap
 -     Switched from "timeCI" progress bar to the simpler/faster "time" progress bar
 -     Fixed bug causing error when lmer=TRUE and only 1 predictor variable is supplied
 - ezBootPlot
 -     Added ability to suppress creating a plot object (useful when simply trying to obtain the bootstrap stats)
+-     Fixed bug that ignored the "alarm" argument
 - ezPerm
 -     Added ability to perform computation in parallel using multiple cores
 - ezPredict
