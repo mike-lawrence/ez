@@ -28,6 +28,7 @@
 - ezPredict
 -     Fixed bug that prevented obtaining predictions when the name of one variable appeared in the name of other variables.
 -     Fixed bug preventing custom specification of to_predict
+-     Added ability to compute parametric bootstrap samples, yielding output visualizable via ezBootPlot
 
 3.0-0
 - added urls in all documentation pointing to the bug-report/feature-request site (https://github.com/mike-lawrence/ez/issues) and the discussion group (http://groups.google.com/group/ez4r).

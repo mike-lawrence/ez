@@ -3,6 +3,8 @@ function(
 	fit
 	, to_predict = NULL
 	, numeric_res = 0
+	, do_para_boot = TRUE
+	, para_boot_iterations = 1e3
 ){
 	data = attr(fit,'frame')
 	vars = as.character(attr(attr(data,'terms'),'variables'))
@@ -23,7 +25,7 @@ function(
 					, length.out=numeric_res
 				)
 			}else{
-				temp[[i]] = unique(this_fixed_data)
+				temp[[i]] = sort(unique(this_fixed_data))
 			}
 		}
 		to_return = data.frame(expand.grid(temp))
@@ -50,6 +52,27 @@ function(
 	tc = Matrix::tcrossprod(vf,mm)
 	to_return$var = Matrix::diag(mm %*% tc)
 	to_return = to_return[,names(to_return)!=dv]
-	to_return = to_return[,names(to_return) %in% c(data_vars,'value','var')]	
+	to_return = to_return[,names(to_return) %in% c(data_vars,'value','var')]
+	if(do_para_boot){
+		from_sim = arm::sim(fit,n=para_boot_iterations)
+		f = t(from_sim@fixef)
+		mat = matrix(NA,nrow=nrow(to_return),ncol=para_boot_iterations)
+		for(i in 1:para_boot_iterations){
+			mat[,i] = as.numeric((mm%*%f[,i])[,1])
+		}
+		mat = t(t(mat)-colMeans(mat))+mean(mat) #remove variability attributable to iteration grand mean; makes CIs on the raw data more meaningful
+		boots = as.data.frame(to_return[,names(to_return) %in% data_vars])
+		names(boots) = data_vars
+		boots = cbind(boots,as.data.frame(mat))
+		boots = melt(
+			data = boots
+			, id.vars = names(boots)[1:(ncol(boots)-para_boot_iterations)]
+			, variable_name = 'iteration'
+		)
+		to_return = list(
+			cells = to_return
+			, boots = boots
+		)
+	}
 	return(to_return)
 }
