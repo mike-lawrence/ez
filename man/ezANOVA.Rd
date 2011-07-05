@@ -69,7 +69,7 @@ A list containing one or more of the following components:
 \item{ANOVA}{A data frame containing the ANOVA results.}
 \item{Mauchly's Test for Sphericity}{If any within-Ss variables with >2 levels are present, a data frame containing the results of Mauchly's test for Sphericity. Only reported for effects >2 levels because sphericity necessarily holds for effects with only 2 levels.}
 \item{Sphericity Corrections}{If any within-Ss variables are present, a data frame containing the Greenhouse-Geisser & Huynh-Feldt epsilon values, and corresponding corrected p-values.}
-\item{Levene's Test for Homgeneity}{If the design is purely between-Ss, a data frame containing the results of Levene's test for Homgeneity of variance. Note that Huynh-Feldt corrected p-values where the Huynh-Feldt epsilon >1 will use 1 as the correction epsilon.}
+\item{Levene's Test for Homogeneity}{If the design is purely between-Ss, a data frame containing the results of Levene's test for Homgeneity of variance. Note that Huynh-Feldt corrected p-values where the Huynh-Feldt epsilon >1 will use 1 as the correction epsilon.}
 \item{aov}{An aov object corresponding to the requested ANOVA.}
 }
 \note{
