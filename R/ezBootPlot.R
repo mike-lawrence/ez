@@ -14,7 +14,7 @@ function(
 	, split_lab = NULL
 	, levels = NULL
 	, diff = NULL
-	, reverse_diff = FALSE
+	, reverse_diff = NULL
 	, row_y_free = FALSE
 	, alarm = TRUE
 	, do_plot = TRUE
@@ -108,27 +108,37 @@ function(
 		boots$value = rowMeans(temp)
 	}
 	if(!is.null(diff)){
-		if(reverse_diff){
-			cells[,names(cells)==as.character(diff)] = factor(
-				cells[,names(cells)==as.character(diff)]
-				, levels = rev(levels(cells[,names(cells)==as.character(diff)]))
-			)
-			boots[,names(boots)==as.character(diff)] = factor(
-				boots[,names(boots)==as.character(diff)]
-				, levels = rev(levels(boots[,names(boots)==as.character(diff)]))
-			)
+		if(is.null(reverse_diff)){
+			reverse_diff = rep(F,times=length(diff))
+		}else{
+			if(length(reverse_diff)!=length(diff)){
+				stop('"reverse_diff" must be either NULL or the same length as "diff".')
+			}
 		}
-		#cat('\nezBootPlot: Computing requested difference score within cells...')
-		temp = cells[cells[,names(cells)==as.character(diff)]==(levels(cells[,names(cells)==as.character(diff)])[1]),]
-		temp$value = temp$value - cells$value[cells[,names(cells)==as.character(diff)]==(levels(cells[,names(cells)==as.character(diff)])[2])]
-		cells = temp
-		rm(temp)
-		cells = cells[,names(cells)!=as.character(diff)]
-		temp = boots[boots[,names(boots)==as.character(diff)]==(levels(boots[,names(boots)==as.character(diff)])[1]),]
-		temp$value = temp$value - boots$value[boots[,names(boots)==as.character(diff)]==(levels(boots[,names(boots)==as.character(diff)])[2])]
-		boots = temp
-		rm(temp)
-		boots = boots[,names(boots)!=as.character(diff)]
+		for(i in 1:length(diff)){
+			this_diff = diff[i]
+			if(reverse_diff[i]){
+				cells[,names(cells)==as.character(this_diff)] = factor(
+					cells[,names(cells)==as.character(this_diff)]
+					, levels = rev(levels(cells[,names(cells)==as.character(this_diff)]))
+				)
+				boots[,names(boots)==as.character(this_diff)] = factor(
+					boots[,names(boots)==as.character(this_diff)]
+					, levels = rev(levels(boots[,names(boots)==as.character(this_diff)]))
+				)
+			}
+			#cat('\nezBootPlot: Computing requested this_difference score within cells...')
+			temp = cells[cells[,names(cells)==as.character(this_diff)]==(levels(cells[,names(cells)==as.character(this_diff)])[1]),]
+			temp$value = temp$value - cells$value[cells[,names(cells)==as.character(this_diff)]==(levels(cells[,names(cells)==as.character(this_diff)])[2])]
+			cells = temp
+			rm(temp)
+			cells = cells[,names(cells)!=as.character(this_diff)]
+			temp = boots[boots[,names(boots)==as.character(this_diff)]==(levels(boots[,names(boots)==as.character(this_diff)])[1]),]
+			temp$value = temp$value - boots$value[boots[,names(boots)==as.character(this_diff)]==(levels(boots[,names(boots)==as.character(this_diff)])[2])]
+			boots = temp
+			rm(temp)
+			boots = boots[,names(boots)!=as.character(this_diff)]
+		}
 	}
 	if(do_plot){
 		names(cells)[names(cells)==as.character(x)] = 'x'
