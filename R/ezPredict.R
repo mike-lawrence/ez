@@ -5,6 +5,7 @@ function(
 	, numeric_res = 0
 	, do_para_boot = TRUE
 	, para_boot_iterations = 1e3
+	, effect_variability_only = TRUE
 ){
 	data = attr(fit,'frame')
 	vars = as.character(attr(attr(data,'terms'),'variables'))
@@ -55,12 +56,14 @@ function(
 	to_return = to_return[,names(to_return) %in% c(data_vars,'value','var')]
 	if(do_para_boot){
 		from_sim = arm::sim(fit,n=para_boot_iterations)
-		f = t(from_sim@fixef)
+		f = t(fixef(from_sim))
 		mat = matrix(NA,nrow=nrow(to_return),ncol=para_boot_iterations)
 		for(i in 1:para_boot_iterations){
 			mat[,i] = as.numeric((mm%*%f[,i])[,1])
 		}
-		mat = t(t(mat)-colMeans(mat))+mean(mat) #remove variability attributable to iteration grand mean; makes CIs on the raw data more meaningful
+		if(effect_variability_only){
+			mat = t(t(mat)-colMeans(mat))+mean(mat) #remove variability attributable to iteration grand mean
+		}
 		boots = as.data.frame(to_return[,names(to_return) %in% data_vars])
 		names(boots) = data_vars
 		boots = cbind(boots,as.data.frame(mat))
