@@ -84,16 +84,29 @@ function(
 		}
 	)
 	#cat('\nezBootPlot: Collapsing boots to requested design...')
-	boots = ddply(
-		.data = idata.frame(from_ezBoot$boots)
-		, .variables = structure(as.list(c(x,split,row,col,diff,expression(iteration))),class = 'quoted')
-		, .fun = function(x){
-			to_return = data.frame(
-				value = mean(x$value)
-			)
-			return(to_return)
+	boots = from_ezBoot$boots
+	num_it=length(unique(boots$iteration))
+	if((num_it*nrow(cells))!=nrow(boots)){
+		boots = boots[order(boots$iteration),]
+		if(!is.null(x)){
+			boots = boots[order(boots[,names(boots)==x]),]
 		}
-	)
+		if(!is.null(split)){
+			boots = boots[order(boots[,names(boots)==split]),]
+		}
+		if(!is.null(row)){
+			boots = boots[order(boots[,names(boots)==row]),]
+		}
+		if(!is.null(col)){
+			boots = boots[order(boots[,names(boots)==col]),]
+		}
+		if(!is.null(diff)){
+			boots = boots[order(boots[,names(boots)==diff]),]
+		}
+		temp = matrix(boots$value,nrow=num_it*nrow(cells))
+		boots = boots[1:(num_it*nrow(cells)),names(boots) %in% as.character(c(x,split,row,col,diff,'iteration'))]
+		boots$value = rowMeans(temp)
+	}
 	if(!is.null(diff)){
 		if(reverse_diff){
 			cells[,names(cells)==as.character(diff)] = factor(
@@ -106,34 +119,16 @@ function(
 			)
 		}
 		#cat('\nezBootPlot: Computing requested difference score within cells...')
-		if(is.null(x)){
-			temp = cells[cells[,names(cells)==as.character(diff)]==(levels(cells[,names(cells)==as.character(diff)])[1]),] 
-			temp$value = temp$value - cells$value[cells[,names(cells)==as.character(diff)]==(levels(cells[,names(cells)==as.character(diff)])[2])]
-			cells = temp
-			rm(temp)
-		}else{
-			cells = ddply(
-				.data = cells
-				, .variables = structure(as.list(c(x,split,row,col)),class = 'quoted')
-				, .fun = function(x){
-					to_return = data.frame(
-						value = x$value[x[,names(x)==as.character(diff)]==(levels(x[,names(x)==as.character(diff)])[1])] - x$value[x[,names(x)==as.character(diff)]==(levels(x[,names(x)==as.character(diff)])[2])]
-					)
-					return(to_return)
-				}
-			)
-		}
-		#cat('\nezBootPlot: Computing requested difference score within boots...')
-		boots = ddply(
-			.data = boots
-			, .variables = structure(as.list(c(x,split,row,col,expression(iteration))),class = 'quoted')
-			, .fun = function(x){
-				to_return = data.frame(
-					value = x$value[x[,names(x)==as.character(diff)]==(levels(x[,names(x)==as.character(diff)])[1])] - x$value[x[,names(x)==as.character(diff)]==(levels(x[,names(x)==as.character(diff)])[2])]
-				)
-				return(to_return)
-			}
-		)
+		temp = cells[cells[,names(cells)==as.character(diff)]==(levels(cells[,names(cells)==as.character(diff)])[1]),]
+		temp$value = temp$value - cells$value[cells[,names(cells)==as.character(diff)]==(levels(cells[,names(cells)==as.character(diff)])[2])]
+		cells = temp
+		rm(temp)
+		cells = cells[,names(cells)!=as.character(diff)]
+		temp = boots[boots[,names(boots)==as.character(diff)]==(levels(boots[,names(boots)==as.character(diff)])[1]),]
+		temp$value = temp$value - boots$value[boots[,names(boots)==as.character(diff)]==(levels(boots[,names(boots)==as.character(diff)])[2])]
+		boots = temp
+		rm(temp)
+		boots = boots[,names(boots)!=as.character(diff)]
 	}
 	if(do_plot){
 		names(cells)[names(cells)==as.character(x)] = 'x'
