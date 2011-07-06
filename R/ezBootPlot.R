@@ -85,7 +85,7 @@ function(
 	)
 	#cat('\nezBootPlot: Collapsing boots to requested design...')
 	boots = from_ezBoot$boots
-	num_it=length(unique(boots$iteration))
+	num_it = length(unique(boots$iteration))
 	if((num_it*nrow(cells))!=nrow(boots)){
 		boots = boots[order(boots$iteration),]
 		if(!is.null(x)){
@@ -103,8 +103,8 @@ function(
 		if(!is.null(diff)){
 			boots = boots[order(boots[,names(boots)==diff]),]
 		}
-		temp = matrix(boots$value,nrow=num_it*nrow(cells))
-		boots = boots[1:(num_it*nrow(cells)),names(boots) %in% as.character(c(x,split,row,col,diff,'iteration'))]
+		temp = matrix(boots$value,nrow=num_it*nrow(cells),byrow=T)
+		boots = boots[((1:nrow(boots))%%ncol(temp))==1,names(boots) %in% as.character(c(x,split,row,col,diff,'iteration'))]
 		boots$value = rowMeans(temp)
 	}
 	if(!is.null(diff)){
