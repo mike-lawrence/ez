@@ -7,6 +7,7 @@ function(
 	, row = NULL
 	, col = NULL
 	, do_lines = TRUE
+	, ribbon = FALSE
 	, bar_width = NULL
 	, to_numeric = NULL
 	, x_lab = NULL
@@ -199,16 +200,46 @@ function(
 			)
 		)
 		if(!is.null(split)){
-			p = p+geom_point(
-				aes(
-					colour = split
-					, shape = split
-					, y = value
+			for(i in 1:length(confidence)){
+				if(!ribbon){
+					p = p+geom_errorbar(
+						data = boot_stats[[i]]
+						, mapping = aes(
+							colour = split
+							, ymin = lo
+							, ymax = hi
+						)
+						, linetype = 1
+						, legend = FALSE
+						, width = bar_width[i]
+						, alpha = .5
+					)
+				}else{
+					p = p+geom_ribbon(
+						data = boot_stats[[i]]
+						, mapping = aes(
+							fill = split
+							, ymin = lo
+							, ymax = hi
+						)
+						, colour = 'transparent'
+						, legend = FALSE
+						, alpha = .5
+					)
+				}
+			}
+			if(!ribbon){
+				p = p+geom_point(
+					aes(
+						colour = split
+						, shape = split
+						, y = value
+					)
+					, alpha = .8
 				)
-				, alpha = .8
-			)
+			}
 			if(!is.null(split_lab)){
-				p = p+labs(colour = split_lab,shape = split_lab)
+				p = p+labs(colour = split_lab,shape = split_lab,linetype = split_lab,fill = split_lab)
 			}
 			if(do_lines){
 				p = p+geom_line(
@@ -224,45 +255,46 @@ function(
 					p = p+labs(linetype = split_lab)
 				}
 			}
+		}else{
 			for(i in 1:length(confidence)){
-				p = p+geom_errorbar(
-					data = boot_stats[[i]]
-					, mapping = aes(
-						colour = split
-						, ymin = lo
-						, ymax = hi
+				if(!ribbon){
+					p = p+geom_errorbar(
+						data = boot_stats[[i]]
+						, mapping = aes(
+							, ymin = lo
+							, ymax = hi
+						)
+						, linetype = 1
+						, legend = FALSE
+						, width = bar_width[i]
+						, alpha = .5
 					)
-					, linetype = 1
-					, legend = FALSE
-					, width = bar_width[i]
-					, alpha = .5
+				}else{
+					p = p+geom_ribbon(
+						data = boot_stats[[i]]
+						, mapping = aes(
+							, ymin = lo
+							, ymax = hi
+						)
+						, colour = 'transparent'
+						, legend = FALSE
+						, alpha = .5
+					)
+				}
+			}
+			if(!ribbon){
+				p = p+geom_point(
+					mapping = aes(
+						y = value
+					)
 				)
 			}
-		}else{
-			p = p+geom_point(
-				mapping = aes(
-					y = value
-				)
-			)
 			if(do_lines){
 				p = p+geom_line(
 					mapping = aes(
 						x = as.numeric(x)
 						, y = value
 					)
-				)
-			}
-			for(i in 1:length(confidence)){
-				p = p+geom_errorbar(
-					data = boot_stats[[i]]
-					, mapping = aes(
-						, ymin = lo
-						, ymax = hi
-					)
-					, linetype = 1
-					, legend = FALSE
-					, width = bar_width[i]
-					, alpha = .5
 				)
 			}
 		}
