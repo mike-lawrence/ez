@@ -23,22 +23,34 @@ function(
 	if(!is.logical(do_lines)){
 		stop('"do_lines" must be either TRUE or FALSE.')
 	}
+	#code a check here that the difference variables each only have 2 levels
+	cells = from_ezBoot$cells
+	boots = from_ezBoot$boots
+	for(i in as.character(c(x,split,row,col,diff))){
+		if(is.factor(cells[,names(cells)==i])){
+			if(length(unique(cells[,names(cells)==i]))!=length(levels(cells[,names(cells)==i]))){
+				warning(paste('You have removed one or more levels from variable "',i,'". Refactoring for ezBootPlot.',sep=''),immediate.=TRUE,call.=FALSE)
+				cells[,names(cells)==i] = factor(cells[,names(cells)==i])
+				boots[,names(boots)==i] = factor(boots[,names(boots)==i])
+			}
+		}
+	}
 	if(!is.null(levels)){
 		for(i in 1:length(levels)){
 			this_iv = names(levels)[i]
-			from_ezBoot$cells[,names(from_ezBoot$cells)==this_iv] = factor(from_ezBoot$cells[,names(from_ezBoot$cells)==this_iv])
+			cells[,names(cells)==this_iv] = factor(cells[,names(cells)==this_iv])
 			if('new_order' %in% names(levels[[i]])){
-				from_ezBoot$cells[,names(from_ezBoot$cells)==this_iv] = factor(from_ezBoot$cells[,names(from_ezBoot$cells)==this_iv],levels=levels[[i]]$new_order)
+				cells[,names(cells)==this_iv] = factor(cells[,names(cells)==this_iv],levels=levels[[i]]$new_order)
 			}
 			if('new_names' %in% names(levels[[i]])){
-				levels(from_ezBoot$cells[,names(from_ezBoot$cells)==this_iv]) = levels[[i]]$new_names
+				levels(cells[,names(cells)==this_iv]) = levels[[i]]$new_names
 			}
-			from_ezBoot$boots[,names(from_ezBoot$boots)==this_iv] = factor(from_ezBoot$boots[,names(from_ezBoot$boots)==this_iv])
+			boots[,names(boots)==this_iv] = factor(boots[,names(boots)==this_iv])
 			if('new_order' %in% names(levels[[i]])){
-				from_ezBoot$boots[,names(from_ezBoot$boots)==this_iv] = factor(from_ezBoot$boots[,names(from_ezBoot$boots)==this_iv],levels=levels[[i]]$new_order)
+				boots[,names(boots)==this_iv] = factor(boots[,names(boots)==this_iv],levels=levels[[i]]$new_order)
 			}
 			if('new_names' %in% names(levels[[i]])){
-				levels(from_ezBoot$boots[,names(from_ezBoot$boots)==this_iv]) = levels[[i]]$new_names
+				levels(boots[,names(boots)==this_iv]) = levels[[i]]$new_names
 			}
 		}
 	}
@@ -46,8 +58,8 @@ function(
 		stop('"confidence" must be either greater than 0 and less than 1.')
 	}
 	for(i in to_numeric){
-		from_ezBoot$cells[,names(from_ezBoot$cells) == i] = as.numeric(as.character(from_ezBoot$cells[,names(from_ezBoot$cells) == i]))
-		from_ezBoot$boots[,names(from_ezBoot$boots) == i] = as.numeric(as.character(from_ezBoot$boots[,names(from_ezBoot$boots) == i]))
+		cells[,names(cells) == i] = as.numeric(as.character(cells[,names(cells) == i]))
+		boots[,names(boots) == i] = as.numeric(as.character(boots[,names(boots) == i]))
 	}
 	if(!is.null(bar_width)){
 		if(!is.numeric(bar_width)){
@@ -68,24 +80,24 @@ function(
 		}
 	}else{
 		if(do_plot){
-			if(!is.numeric(from_ezBoot$cells[,names(from_ezBoot$cells)==x])){
+			if(!is.numeric(cells[,names(cells)==x])){
 				bar_width = .25
 			}
 		}
 	}
 	#cat('ezBootPlot: Collapsing cells to requested design...')
 	cells = ddply(
-		.data = idata.frame(from_ezBoot$cells)
+		.data = idata.frame(cells)
 		, .variables = structure(as.list(c(x,split,row,col,diff)),class = 'quoted')
-		, .fun = function(x){
+		, .fun = function(z){
 			to_return = data.frame(
-				value = mean(x$value)
+				value = mean(z$value)
 			)
 			return(to_return)
 		}
 	)
 	#cat('\nezBootPlot: Collapsing boots to requested design...')
-	boots = from_ezBoot$boots
+	boots = boots
 	num_it = length(unique(boots$iteration))
 	if((num_it*nrow(cells))!=nrow(boots)){
 		boots = boots[order(boots$iteration),]
@@ -165,10 +177,10 @@ function(
 			boot_stats[[i]] = ddply(
 				.data = idata.frame(boots)
 				, .variables = structure(as.list(c(x,split,row,col)),class = 'quoted')
-				, .fun = function(x){
+				, .fun = function(z){
 					to_return = data.frame(
-						lo = quantile(x$value,(1-confidence[i])/2)
-						, hi = quantile(x$value,1-(1-confidence[i])/2)
+						lo = quantile(z$value,(1-confidence[i])/2)
+						, hi = quantile(z$value,1-(1-confidence[i])/2)
 					)
 					return(to_return)
 				}
