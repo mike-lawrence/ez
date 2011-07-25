@@ -9,12 +9,10 @@ function(
 	, do_gam_for_numeric_covariates = TRUE
 	, family = gaussian
 	, gam_bs = 'ts'
-	, gam_max_k = 10
+	, gam_max_k_per_dim = Inf
 	, alarm = TRUE
-	, results_as_progress = FALSE
 	, highest = 0
-	, return_models = FALSE
-	, highest_first = TRUE
+	, return_models = TRUE
 	, correction = AIC
 ){
 	#original_warn <- #options(warn=1)
@@ -79,19 +77,9 @@ function(
 	if(return_models){
 		to_return$models = to_return$formulae
 	}
-	if(!results_as_progress){
-		progress = create_progress_bar('timeCI')
-		progress$init(length(term_labels))
-	}else{
-		cat('  bits effect\n------ ------\n')
-	}
+	cat('  bits effect\n------ ------\n')
 	old_restricted_formula = ''
-	if(highest_first){
-		term_order = rev(1:length(term_labels))
-	}else{
-		term_order = 1:length(term_labels)
-	}
-	for(this_term_num in term_order){
+	for(this_term_num in 1:length(term_labels)){
 		effect = term_labels[this_term_num]
 		effect_split = strsplit(effect,':')[[1]]
 		this_height = length(effect_split)
@@ -173,8 +161,19 @@ function(
 			if(this_height==1){
 				restricted = 'NULL'
 				if(any(effect_split%in%numeric_fixed)){
-					k = min(gam_max_k,length(unique(data[,names(data)==effect]))-1)
-					unrestricted = paste('s(',effect,',k=',k,',bs="',gam_bs,'")')
+					k = min(
+						gam_max_k_per_dim
+						, length(unique(data[,names(data)==effect]))
+					)
+					unrestricted = paste(
+						's('
+						, effect
+						, ',k='
+						, k
+						, ',bs="'
+						, gam_bs
+						, '")'
+					)
 				}else{
 					unrestricted = effect
 				}
@@ -185,14 +184,18 @@ function(
 					for(i in 1:length(temp)){
 						temp_split = strsplit(temp[i],':')[[1]]
 						temp_numeric = temp_split[temp_split%in%numeric_fixed]
+						k = 0
 						if(length(temp_numeric)!=0){
+							for(this_temp_numeric in temp_numeric){
+								k = k + min(c(gam_max_k_per_dim,length(unique(data[,names(data)==this_temp_numeric]))))
+							}
 							temp2 = unique(data[,names(data)%in%temp_numeric])
 							k = ifelse(
 								is.data.frame(temp2)
-								, nrow(temp2)-1
-								, length(temp2)-1
+								, nrow(temp2)
+								, length(temp2)
 							)
-							k = min(k,gam_max_k)
+							k = min(k,gam_max_k_per_dim)
 							temp_not_numeric = temp_split[!(temp_split%in%numeric_fixed)]
 							if(length(temp_not_numeric)==0){
 								temp[i] = paste(
@@ -333,27 +336,19 @@ function(
 		if((!is.null(restricted_fit)) & (!is.null(unrestricted_fit))){
 			to_return$summary$bits[this_term_num] = (correction(restricted_fit)-correction(unrestricted_fit))*log2(exp(1))
 		}
-		if(results_as_progress){
-			longest_term_char_length = max(nchar(term_labels))
-			this_term_char_length = nchar(effect)
-			bits = format(c(to_return$summary$bits[this_term_num],-1), digits=1, nsmall = 2,scientific=T)
-			cat(
-				c(
-					bits[1]
-					, term_labels[this_term_num]
-					, '\n'
-				)
-				, sep = ' '
+		longest_term_char_length = max(nchar(term_labels))
+		this_term_char_length = nchar(effect)
+		bits = format(c(to_return$summary$bits[this_term_num],-1), digits=1, nsmall = 2,scientific=T)
+		cat(
+			c(
+				bits[1]
+				, term_labels[this_term_num]
+				, '\n'
 			)
-		}else{
-			progress$step()
-		}
+			, sep = ' '
+		)
 	}
-	if(!results_as_progress){
-		progress$term()
-	}else{
-		cat('Time taken for ezMixed() to complete:',round(proc.time()[3]-start),'seconds\n')
-	}
+	cat('Time taken for ezMixed() to complete:',round(proc.time()[3]-start),'seconds\n')
 	if(alarm){
 		alarm()
 	}
