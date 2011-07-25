@@ -52,23 +52,23 @@ function(
 		}
 		to_return = data.frame(expand.grid(temp))
 		names(to_return) = data_vars
-		if(fit_class=='gam'){
-			for(i in randoms){
-				to_return$EZTEMP = data[1,names(data)==i]
-				names(to_return)[ncol(to_return)] = i
-			}
-			for(i in BY){
-				to_return$EZTEMP = ''
-				for(j in str_split(i,'BY')[[1]]){
-					to_return$EZTEMP = paste(to_return$EZTEMP,as.character(to_return[,names(to_return)==j]))
-				}
-				to_return$EZTEMP = ordered(to_return$EZTEMP)
-				names(to_return)[ncol(to_return)] = i
-			}
-		}
 	}else{
 		to_return = to_predict
-		data_vars = names(to_predict)
+	}
+	data_vars = names(to_return)
+	if(fit_class=='gam'){
+		for(i in randoms){
+			to_return$EZTEMP = data[1,names(data)==i]
+			names(to_return)[ncol(to_return)] = i
+		}
+		for(i in BY){
+			to_return$EZTEMP = ''
+			for(j in str_split(i,'BY')[[1]]){
+				to_return$EZTEMP = paste(to_return$EZTEMP,as.character(to_return[,names(to_return)==j]))
+			}
+			to_return$EZTEMP = ordered(to_return$EZTEMP)
+			names(to_return)[ncol(to_return)] = i
+		}
 	}
 	to_return$ezDV = 0
 	names(to_return)[ncol(to_return)] = dv
