@@ -11,7 +11,7 @@ function(
 	, gam_bs = 'ts'
 	, gam_max_k_per_dim = Inf
 	, alarm = TRUE
-	, terms = NULL
+	, term_labels = NULL
 	, highest = 0
 	, return_models = TRUE
 	, correction = AIC
@@ -52,12 +52,10 @@ function(
 			}
 		}		
 	}
-	if(is.null(terms)){
+	if(is.null(term_labels)){
 		to_terms = paste('y~',paste(fixed,collapse='*'))
 		from_terms = terms(eval(parse(text=to_terms)))
 		term_labels = attr(from_terms,'term.labels')
-	}else{
-		term_labels = terms
 	}
 	if(highest>0){
 		term_labels = term_labels[laply((strsplit(term_labels,':')),length)<=highest]
