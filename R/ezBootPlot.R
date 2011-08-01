@@ -2,7 +2,7 @@ ezBootPlot <-
 function(
 	from_ezBoot
 	, confidence = .95
-	, x
+	, x = NULL
 	, split = NULL
 	, row = NULL
 	, col = NULL
@@ -168,7 +168,7 @@ function(
 	#cat('\nezBootPlot: Computing confidence intervals...')
 	boot_stats = list()
 	for(i in 1:length(confidence)){
-		if(is.null(x)){
+		if(is.null(x)&is.null(row)&is.null(col)){
 			boot_stats[[i]] = data.frame(
 				lo = quantile(boots$value,(1-confidence[i])/2)
 				, hi = quantile(boots$value,1-(1-confidence[i])/2)
