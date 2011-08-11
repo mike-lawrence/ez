@@ -2,6 +2,23 @@ ezDev <- function(){
 	if(!require(RCurl)){
 		stop('Please install the "RCurl" package.')
 	}
+	temp = getURL('https://raw.github.com/mike-lawrence/ez/master/DESCRIPTION')
+	temp = strsplit(temp,'\n')[[1]]
+	temp = temp[str_detect(temp,'Depends: ')]
+	temp = str_replace(temp,'Depends: ','')
+	temp = strsplit(temp,',')[[1]]
+	temp = str_replace(temp,'>','')
+	temp = str_replace(temp,'=','')
+	temp = str_replace_all(temp,' ','')
+	temp = str_replace_all(temp,'-','')
+	temp = str_replace_all(temp,'\\.','')
+	temp = str_replace_all(temp,'\\(.*\\)','')
+	temp = temp[temp!='R']
+	for(this_package in temp){
+		if(!require(this_package,character.only=TRUE)){
+			stop(paste('Please install the "',this_package,'" package.',sep=''))
+		}
+	}
 	temp = getURL('https://github.com/mike-lawrence/ez/tree/master/R')
 	temp = strsplit(temp,'\n')[[1]]
 	temp = temp[temp!='']
