@@ -362,7 +362,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						Anova(
 							wide_lm$lm
 							, idata = wide_lm$idata
-							, type = type
+							, type = 3 #hardcoded to 3, else car::Anova() prints a note
 							, idesign = eval(parse(text=wide_lm$idesign_formula))
 						)
 					)
