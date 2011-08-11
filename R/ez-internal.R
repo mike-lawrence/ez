@@ -356,7 +356,8 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 		}else{ #there are no numeric within-Ss variables
 			if(type!=1){
 				wide_lm = ezANOVA_get_wide_lm(data, dv, wid, within, between)
-				original_warn = options(warn=-1)
+				original_warn = options()
+				options(warn=-1)
 				w = NULL
 				e = NULL
 				from_Anova = NULL
@@ -381,7 +382,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 				}else{
 					if(!is.null(w)){
 						if(w!='Note: model has only an intercept; equivalent type-III tests substituted.'){
-							cat(paste('Warning from car::Anova():',w))
+							warning(paste('Warning from car::Anova():',w))
 						}
 					}
 				}
@@ -428,7 +429,8 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 				}else{ #there are no numeric within-Ss variables
 					if(type!=1){
 						wide_lm = ezANOVA_get_wide_lm(data, dv, wid, within, between)
-						original_warn = options(warn=-1)
+						original_warn = options()
+						options(warn=-1)
 						w = NULL
 						e = NULL
 						from_Anova = NULL
@@ -453,7 +455,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						}else{
 							if(!is.null(w)){
 								if(w!='Note: model has only an intercept; equivalent type-III tests substituted.'){
-									cat(paste('Warning from car::Anova():',w))
+									warning(paste('Warning from car::Anova():',w))
 								}
 							}
 						}
@@ -504,7 +506,8 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						stop('Cannot perform ANOVA when data are imbalanced and when one or more within-Ss variables are numeric. Try ezMixed() instead.')
 					}
 					wide_lm = ezANOVA_get_wide_lm(data, dv, wid, within, between)
-					original_warn = options(warn=-1)
+					original_warn = options()
+					options(warn=-1)
 					w = NULL
 					e = NULL
 					from_Anova = NULL
@@ -529,7 +532,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 					}else{
 						if(!is.null(w)){
 							if(w!='Note: model has only an intercept; equivalent type-III tests substituted.'){
-								cat(paste('Warning from car::Anova():',w))
+								warning(paste('Warning from car::Anova():',w))
 							}
 						}
 					}
