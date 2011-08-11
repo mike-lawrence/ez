@@ -356,20 +356,36 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 		}else{ #there are no numeric within-Ss variables
 			if(type!=1){
 				wide_lm = ezANOVA_get_wide_lm(data, dv, wid, within, between)
-				to_return = NULL
+				original_warn = options(warn=-1)
+				w = NULL
+				e = NULL
+				from_Anova
 				try(
-					to_return <- ezANOVA_summary(
-						Anova(
-							wide_lm$lm
-							, idata = wide_lm$idata
-							, type = type
-							, idesign = eval(parse(text=wide_lm$idesign_formula))
-						)
+					 from_Anova <- withCallingHandlers(
+						{
+							Anova(
+								wide_lm$lm
+								, idata = wide_lm$idata
+								, type = type
+								, idesign = eval(parse(text=wide_lm$idesign_formula))
+							)
+						}
+						, warning = function(w) {w<<-w}
+						, error = function(e) {e<<-e}
 					)
+					, silent = T
 				)
-				if(is.null(to_return)){
-					stop('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests).')
+				options(warn=original_warn)
+				if(is.null(from_Anova)){
+					stop(paste('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests). The error message from car::Anova() was:',e))
+				}else{
+					if(!is.null(w)){
+						if(w!='Note: model has only an intercept; equivalent type-III tests substituted.'){
+							cat(paste('Warning from car::Anova():',w))
+						}
+					}
 				}
+				to_return <- ezANOVA_summary(from_ANOVA)
 				if(return_aov){
 					from_aov = ezANOVA_aov(data, dv, wid, within, between)
 					to_return$aov = from_aov$aov
@@ -412,20 +428,36 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 				}else{ #there are no numeric within-Ss variables
 					if(type!=1){
 						wide_lm = ezANOVA_get_wide_lm(data, dv, wid, within, between)
-						to_return = NULL
+						original_warn = options(warn=-1)
+						w = NULL
+						e = NULL
+						from_Anova
 						try(
-							to_return <- ezANOVA_summary(
-								Anova(
-									wide_lm$lm
-									, idata = wide_lm$idata
-									, type = type
-									, idesign = eval(parse(text=wide_lm$idesign_formula))
-								)
+							 from_Anova <- withCallingHandlers(
+								{
+									Anova(
+										wide_lm$lm
+										, idata = wide_lm$idata
+										, type = type
+										, idesign = eval(parse(text=wide_lm$idesign_formula))
+									)
+								}
+								, warning = function(w) {w<<-w}
+								, error = function(e) {e<<-e}
 							)
+							, silent = T
 						)
-						if(is.null(to_return)){
-							stop('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests).')
+						options(warn=original_warn)
+						if(is.null(from_Anova)){
+							stop(paste('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests). The error message from car::Anova() was:',e))
+						}else{
+							if(!is.null(w)){
+								if(w!='Note: model has only an intercept; equivalent type-III tests substituted.'){
+									cat(paste('Warning from car::Anova():',w))
+								}
+							}
 						}
+						to_return <- ezANOVA_summary(from_ANOVA)
 						if(return_aov){
 							from_aov = ezANOVA_aov(data, dv, wid, within, between)
 							to_return$aov = from_aov$aov
@@ -472,20 +504,36 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						stop('Cannot perform ANOVA when data are imbalanced and when one or more within-Ss variables are numeric. Try ezMixed() instead.')
 					}
 					wide_lm = ezANOVA_get_wide_lm(data, dv, wid, within, between)
-					to_return = NULL
+					original_warn = options(warn=-1)
+					w = NULL
+					e = NULL
+					from_Anova
 					try(
-						to_return <- ezANOVA_summary(
-							Anova(
-								wide_lm$lm
-								, idata = wide_lm$idata
-								, type = type
-								, idesign = eval(parse(text=wide_lm$idesign_formula))
-							)
+						 from_Anova <- withCallingHandlers(
+							{
+								Anova(
+									wide_lm$lm
+									, idata = wide_lm$idata
+									, type = type
+									, idesign = eval(parse(text=wide_lm$idesign_formula))
+								)
+							}
+							, warning = function(w) {w<<-w}
+							, error = function(e) {e<<-e}
 						)
+						, silent = T
 					)
-					if(is.null(to_return)){
-						stop('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests).')
+					options(warn=original_warn)
+					if(is.null(from_Anova)){
+						stop(paste('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests). The error message from car::Anova() was:',e))
+					}else{
+						if(!is.null(w)){
+							if(w!='Note: model has only an intercept; equivalent type-III tests substituted.'){
+								cat(paste('Warning from car::Anova():',w))
+							}
+						}
 					}
+					to_return <- ezANOVA_summary(from_ANOVA)
 					if(return_aov){
 						from_aov = ezANOVA_aov(data, dv, wid, within, between)
 						to_return$aov = from_aov$aov
