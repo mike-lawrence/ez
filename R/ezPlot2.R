@@ -1,6 +1,6 @@
-ezBootPlot <-
+ezPlot2 <-
 function(
-	from_ezBoot
+	predictions
 	, confidence = .95
 	, x = NULL
 	, split = NULL
@@ -24,8 +24,8 @@ function(
 		stop('"do_lines" must be either TRUE or FALSE.')
 	}
 	#code a check here that the difference variables each only have 2 levels
-	cells = from_ezBoot$cells
-	boots = from_ezBoot$boots
+	cells = predictions$cells
+	boots = predictions$boots
 	for(i in as.character(c(x,split,row,col,diff))){
 		if(is.factor(cells[,names(cells)==i])){
 			if(length(unique(cells[,names(cells)==i]))!=length(levels(cells[,names(cells)==i]))){
