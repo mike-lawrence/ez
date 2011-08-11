@@ -359,7 +359,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 				original_warn = options(warn=-1)
 				w = NULL
 				e = NULL
-				from_Anova
+				from_Anova = NULL
 				try(
 					 from_Anova <- withCallingHandlers(
 						{
@@ -431,7 +431,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						original_warn = options(warn=-1)
 						w = NULL
 						e = NULL
-						from_Anova
+						from_Anova = NULL
 						try(
 							 from_Anova <- withCallingHandlers(
 								{
@@ -507,7 +507,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 					original_warn = options(warn=-1)
 					w = NULL
 					e = NULL
-					from_Anova
+					from_Anova = NULL
 					try(
 						 from_Anova <- withCallingHandlers(
 							{
