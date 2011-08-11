@@ -494,7 +494,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 			}
 		}
 	}
-	to_return$ANOVA = to_return$ANOVA[order(str_count(to_return$ANOVA$Effect),':'),]
+	to_return$ANOVA = to_return$ANOVA[order(str_count(to_return$ANOVA$Effect,':')),]
 	to_return$data = data
 	return(to_return)
 }
