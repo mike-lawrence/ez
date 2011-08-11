@@ -1,4 +1,7 @@
 ezDev <- function(){
+	if(!require(RCurl)){
+		stop('Please install the "RCurl" package.')
+	}
 	temp = getURL('https://github.com/mike-lawrence/ez/tree/master/R')
 	temp = strsplit(temp,'\n')[[1]]
 	temp = temp[temp!='']
