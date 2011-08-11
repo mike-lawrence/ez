@@ -385,7 +385,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						}
 					}
 				}
-				to_return <- ezANOVA_summary(from_ANOVA)
+				to_return <- ezANOVA_summary(from_Anova)
 				if(return_aov){
 					from_aov = ezANOVA_aov(data, dv, wid, within, between)
 					to_return$aov = from_aov$aov
@@ -457,7 +457,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 								}
 							}
 						}
-						to_return <- ezANOVA_summary(from_ANOVA)
+						to_return <- ezANOVA_summary(from_Anova)
 						if(return_aov){
 							from_aov = ezANOVA_aov(data, dv, wid, within, between)
 							to_return$aov = from_aov$aov
@@ -533,7 +533,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 							}
 						}
 					}
-					to_return <- ezANOVA_summary(from_ANOVA)
+					to_return <- ezANOVA_summary(from_Anova)
 					if(return_aov){
 						from_aov = ezANOVA_aov(data, dv, wid, within, between)
 						to_return$aov = from_aov$aov
