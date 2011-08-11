@@ -375,7 +375,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 					)
 					, silent = T
 				)
-				options(warn=original_warn)
+				options(original_warn)
 				if(is.null(from_Anova)){
 					stop(paste('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests). The error message from car::Anova() was:',e))
 				}else{
@@ -447,7 +447,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 							)
 							, silent = T
 						)
-						options(warn=original_warn)
+						options(original_warn)
 						if(is.null(from_Anova)){
 							stop(paste('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests). The error message from car::Anova() was:',e))
 						}else{
@@ -523,7 +523,7 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 						)
 						, silent = T
 					)
-					options(warn=original_warn)
+					options(original_warn)
 					if(is.null(from_Anova)){
 						stop(paste('The car::Anova() function used to compute results and assumption tests seems to have failed. Most commonly this is because you have too few subjects relative to the number of cells in the within-Ss design. It is possible that trying the ANOVA again with "type=1" may yield results (but definitely no assumption tests). The error message from car::Anova() was:',e))
 					}else{
