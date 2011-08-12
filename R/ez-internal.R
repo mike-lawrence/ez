@@ -509,12 +509,7 @@ function(data, dv, wid, within, between){
 		,paste(as.character(within),collapse = '*')
 		,ifelse(
 			is.null(within)
-			,paste(
-				'+Error('
-				,as.character(wid)
-				,')'
-				,sep = ''
-			)
+			,''
 			,paste(
 				'+Error('
 				,as.character(wid)
