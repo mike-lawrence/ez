@@ -60,6 +60,12 @@ function(
 	if(highest>0){
 		term_labels = term_labels[laply((strsplit(term_labels,':')),length)<=highest]
 	}
+	for(i in 1:length(term_labels)){
+		temp = unlist(strsplit(term_labels[i],':'))
+		temp = temp[order(temp)]
+		term_labels[i] = paste(temp,collapse=':')
+	}
+	term_labels = term_labels[order(str_count(term_labels,':'),term_labels)]
 	to_return = list()
 	to_return$summary = data.frame(
 		effect = factor(term_labels,levels=term_labels)
@@ -80,9 +86,20 @@ function(
 	if(return_models){
 		to_return$models = to_return$formulae
 	}
-	cat('  bits effect\n------ ------\n')
+	cat('  bits e w effect\n------ - - ------\n\r')
 	old_restricted_formula = ''
 	for(this_term_num in 1:length(term_labels)){
+		cat(
+			c(
+				'      '
+				, ' '
+				, ' '
+				, term_labels[this_term_num]
+				, '\r'
+			)
+			, sep = ' '
+		)
+		flush.console()
 		effect = term_labels[this_term_num]
 		effect_split = strsplit(effect,':')[[1]]
 		this_height = length(effect_split)
@@ -292,8 +309,8 @@ function(
 								, method = 'ML'
 							)
 						}
-						, warning = function(w) {w<<-w}
-						, error = function(e) {e<<-e}
+						, warning = function(x) {w<<-c(w,x$message)}
+						, error = function(x) {e<<-c(e,x$message)}
 					)
 					, silent = T
 				)
@@ -308,8 +325,8 @@ function(
 								, REML = FALSE
 							)
 						}
-						, warning = function(w) {w<<-w}
-						, error = function(e) {e<<-e}
+						, warning = function(x) {if(x!='extra arguments REML are disregarded'){w<<-c(w,x$message)}}
+						, error = function(x) {e<<-c(e,x$message)}
 					)
 					, silent = T
 				)
@@ -317,11 +334,11 @@ function(
 			options(warn=0)
 			if(!is.null(e)){
 				to_return$summary$error[this_term_num] <<- TRUE
-				to_return$errors[[this_term_num]][[i]] <<- e$message
+				to_return$errors[[this_term_num]][[i]] <<- e
 			}else{
 				if(!is.null(w)){
 					to_return$summary$warning[this_term_num] <<- TRUE
-					to_return$warnings[[this_term_num]][[i]] <<- w$message
+					to_return$warnings[[this_term_num]][[i]] <<- w
 				}
 			}
 			return(fit)
@@ -345,11 +362,14 @@ function(
 		cat(
 			c(
 				bits[1]
+				, ifelse(to_return$summary$error[this_term_num],'X','-')
+				, ifelse(to_return$summary$warning[this_term_num],'X','-')
 				, term_labels[this_term_num]
-				, '\n'
+				, '\n\r'
 			)
 			, sep = ' '
 		)
+		flush.console()
 	}
 	cat('Time taken for ezMixed() to complete:',round(proc.time()[3]-start),'seconds\n')
 	if(alarm){
