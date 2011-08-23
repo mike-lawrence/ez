@@ -4,15 +4,15 @@ ezDev <- function(){
 	}
 	temp = getURL('https://raw.github.com/mike-lawrence/ez/master/DESCRIPTION')
 	temp = strsplit(temp,'\n')[[1]]
-	temp = temp[str_detect(temp,'Depends: ')]
-	temp = str_replace(temp,'Depends: ','')
+	temp = temp[grep('Depends: ',temp)]
+	temp = sub('Depends: ','',temp,fixed=T)
 	temp = strsplit(temp,',')[[1]]
-	temp = str_replace(temp,'>','')
-	temp = str_replace(temp,'=','')
-	temp = str_replace_all(temp,' ','')
-	temp = str_replace_all(temp,'-','')
-	temp = str_replace_all(temp,'\\.','')
-	temp = str_replace_all(temp,'\\(.*\\)','')
+	temp = sub('>','',temp,fixed=T)
+	temp = sub('=','',temp,fixed=T)
+	temp = gsub(' ','',temp,fixed=T)
+	temp = gsub('-','',temp,fixed=T)
+	temp = gsub('\\.','',temp,fixed=T)
+	temp = gsub('\\(.*\\)','',temp)
 	temp = temp[temp!='R']
 	for(this_package in temp){
 		if(!require(this_package,character.only=TRUE)){
