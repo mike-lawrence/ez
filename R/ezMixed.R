@@ -233,7 +233,7 @@ function(
 								if(!(dummy%in%names(data))){
 									data$ezDUMMY <<- ''
 									for(this_temp_not_numeric in temp_not_numeric){
-										data$ezDUMMY <<- paste(data$ezDUMMY,data[,names(data)==this_temp_not_numeric])
+										data$ezDUMMY <<- paste(data$ezDUMMY,data[,names(data)==this_temp_not_numeric],sep='')
 									}
 									names(data)[ncol(data)] <<- dummy
 								}

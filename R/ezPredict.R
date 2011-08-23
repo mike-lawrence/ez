@@ -64,7 +64,7 @@ function(
 		for(i in BY){
 			to_return$EZTEMP = ''
 			for(j in str_split(i,'BY')[[1]]){
-				to_return$EZTEMP = paste(to_return$EZTEMP,as.character(to_return[,names(to_return)==j]))
+				to_return$EZTEMP = paste(to_return$EZTEMP,as.character(to_return[,names(to_return)==j]),sep='')
 			}
 			to_return$EZTEMP = ordered(to_return$EZTEMP)
 			names(to_return)[ncol(to_return)] = i
