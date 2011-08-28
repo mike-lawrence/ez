@@ -3,6 +3,7 @@ ezDev <- function(do_installs=TRUE){
 		if(do_installs){
 			cat('You must install the "RCurl" package to run ezDev(). Attempting install...')
 			install.packages('RCurl')
+			require(RCurl)
 		}else{
 			stop('Please install the "RCurl" package.')
 		}
@@ -24,6 +25,7 @@ ezDev <- function(do_installs=TRUE){
 			if(do_installs){
 				cat(paste('You must install the "',this_package,'" package to run ezDev(). Attempting install...'),sep='')
 				install.packages(this_package)
+				require(this_package)
 			}else{
 				stop(paste('Please install the "',this_package,'" package.',sep=''))
 			}
