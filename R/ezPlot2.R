@@ -140,6 +140,7 @@ function(
 					, levels = rev(levels(boots[,names(boots)==as.character(this_diff)]))
 				)
 			}
+			warning(paste('Collapsing "',as.character(diff),'" to a difference score ("',levels(cells[,names(cells)==as.character(diff)])[1],'"-"',levels(cells[,names(cells)==as.character(diff)])[2],'").',sep=''),immediate.=TRUE,call.=FALSE)
 			#cat('\nezBootPlot: Computing requested this_difference score within cells...')
 			temp = cells[cells[,names(cells)==as.character(this_diff)]==(levels(cells[,names(cells)==as.character(this_diff)])[1]),]
 			temp$value = temp$value - cells$value[cells[,names(cells)==as.character(this_diff)]==(levels(cells[,names(cells)==as.character(this_diff)])[2])]
