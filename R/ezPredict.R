@@ -83,9 +83,10 @@ function(
 		))))
 		mm = model.matrix(requested_terms,to_return)
 		f = fixef(fit)
-		v = diag(diag(vcov(fit)))
+		v = vcov(fit)
 		if(effect_variability_only){
-			v[1,1] = 0 #eliminate intercept variance
+			v[1,] = 0
+			v[,1] = 0
 		}
 	}else{
 		mm <- predict(fit,to_return,type="lpmatrix") # get a coefficient matrix
@@ -96,14 +97,16 @@ function(
 		for(i in randoms){
 			f[grep(paste('s(',i,')',sep=''),names(f),fixed=T)] = 0 #zero the subject entry	
 		}
-		v <- diag(diag(vcov(fit)))
+		v = vcov(fit)
 		if(effect_variability_only){
-			v[1,] = 0 #eliminate intercept variance
+			v[1,] = 0
+			v[,1] = 0
 		}
 		for(i in randoms){
 			row = grep(paste('s(',i,')',sep=''),dimnames(v)[[1]],fixed=T)
 			col = grep(paste('s(',i,')',sep=''),dimnames(v)[[2]],fixed=T)
-			v[row,col] = 0 #zero the subject entry	
+			v[row,] = 0
+			v[,col] = 0
 		}
 	}
 	value = mm %*% f
