@@ -48,6 +48,7 @@ function(
 				)
 			}else{
 				temp[[i]] = sort(unique(this_fixed_data))
+				contrasts(temp[[i]]) = contrasts(this_fixed_data)
 			}
 		}
 		to_return = data.frame(expand.grid(temp))
