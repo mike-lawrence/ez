@@ -8,7 +8,7 @@ ezDev <- function(do_installs=TRUE){
 			stop('Please install the "RCurl" package.')
 		}
 	}
-	temp = getURL('https://raw.github.com/mike-lawrence/ez/master/DESCRIPTION')
+	temp = getURL('https://raw.github.com/mike-lawrence/ez/master/DESCRIPTION',ssl.verifypeer=FALSE)
 	temp = strsplit(temp,'\n')[[1]]
 	temp = temp[grep('Depends: ',temp)]
 	temp = sub('Depends: ','',temp,fixed=T)
@@ -45,7 +45,7 @@ ezDev <- function(do_installs=TRUE){
 			, sep = ''
 		)
 		eval(
-			expr = parse(text=getURL(this_file))
+			expr = parse(text=getURL(this_file,ssl.verifypeer=FALSE))
 			, envir = .GlobalEnv
 		)
 	}
