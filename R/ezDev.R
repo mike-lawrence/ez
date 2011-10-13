@@ -25,13 +25,13 @@ ezDev <- function(do_installs=TRUE){
 			if(do_installs){
 				cat(paste('You must install the "',this_package,'" package to run ezDev(). Attempting install...'),sep='')
 				install.packages(this_package)
-				require(this_package)
+				require(eval.parse(text=this_package)))
 			}else{
 				stop(paste('Please install the "',this_package,'" package.',sep=''))
 			}
 		}
 	}
-	temp = getURL('https://github.com/mike-lawrence/ez/tree/master/R')
+	temp = getURL('https://github.com/mike-lawrence/ez/tree/master/R',ssl.verifypeer=FALSE)
 	temp = strsplit(temp,'\n')[[1]]
 	temp = temp[temp!='']
 	temp = temp[str_detect(temp,'            <td class="content"> <a href="/mike-lawrence/ez/blob/')]
