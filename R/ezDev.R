@@ -25,7 +25,7 @@ ezDev <- function(do_installs=TRUE){
 			if(do_installs){
 				cat(paste('You must install the "',this_package,'" package to run ezDev(). Attempting install...'),sep='')
 				install.packages(this_package)
-				require(eval.parse(text=this_package)))
+				require(eval(parse(text=this_package)))
 			}else{
 				stop(paste('Please install the "',this_package,'" package.',sep=''))
 			}
