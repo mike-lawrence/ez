@@ -15,7 +15,19 @@ function(
 	, highest = 0
 	, return_models = TRUE
 	, correction = AIC
+	, progress_dir = NULL
+	, resume = FALSE
 ){
+	if(!is.null(progress_dir)){
+		dir.create(progress_dir)
+		dir.create(paste(progress_dir,'models',sep='/'))
+		files = list.files(
+			path = progress_dir
+			, pattern = '.RData'
+		)
+		terms_done = str_replace_all(files,'BY',':')
+		terms_done = str_replace(terms_done,'.RData','')
+	}
 	#original_warn <- #options(warn=1)
 	start = proc.time()[3]
 	if(!is.data.frame(data)){
@@ -66,6 +78,9 @@ function(
 		term_labels[i] = paste(temp,collapse=':')
 	}
 	term_labels = term_labels[order(str_count(term_labels,':'),term_labels)]
+	if(!is.null(progress_dir)&resume){
+		term_labels = term_labels[!(term_labels %in% terms_done)]
+	}
 	to_return = list()
 	to_return$summary = data.frame(
 		effect = factor(term_labels,levels=term_labels)
@@ -356,6 +371,23 @@ function(
 		if((!is.null(restricted_fit)) & (!is.null(unrestricted_fit))){
 			to_return$summary$bits[this_term_num] = (correction(restricted_fit)-correction(unrestricted_fit))*log2(exp(1))
 		}
+		if(!is.null(progress_dir)){
+			term_text = str_replace_all(term_labels[this_term_num],':','BY')
+			dir.create(paste(progress_dir,'models',sep='/'))
+			temp<-list(
+				summary = to_return$summary[this_term_num,]
+				, formulae = to_return$formulae[[this_term_num]]
+				, warnings = to_return$warnings[[this_term_num]]
+				, errors = to_return$warnings[[this_term_num]]
+			)
+			eval(parse(text=paste("save(temp, file = paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
+			eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
+			eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
+			eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
+			rm(temp)
+		}
+		rm(restricted_fit,unrestricted_fit)
+		gc()
 		longest_term_char_length = max(nchar(term_labels))
 		this_term_char_length = nchar(effect)
 		bits = format(c(to_return$summary$bits[this_term_num],-1), digits=1, nsmall = 2,scientific=T)
