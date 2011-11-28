@@ -123,9 +123,6 @@ function(
 		for(i in 1:parametric_bootstrap_iterations){
 			mat[,i] <- mm%*%samples[i,]
 		}
-		if(effect_variability_only){
-			mat = t(t(mat)-colMeans(mat))+mean(mat) #remove variability attributable to iteration grand mean
-		}
 		boots = as.data.frame(to_return[,names(to_return) %in% data_vars])
 		names(boots) = data_vars
 		boots = cbind(boots,as.data.frame(mat))
