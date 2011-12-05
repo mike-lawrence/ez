@@ -1,1 +1,1 @@
-export(ezANOVA,ezBoot,ezBootPlot,ezCor,ezDesign,ezMixed,ezPerm,ezPlot,ezPrecis,ezPredict,ezResample,ezStats,progress_time,progress_timeCI)
+export(ezANOVA,ezBoot,ezCor,ezDesign,ezMixed,ezPerm,ezPlot,ezPlot2,ezPrecis,ezPredict,ezResample,ezStats,get_ezMixed_info,progress_time,progress_timeCI)
