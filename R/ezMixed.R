@@ -4,6 +4,7 @@ function(
 	, dv
 	, random
 	, fixed
+	, add_quantile_as_fixed = FALSE
 	, do_gam_for_numeric_fixed = TRUE
 	, covariates = NULL
 	, do_gam_for_numeric_covariates = TRUE
@@ -64,6 +65,10 @@ function(
 			}
 		}		
 	}
+	if(add_quantile_as_fixed){
+		numeric_fixed = c(numeric_fixed,'q')
+		fixed =  structure(as.list(c(fixed,.(q))),class = 'quoted')
+	}
 	if(is.null(term_labels)){
 		to_terms = paste('y~',paste(fixed,collapse='*'))
 		from_terms = terms(eval(parse(text=to_terms)))
@@ -117,6 +122,22 @@ function(
 		flush.console()
 		effect = term_labels[this_term_num]
 		effect_split = strsplit(effect,':')[[1]]
+		if('q' %in% effect_split){
+			this_data = ddply(
+				.data = data
+				, .variables = structure(as.list(c(random,fixed[(fixed%in%effect_split)&(fixed!='q')])),class = 'quoted')
+				, .fun = function(x){
+					to_return = data.frame(
+						q = ((1:nrow(x))-.5)/nrow(x)
+						, EZTEMP = sort(x[,names(x)==dv])
+					)
+					names(to_return)[ncol(to_return)] = dv
+					return(to_return)
+				}
+			)
+		}else{
+			this_data = data
+		}
 		this_height = length(effect_split)
 		if((!is.null(numeric_covariates)&do_gam_for_numeric_covariates)|(do_gam_for_numeric_fixed&(any(effect_split%in%numeric_fixed)))){
 			formula_base = paste(
@@ -198,7 +219,7 @@ function(
 				if(any(effect_split%in%numeric_fixed)){
 					k = min(
 						gam_max_k_per_dim
-						, length(unique(data[,names(data)==effect]))
+						, length(unique(this_data[,names(this_data)==effect]))
 					)
 					unrestricted = paste(
 						's('
@@ -222,9 +243,9 @@ function(
 						k = 0
 						if(length(temp_numeric)!=0){
 							for(this_temp_numeric in temp_numeric){
-								k = k + min(c(gam_max_k_per_dim,length(unique(data[,names(data)==this_temp_numeric]))))
+								k = k + min(c(gam_max_k_per_dim,length(unique(this_data[,names(this_data)==this_temp_numeric]))))
 							}
-							temp2 = unique(data[,names(data)%in%temp_numeric])
+							temp2 = unique(this_data[,names(this_data)%in%temp_numeric])
 							k = ifelse(
 								is.data.frame(temp2)
 								, nrow(temp2)
@@ -245,14 +266,14 @@ function(
 							}else{
 								dummy = paste(temp_not_numeric,collapse='BY')
 								#dummy = paste(temp_not_numeric,'ORDERED',collapse='BY',sep='')
-								if(!(dummy%in%names(data))){
-									data$ezDUMMY <<- ''
+								if(!(dummy%in%names(this_data))){
+									this_data$ezDUMMY <<- ''
 									for(this_temp_not_numeric in temp_not_numeric){
-										data$ezDUMMY <<- paste(data$ezDUMMY,data[,names(data)==this_temp_not_numeric],sep='')
+										this_data$ezDUMMY <<- paste(this_data$ezDUMMY,this_data[,names(this_data)==this_temp_not_numeric],sep='')
 									}
-									names(data)[ncol(data)] <<- dummy
+									names(this_data)[ncol(this_data)] <<- dummy
 								}
-								data[,names(data)==dummy] <<- ordered(data[,names(data)==dummy])
+								this_data[,names(this_data)==dummy] <<- ordered(this_data[,names(this_data)==dummy])
 								temp[i] = paste(
 									's('
 									, paste(temp_numeric,collapse=',')
@@ -320,7 +341,7 @@ function(
 							gam(
 								formula = eval(parse(text=formula))
 								, family = family
-								, data = data
+								, data = this_data
 								, method = 'ML'
 							)
 						}
@@ -336,7 +357,7 @@ function(
 							lmer(
 								formula = eval(parse(text=formula))
 								, family = family
-								, data = data
+								, data = this_data
 								, REML = FALSE
 							)
 						}
