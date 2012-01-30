@@ -129,7 +129,7 @@ function(
 		boots = melt(
 			data = boots
 			, id.vars = names(boots)[1:(ncol(boots)-parametric_bootstrap_iterations)]
-			, variable_name = 'iteration'
+			, variable.name = 'iteration'
 		)
 		to_return = list(
 			cells = to_return
