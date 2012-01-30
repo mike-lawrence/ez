@@ -231,7 +231,7 @@ function (
 					,ymax = ymax
 				)
 				,linetype = 1
-				,legend = FALSE
+				,guide = 'none'
 				,width = bar_width
 				, alpha = .5
 			)
@@ -248,7 +248,7 @@ function (
 					,ymax = ymax
 				)
 				,linetype = 1
-				,legend = FALSE
+				,guide = 'none'
 				,width = bar_width
 				,alpha = .5
 			)

@@ -223,7 +223,7 @@ function(
 							, ymax = hi
 						)
 						, linetype = 1
-						, legend = FALSE
+						, guide = 'none'
 						, width = bar_width[i]
 						, alpha = .5
 					)
@@ -236,7 +236,7 @@ function(
 							, ymax = hi
 						)
 						, colour = 'transparent'
-						, legend = FALSE
+						, guide = 'none'
 						, alpha = .5
 					)
 				}
@@ -278,7 +278,7 @@ function(
 							, ymax = hi
 						)
 						, linetype = 1
-						, legend = FALSE
+						, guide = 'none'
 						, width = bar_width[i]
 						, alpha = .5
 					)
@@ -290,7 +290,7 @@ function(
 							, ymax = hi
 						)
 						, colour = 'transparent'
-						, legend = FALSE
+						, guide = 'none'
 						, alpha = .5
 					)
 				}
