@@ -179,7 +179,7 @@ function(
 		,strip.text.y = theme_blank()
 	)
 	x_scale = scale_x_continuous(limits = c( -1*max(abs(dens$x)) , max(abs(dens$x)) ) )
-	size_scale = scale_size(limits = c(0,1),to=r_size_lims)
+	size_scale = scale_size(limits = c(0,1),range=r_size_lims)
 	return(
 		ggplot(z_cor)+
 		points_layer+
