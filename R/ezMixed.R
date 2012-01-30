@@ -394,7 +394,6 @@ function(
 		}
 		if(!is.null(progress_dir)){
 			term_text = str_replace_all(term_labels[this_term_num],':','BY')
-			dir.create(paste(progress_dir,'models',sep='/'))
 			temp<-list(
 				summary = to_return$summary[this_term_num,]
 				, formulae = to_return$formulae[[this_term_num]]
