@@ -60,7 +60,9 @@ function(
 	if(do_gam_for_numeric_fixed){
 		for(i in 1:length(fixed)){
 			if(is.numeric(data[,names(data)==as.character(fixed[i])])){
-				numeric_fixed = c(numeric_fixed,as.character(fixed[i]))
+				if(length(unique(data[,names(data)==as.character(fixed[i])]))>2){
+					numeric_fixed = c(numeric_fixed,as.character(fixed[i]))
+				}
 			}else{
 				data[,names(data)==as.character(fixed[i])] = ordered(data[,names(data)==as.character(fixed[i])])
 			}
