@@ -9,6 +9,7 @@ function(
 	, covariates = NULL
 	, do_gam_for_numeric_covariates = TRUE
 	, family = gaussian
+	, gam_smooth = 'te'
 	, gam_bs = 'ts'
 	, gam_max_k_per_dim = Inf
 	, alarm = TRUE
@@ -159,7 +160,8 @@ function(
 					formula_base
 					, '+'
 					, paste(
-						's('
+						gam_smooth
+						,'('
 						, covariates[covariates %in% numeric_covariates]
 						, ',bs="'
 						, gam_bs
@@ -222,13 +224,15 @@ function(
 						, length(unique(this_data[,names(this_data)==effect]))
 					)
 					unrestricted = paste(
-						's('
+						gam_smooth
+						,'('
 						, effect
 						, ',k='
 						, k
 						, ',bs="'
 						, gam_bs
 						, '")'
+						, sep=''
 					)
 				}else{
 					unrestricted = effect
@@ -240,28 +244,23 @@ function(
 					for(i in 1:length(temp)){
 						temp_split = strsplit(temp[i],':')[[1]]
 						temp_numeric = temp_split[temp_split%in%numeric_fixed]
-						k = 0
 						if(length(temp_numeric)!=0){
-							for(this_temp_numeric in temp_numeric){
-								k = k + min(c(gam_max_k_per_dim,length(unique(this_data[,names(this_data)==this_temp_numeric]))))
+							k = rep(NA,length(temp_numeric))
+							for(j in 1:length(temp_numeric)){
+								k[j] = min(c(gam_max_k_per_dim,length(unique(this_data[,names(this_data)==temp_numeric[j]]))))
 							}
-							temp2 = unique(this_data[,names(this_data)%in%temp_numeric])
-							k = ifelse(
-								is.data.frame(temp2)
-								, nrow(temp2)
-								, length(temp2)
-							)
-							k = min(k,gam_max_k_per_dim)
 							temp_not_numeric = temp_split[!(temp_split%in%numeric_fixed)]
 							if(length(temp_not_numeric)==0){
 								temp[i] = paste(
-									's('
+									gam_smooth
+									,'('
 									, paste(temp_numeric,collapse=',')
-									, ',k='
-									, k
-									, ',bs="'
+									, ',k=c('
+									, paste(k,collapse=',')
+									, '),bs="'
 									, gam_bs
 									, '")'
+									, sep=''
 								)
 							}else{
 								dummy = paste(temp_not_numeric,collapse='BY')
@@ -275,15 +274,17 @@ function(
 								}
 								this_data[,names(this_data)==dummy] <<- ordered(this_data[,names(this_data)==dummy])
 								temp[i] = paste(
-									's('
+									gam_smooth
+									,'('
 									, paste(temp_numeric,collapse=',')
-									, ',k='
-									, k
-									, ',by='
+									, ',k=c('
+									, paste(k,collapse=',')
+									, '),by='
 									, dummy
 									, ',bs="'
 									, gam_bs
 									, '")'
+									, sep=''
 								)
 							}
 						}
