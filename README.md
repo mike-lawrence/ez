@@ -8,7 +8,7 @@ A discussion forum can be found at http://groups.google.com/group/ez4r
 
 ## Note:
 
-To automatically download and install the very latest ez code any time you run a given R script, install the `devtools` library (`install.packages('devtools')`) then put the following at the top of your script:
+To automatically download and install the very latest ez code any time you run a given R script, install the `devtools` library (`install.packages('devtools')`; windows users will also have to install Rtools, http://cran.r-project.org/bin/windows/Rtools/, and install devtools via `install.packages('devtools',type='source')`) then put the following at the top of your script:
 
     library(devtools)
     dev_mode()
