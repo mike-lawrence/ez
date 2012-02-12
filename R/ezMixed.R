@@ -29,6 +29,8 @@ function(
 		)
 		terms_done = str_replace_all(files,'BY',':')
 		terms_done = str_replace(terms_done,'.RData','')
+		return_models = FALSE
+		warning(paste('"progress_dir" set to "',progress_dir,'"; setting "return_models" to FALSE.',sep=''),immediate.=TRUE,call.=FALSE)
 	}
 	#original_warn <- #options(warn=1)
 	start = proc.time()[3]
@@ -384,19 +386,38 @@ function(
 		}
 		unrestricted_fit = do_fit(unrestricted_formula,2)
 		if(!is.null(unrestricted_fit)){
-			restricted_fit = do_fit(restricted_formula,1)			
+			unrestricted_cLL = correction(unrestricted_fit)*log2(exp(1))
+			if(!is.null(progress_dir)){
+				term_text = str_replace_all(term_labels[this_term_num],':','BY')
+				eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
+				eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
+				rm(unrestricted_fit)
+				gc
+			}else{
+				to_return$models[[this_term_num]]$unrestricted = unrestricted_fit
+				rm(unrestricted_fit)
+				gc()
+			}
+			restricted_fit = do_fit(restricted_formula,1)
+			restricted_cLL = correction(restricted_fit)*log2(exp(1))
+			if(!is.null(progress_dir)){
+				term_text = str_replace_all(term_labels[this_term_num],':','BY')
+				eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
+				rm(restricted_fit)
+				gc
+			}else{
+				to_return$models[[this_term_num]]$restricted = restricted_fit
+				rm(restricted_fit)
+				gc()
+			}			
 		}else{
-			restricted_fit = NULL
+			unrestricted_cLL = NULL
+			restricted_cLL = NULL
 		}
-		if(return_models){
-			to_return$models[[this_term_num]]$restricted = restricted_fit
-			to_return$models[[this_term_num]]$unrestricted = unrestricted_fit
-		}
-		if((!is.null(restricted_fit)) & (!is.null(unrestricted_fit))){
-			to_return$summary$bits[this_term_num] = (correction(restricted_fit)-correction(unrestricted_fit))*log2(exp(1))
+		if((!is.null(restricted_cLL)) & (!is.null(unrestricted_cLL))){
+			to_return$summary$bits[this_term_num] = restricted_cLL-unrestricted_cLL
 		}
 		if(!is.null(progress_dir)){
-			term_text = str_replace_all(term_labels[this_term_num],':','BY')
 			temp<-list(
 				summary = to_return$summary[this_term_num,]
 				, formulae = to_return$formulae[[this_term_num]]
@@ -404,13 +425,9 @@ function(
 				, errors = to_return$warnings[[this_term_num]]
 			)
 			eval(parse(text=paste("save(temp, file = paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
-			eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
-			eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
-			eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
 			rm(temp)
+			gc()
 		}
-		rm(restricted_fit,unrestricted_fit)
-		gc()
 		longest_term_char_length = max(nchar(term_labels))
 		this_term_char_length = nchar(effect)
 		bits = format(c(to_return$summary$bits[this_term_num],-1), digits=1, nsmall = 2,scientific=T)
