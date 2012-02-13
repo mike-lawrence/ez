@@ -91,6 +91,9 @@ function(
 		term_labels[i] = paste(temp,collapse=':')
 	}
 	term_labels = term_labels[order(str_count(term_labels,':'),term_labels)]
+	if(add_quantile_as_fixed){
+		term_labels = term_labels[term_labels!='q',]
+	}
 	if(!is.null(progress_dir)&resume){
 		term_labels = term_labels[!(term_labels %in% terms_done)]
 	}
