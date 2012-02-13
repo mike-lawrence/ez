@@ -19,6 +19,7 @@ function(
 	, correction = AIC
 	, progress_dir = NULL
 	, resume = FALSE
+	, parallelism = 'none'
 ){
 	if(!is.null(progress_dir)){
 		dir.create(progress_dir)
@@ -29,8 +30,10 @@ function(
 		)
 		terms_done = str_replace_all(files,'BY',':')
 		terms_done = str_replace(terms_done,'.RData','')
-		return_models = FALSE
-		warning(paste('"progress_dir" set to "',progress_dir,'"; setting "return_models" to FALSE.',sep=''),immediate.=TRUE,call.=FALSE)
+		if(return_models){
+			warning(paste('"progress_dir" set to "',progress_dir,'"; setting "return_models" to FALSE.',sep=''),immediate.=TRUE,call.=FALSE)
+			return_models = FALSE
+		}
 	}
 	#original_warn <- #options(warn=1)
 	start = proc.time()[3]
@@ -91,40 +94,21 @@ function(
 	if(!is.null(progress_dir)&resume){
 		term_labels = term_labels[!(term_labels %in% terms_done)]
 	}
-	to_return = list()
-	to_return$summary = data.frame(
-		effect = factor(term_labels,levels=term_labels)
-		, error = FALSE
-		, warning = FALSE
-		, bits = NA
-	)
-	to_return$formulae = list()
-	for(i in 1:length(term_labels)){
-		to_return$formulae[[i]] = list(
-			restricted = NA
-			, unrestricted = NA
-		)
-		names(to_return$formulae)[i] = term_labels[i]
-	}
-	to_return$errors = to_return$formulae
-	to_return$warnings = to_return$formulae
-	if(return_models){
-		to_return$models = to_return$formulae
-	}
 	cat('  bits e w effect\n------ - - ------\n\r')
-	old_restricted_formula = ''
-	for(this_term_num in 1:length(term_labels)){
-		cat(
-			c(
-				'      '
-				, ' '
-				, ' '
-				, term_labels[this_term_num]
-				, '\r'
+	process_term = function(this_term_num){
+		if(parallelism!='full'){
+			cat(
+				c(
+					'      '
+					, ' '
+					, ' '
+					, term_labels[this_term_num]
+					, '\r'
+				)
+				, sep = ' '
 			)
-			, sep = ' '
-		)
-		flush.console()
+			flush.console()
+		}
 		effect = term_labels[this_term_num]
 		effect_split = strsplit(effect,':')[[1]]
 		if('q' %in% effect_split){
@@ -293,7 +277,7 @@ function(
 							}
 						}
 					}
-					to_return = paste(temp,collapse='+')
+					return(paste(temp,collapse='+'))
 				}
 				restricted = convert_to_gam_formula(paste('y~',gsub(':','*',effect),'-',effect))
 				unrestricted = convert_to_gam_formula(paste('y~',gsub(':','*',effect)))
@@ -332,9 +316,7 @@ function(
 				, unrestricted
 			)
 		)
-		to_return$formulae[[this_term_num]]$restricted = restricted_formula
-		to_return$formulae[[this_term_num]]$unrestricted = unrestricted_formula
-		do_fit = function(formula,i){
+		do_fit = function(formula){
 			options(warn=-1)
 			w = NULL
 			e = NULL
@@ -373,80 +355,191 @@ function(
 				)
 			}
 			options(warn=0)
-			if(!is.null(e)){
-				to_return$summary$error[this_term_num] <<- TRUE
-				to_return$errors[[this_term_num]][[i]] <<- e
-			}else{
-				if(!is.null(w)){
-					to_return$summary$warning[this_term_num] <<- TRUE
-					to_return$warnings[[this_term_num]][[i]] <<- w
-				}
-			}
-			return(fit)
+			out_from_do_fit = list(
+				fit = fit
+				, errors = e
+				, warnings = w
+			)
+			return(out_from_do_fit)
 		}
-		unrestricted_fit = do_fit(unrestricted_formula,2)
-		if(!is.null(unrestricted_fit)){
-			unrestricted_cLL = correction(unrestricted_fit)*log2(exp(1))
+		out_from_process_term = list(
+			summary = data.frame(
+				effect = term_labels[this_term_num]
+				, errors = NA
+				, warnings = NA
+				, bits = NA
+			)
+			, formulae = list(
+				restricted = NA
+				, unrestricted = NA
+			)
+			, errors = list(
+				restricted = NA
+				, unrestricted = NA
+			)
+			, warnings = list(
+				restricted = NA
+				, unrestricted = NA
+			)
+		)
+		if(return_models){
+			out_from_process_term$models = list(restricted=NA,unrestricted=NA)
+		}
+		out_from_process_term$formulae$restricted = restricted_formula
+		out_from_process_term$formulae$unrestricted = unrestricted_formula
+		if(parallelism=='pair'){
+			out = llply(
+				.data = c(unrestricted_formula,restricted_formula)
+				, .fun = do_fit
+				, .parallel = TRUE
+			)
+			unrestricted_fit = out[[1]][[1]]
+			unrestricted_warnings = out[[1]][[2]]
+			unrestricted_errors = out[[1]][[3]]
+			restricted_fit = out[[2]][[1]]
+			restricted_warnings = out[[2]][[2]]
+			restricted_errors = out[[2]][[3]]
+			rm(out)
+			gc()
+			out_from_process_term$summary$errors = ifelse(is.null(unrestricted_errors)&is.null(restricted_errors),F,T)
+			out_from_process_term$summary$warnings = ifelse(is.null(unrestricted_warnings)&is.null(restricted_warnings),F,T)
+			out_from_process_term$errors$restricted = restricted_errors
+			out_from_process_term$errors$unrestricted = unrestricted_errors
+			out_from_process_term$warnings$restricted = restricted_warnings
+			out_from_process_term$warnings$unrestricted = unrestricted_warnings
+			if(!is.null(unrestricted_fit)){
+				unrestricted_cLL = correction(unrestricted_fit)*log2(exp(1))
+				restricted_cLL = correction(restricted_fit)*log2(exp(1))
+				out_from_process_term$summary$bits = restricted_cLL - unrestricted_cLL
+			}
 			if(!is.null(progress_dir)){
 				term_text = str_replace_all(term_labels[this_term_num],':','BY')
 				eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
 				eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
-				rm(unrestricted_fit)
-				gc
+				eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
 			}else{
-				to_return$models[[this_term_num]]$unrestricted = unrestricted_fit
+				out_from_process_term$models$unrestricted=unrestricted_fit
+				out_from_process_term$models$restricted=restricted_fit
+			}
+			rm(unrestricted_fit)
+			rm(restricted_fit)
+			gc()
+		}else{
+			out = do_fit(unrestricted_formula)
+			unrestricted_fit = out[[1]]
+			unrestricted_warnings = out[[2]]
+			unrestricted_errors = out[[3]]
+			rm(out)
+			gc()
+			out_from_process_term$summary$errors = ifelse(is.null(unrestricted_errors),F,T)
+			out_from_process_term$summary$warnings = ifelse(is.null(unrestricted_warnings),F,T)
+			out_from_process_term$errors$unrestricted = unrestricted_errors
+			out_from_process_term$warnings$unrestricted = unrestricted_warnings
+			if(!is.null(unrestricted_fit)){
+				unrestricted_cLL = correction(unrestricted_fit)*log2(exp(1))
+				if(!is.null(progress_dir)){
+					term_text = str_replace_all(term_labels[this_term_num],':','BY')
+					eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
+					eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
+				}else{
+					if(return_models){
+						out_from_process_term$models$unrestricted = unrestricted_fit
+					}
+				}
 				rm(unrestricted_fit)
+				gc()
+				out = do_fit(restricted_formula)
+				restricted_fit = out[[1]]
+				restricted_warnings = out[[2]]
+				restricted_errors = out[[3]]
+				rm(out)
+				gc()
+				out_from_process_term$summary$errors = ifelse(is.null(restricted_errors)&!out_from_process_term$summary$errors,F,T)
+				out_from_process_term$summary$warnings = ifelse(is.null(restricted_warnings)&!out_from_process_term$summary$warnings,F,T)
+				out_from_process_term$errors$restricted = restricted_errors
+				out_from_process_term$warnings$restricted = restricted_warnings
+				restricted_cLL = correction(restricted_fit)*log2(exp(1))
+				out_from_process_term$summary$bits = restricted_cLL - unrestricted_cLL
+				if(!is.null(progress_dir)){
+					term_text = str_replace_all(term_labels[this_term_num],':','BY')
+					eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
+				}else{
+					if(return_models){
+						out_from_process_term$models$restricted = restricted_fit
+					}
+				}			
+				rm(restricted_fit)
 				gc()
 			}
-			restricted_fit = do_fit(restricted_formula,1)
-			restricted_cLL = correction(restricted_fit)*log2(exp(1))
-			if(!is.null(progress_dir)){
-				term_text = str_replace_all(term_labels[this_term_num],':','BY')
-				eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
-				rm(restricted_fit)
-				gc
-			}else{
-				to_return$models[[this_term_num]]$restricted = restricted_fit
-				rm(restricted_fit)
-				gc()
-			}			
-		}else{
-			unrestricted_cLL = NULL
-			restricted_cLL = NULL
-		}
-		if((!is.null(restricted_cLL)) & (!is.null(unrestricted_cLL))){
-			to_return$summary$bits[this_term_num] = restricted_cLL-unrestricted_cLL
 		}
 		if(!is.null(progress_dir)){
-			temp<-list(
-				summary = to_return$summary[this_term_num,]
-				, formulae = to_return$formulae[[this_term_num]]
-				, warnings = to_return$warnings[[this_term_num]]
-				, errors = to_return$warnings[[this_term_num]]
-			)
-			eval(parse(text=paste("save(temp, file = paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
-			rm(temp)
-			gc()
+			eval(parse(text=paste("save(out_from_process_term, file = paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
 		}
 		longest_term_char_length = max(nchar(term_labels))
 		this_term_char_length = nchar(effect)
-		bits = format(c(to_return$summary$bits[this_term_num],-1), digits=1, nsmall = 2,scientific=T)
+		bits = format(c(out_from_process_term$summary$bits,-1), digits=1, nsmall = 2,scientific=T)
 		cat(
 			c(
 				bits[1]
-				, ifelse(to_return$summary$error[this_term_num],'X','-')
-				, ifelse(to_return$summary$warning[this_term_num],'X','-')
+				, ifelse(out_from_process_term$summary$error,'X','-')
+				, ifelse(out_from_process_term$summary$warning,'X','-')
 				, term_labels[this_term_num]
 				, '\n\r'
 			)
 			, sep = ' '
 		)
 		flush.console()
+		return(out_from_process_term)
+	}
+	if(parallelism!='full'){
+		out_from_terms = list()
+		for(this_term_num in 1:length(term_labels)){
+			out_from_terms[[this_term_num]] = process_term(this_term_num)
+		}
+	}else{
+		out_from_terms = llply(
+			.data = 1:length(term_labels)
+			, .fun = process_term
+			, .parallel = TRUE
+		)
+	}
+	out_from_ezMixed = list()
+	out_from_ezMixed$summary = ldply(
+		.data = out_from_terms
+		, .fun = function(x){
+			return(x$summary)
+		}
+	)
+	out_from_ezMixed$formulae = llply(
+		.data = out_from_terms
+		, .fun = function(x){
+			return(x$formulae)
+		}
+	)
+	out_from_ezMixed$errors = llply(
+		.data = out_from_terms
+		, .fun = function(x){
+			return(x$errors)
+		}
+	)
+	out_from_ezMixed$warnings = llply(
+		.data = out_from_terms
+		, .fun = function(x){
+			return(x$warnings)
+		}
+	)
+	if(return_models){
+		out_from_ezMixed$models = llply(
+			.data = out_from_terms
+			, .fun = function(x){
+				return(x$models)
+			}
+		)
 	}
 	cat('Time taken for ezMixed() to complete:',round(proc.time()[3]-start),'seconds\n')
 	if(alarm){
 		alarm()
 	}
 	#options(original_warn)
-	return(to_return)
+	return(out_from_ezMixed)
 }
