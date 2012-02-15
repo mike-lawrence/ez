@@ -5,7 +5,7 @@
 Provides assessment of fixed effects in an mixed effects modelling context.
 }
 \description{
-This function provide assessment of fixed effects and their interactions via mixed effects modelling, including automated assessment of non-linearity via polynomials. Models are built using \code{\link[lme4]{lmer}} and permit specification of multiple random effects.
+This function provides assessment of fixed effects and their interactions via generalized mixed effects modelling, or generalized additive mixed effects modelling for effects involving numeric predictors to account for potentially non-linear effects of such predictors. See "Details" below for implementation notes.
 }
 \usage{
 ezMixed(
@@ -13,14 +13,22 @@ ezMixed(
 	, dv
 	, random
 	, fixed
-	, fixed_poly = NULL
-	, fixed_poly_max = NULL
+	, add_quantile_as_fixed = FALSE
+	, do_gam_for_numeric_fixed = TRUE
+	, covariates = NULL
+	, do_gam_for_numeric_covariates = TRUE
 	, family = gaussian
+	, gam_smooth = 'te'
+	, gam_bs = 'ts'
+	, gam_max_k_per_dim = Inf
 	, alarm = TRUE
-	, results_as_progress = FALSE
+	, term_labels = NULL
 	, highest = 0
-	, return_models = FALSE
-	, highest_first = TRUE
+	, return_models = TRUE
+	, correction = AIC
+	, progress_dir = NULL
+	, resume = FALSE
+	, parallelism = 'none'
 )
 }
 \arguments{
@@ -62,14 +70,14 @@ Logical. Default is TRUE, which computes the models for the highest order intera
 }
 }
 \details{
-Computation is achived via \code{\link[lme4]{lmer}}. Assessment of each effect of interest necessitates building two models: (1) a "unrestricted" model that contains the effect of interest plus any lower order effects and (2) a "restricted" model that contains only the lower order effects (thus "restricting" the effect of interest to zero). These are then compared by means of a likelihood ratio, which needs to be corrected to account for the additional complexity of the unrestricted model relative to the restricted model. This correction can be achieved by either the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), two equally well-defined but differently motivated approaches to accounting for model complexity. Generally, the BIC imposes a stronger penalty for complexity, yielding corrected likelihood ratios that are more likely to favor the restricted model. Users are encouraged to refer to Kuha (2004, listed in references below) for discussion of the different motivations of AIC and BIC to help decide which suits their application best.
+Computation is achieved via \code{\link[lme4]{lmer}}, or \code{\link[gam]{mgcv}} when the effect under evaluation includes a numeric predictor. Assessment of each effect of interest necessitates building two models: (1) a "unrestricted" model that contains the effect of interest plus any lower order effects and (2) a "restricted" model that contains only the lower order effects (thus "restricting" the effect of interest to zero). These are then compared by means of a likelihood ratio, which needs to be corrected to account for the additional complexity of the unrestricted model relative to the restricted model. The default applied correction is Akaike's Information Criterion (AIC), which in the context of mixed effects models has been demonstrated to be asymptotically equivalent to cross-validation, a gold-standard technique for ensuring that model comparisons optimize prediction of new data.
 
-Both complexity-corrected variants of the likelihood ratio returned by \code{ezMixed} are transformed to the log-base-10 scale (also known as the Bel scale), which has the following convenient properties:
+The complexity-corrected likelihood ratio returned by \code{ezMixed} is represented on the log-base-2 scale, which has the following convenient properties:
 \itemize{
-\item (1) The Bel scale permits easy representation of both very large and very small likelihood ratios.
-\item (2) The Bel scale represents equivalent evidence between the restricted and unrestricted models by a value of 0.
-\item (3) The Bel scale represents ratios favoring the restricted model symmetrically to those favoring the unrestricted model. That is, say one effect obtains a likelihood ratio of 10, and another effect obtains a likelihood ratio of .1; both ratios indicate the same degree of imbalance of evidence (10:1 and 1:10) and on the Bel scale they faithfully represent this symmetry as values 1 and -1, respectively.
-\item (4) While any logarithmich transform achieves the above benefits, the Bel scale is particularly useful because integer differences on the Bel scale represent changes by an order of magnitude on the raw likelihood ratio scale (eg. 1 Bel corresponds to a likelihood ratio of 1, 2 Bels corresponds to a likelihood ratio of 100, etc.).
+\item (1) Resulting values can be discussed as representing "bits of evidence" for or against the evaluated effect.
+\item (2) The bits scale permits easy representation of both very large and very small likelihood ratios.
+\item (3) The bits scale represents equivalent evidence between the restricted and unrestricted models by a value of 0.
+\item (4) The bits scale represents ratios favoring the restricted model symmetrically to those favoring the unrestricted model. That is, say one effect obtains a likelihood ratio of 8, and another effect obtains a likelihood ratio of 0.125; both ratios indicate the same degree of imbalance of evidence (8:1 and 1:8) and on the bits scale they faithfully represent this symmetry as values 3 and -3, respectively.
 }
 }
 \value{
