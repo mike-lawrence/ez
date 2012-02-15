@@ -24,15 +24,17 @@ function(
 	if(!is.null(progress_dir)){
 		dir.create(progress_dir)
 		dir.create(paste(progress_dir,'models',sep='/'))
-		files = list.files(
-			path = progress_dir
-			, pattern = '.RData'
-		)
-		terms_done = str_replace_all(files,'BY',':')
-		terms_done = str_replace(terms_done,'.RData','')
 		if(return_models){
 			warning(paste('"progress_dir" set to "',progress_dir,'"; setting "return_models" to FALSE.',sep=''),immediate.=TRUE,call.=FALSE)
 			return_models = FALSE
+		}
+		if(resume){
+			files = list.files(
+				path = progress_dir
+				, pattern = '.RData'
+			)
+			terms_done = str_replace_all(files,'BY',':')
+			terms_done = str_replace(terms_done,'.RData','')
 		}
 	}
 	#original_warn <- #options(warn=1)
@@ -99,6 +101,25 @@ function(
 	}
 	cat('  bits e w effect\n------ - - ------\n\r')
 	process_term = function(this_term_num){
+		if(resume){
+			term_text = str_replace_all(term_labels[this_term_num],':','BY')
+			if(term_text %in% terms_done){
+				eval(parse(text=paste("load(paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
+				bits = format(c(out_from_process_term$summary$bits,-1), digits=1, nsmall = 2,scientific=T)
+				cat(
+					c(
+						bits[1]
+						, ifelse(out_from_process_term$summary$error,'X','-')
+						, ifelse(out_from_process_term$summary$warning,'X','-')
+						, term_labels[this_term_num]
+						, '\n\r'
+					)
+					, sep = ' '
+				)
+				flush.console()
+				return(out_from_process_term)
+			}
+		}
 		if(parallelism!='full'){
 			cat(
 				c(
@@ -478,8 +499,6 @@ function(
 		if(!is.null(progress_dir)){
 			eval(parse(text=paste("save(out_from_process_term, file = paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
 		}
-		longest_term_char_length = max(nchar(term_labels))
-		this_term_char_length = nchar(effect)
 		bits = format(c(out_from_process_term$summary$bits,-1), digits=1, nsmall = 2,scientific=T)
 		cat(
 			c(
