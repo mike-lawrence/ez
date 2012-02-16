@@ -96,9 +96,6 @@ function(
 	if(add_quantile_as_fixed){
 		term_labels = term_labels[term_labels!='q']
 	}
-	if(!is.null(progress_dir)&resume){
-		term_labels = term_labels[!(term_labels %in% terms_done)]
-	}
 	cat('  bits e w effect\n------ - - ------\n\r')
 	process_term = function(this_term_num){
 		if(resume){
@@ -538,18 +535,21 @@ function(
 			return(x$formulae)
 		}
 	)
+	names(out_from_ezMixed$formulae) = out_from_ezMixed$summary$effect
 	out_from_ezMixed$errors = llply(
 		.data = out_from_terms
 		, .fun = function(x){
 			return(x$errors)
 		}
 	)
+	names(out_from_ezMixed$errors) = out_from_ezMixed$summary$effect
 	out_from_ezMixed$warnings = llply(
 		.data = out_from_terms
 		, .fun = function(x){
 			return(x$warnings)
 		}
 	)
+	names(out_from_ezMixed$warnings) = out_from_ezMixed$summary$effect
 	if(return_models){
 		out_from_ezMixed$models = llply(
 			.data = out_from_terms
@@ -557,6 +557,7 @@ function(
 				return(x$models)
 			}
 		)
+		names(out_from_ezMixed$models) = out_from_ezMixed$summary$effect
 	}
 	cat('Time taken for ezMixed() to complete:',round(proc.time()[3]-start),'seconds\n')
 	if(alarm){
