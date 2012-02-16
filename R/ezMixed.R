@@ -29,12 +29,10 @@ function(
 			return_models = FALSE
 		}
 		if(resume){
-			files = list.files(
+			terms_done= list.files(
 				path = progress_dir
 				, pattern = '.RData'
 			)
-			terms_done = str_replace_all(files,'BY',':')
-			terms_done = str_replace(terms_done,'.RData','')
 		}
 	}
 	#original_warn <- #options(warn=1)
@@ -99,9 +97,9 @@ function(
 	cat('  bits e w effect\n------ - - ------\n\r')
 	process_term = function(this_term_num){
 		if(resume){
-			term_text = str_replace_all(term_labels[this_term_num],':','BY')
+			term_text = paste(str_replace_all(term_labels[this_term_num],':','BY'),'.RData',sep='')
 			if(term_text %in% terms_done){
-				eval(parse(text=paste("load(paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
+				eval(parse(text=paste("load(paste(progress_dir,'/",term_text,"',sep=''))",sep="")))
 				bits = format(c(out_from_process_term$summary$bits,-1), digits=1, nsmall = 2,scientific=T)
 				cat(
 					c(
