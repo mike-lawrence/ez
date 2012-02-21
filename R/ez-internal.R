@@ -1,17 +1,3 @@
-colMean = function(x){
-	dimx = dim(x)
-	.Internal(colMeans(x,dimx[1],dimx[2],na.rm=TRUE))
-}
-colVar = function(x){
-	dimx = dim(x)
-	x.mean = .Internal(colMeans(x,dimx[1],dimx[2],na.rm=TRUE))
-	err = t(t(x)-x.mean)
-	err.sq = err*err
-	sum.err.sq = .Internal(colSums(err.sq,dimx[1],dimx[2],na.rm=TRUE))
-	n = .Internal(colSums(!is.na(x),dimx[1],dimx[2],na.rm=TRUE))
-	sum.err.sq/(n-1)
-}
-
 ezANOVA_levene <-
 function (y) {
 	form <- y
