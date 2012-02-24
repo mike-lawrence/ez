@@ -13,6 +13,27 @@ function(
 	, detailed = FALSE
 	, return_aov = FALSE
 ){
+	args_to_check = c('dv','wid','within','between','observed','diff')
+	args = as.list(match.call()[-1])
+	for(i in 1:length(args)){
+		arg_name = names(args)[i]
+		if(arg_name%in%args_to_check){
+			if(is.symbol(args[[i]])){
+				code = paste(arg_name,'=.(',as.character(args[[i]]),')',sep='')
+				print(code)
+				eval(parse(text=code))
+			}else{
+				if(is.language(args[[i]])){
+					arg_vals = as.character(args[[i]])
+					arg_vals = arg_vals[2:length(arg_vals)]
+					arg_vals = paste(arg_vals,collapse=',')
+					code = paste(arg_name,'=.(',arg_vals,')',sep='')
+					print(code)
+					eval(parse(text=code))
+				}
+			}
+		}
+	}
 	to_return = ezANOVA_main(
 		data = data
 		, dv = dv
