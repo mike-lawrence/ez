@@ -151,10 +151,14 @@ function(
 		}
 		effect = term_labels[this_term_num]
 		effect_split = strsplit(effect,':')[[1]]
+		this_data = data
+		for(i in effect_split[effect_split!='q']){
+			this_data = this_data[!is.na(this_data[,names(this_data)==i]),]
+		}
 		if('q' %in% effect_split){
 			this_data = ddply(
 				.data = data
-				, .variables = structure(as.list(c(random,fixed[(fixed%in%effect_split)&(fixed!='q')])),class = 'quoted')
+				, .variables = structure(as.list(c(random,effect_split[effect_split!='q'])),class = 'quoted')
 				, .fun = function(x){
 					to_return = data.frame(
 						q = ((1:nrow(x))-.5)/nrow(x)
@@ -164,8 +168,6 @@ function(
 					return(to_return)
 				}
 			)
-		}else{
-			this_data = data
 		}
 		this_height = length(effect_split)
 		if((!is.null(numeric_covariates)&do_gam_for_numeric_covariates)|(do_gam_for_numeric_fixed&(any(effect_split%in%numeric_fixed)))){
