@@ -156,7 +156,7 @@ function(
 		if('q' %in% effect_split){
 			this_data = ddply(
 				.data = data
-				, .variables = structure(as.list(c(random,effect_split[effect_split!='q'])),class = 'quoted')
+				, .variables = structure(as.list(c(random,fixed[(fixed%in%effect_split)&(fixed!='q')])),class = 'quoted')
 				, .fun = function(x){
 					to_return = data.frame(
 						q = ((1:nrow(x))-.5)/nrow(x)
