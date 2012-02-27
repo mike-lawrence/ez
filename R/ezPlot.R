@@ -116,7 +116,7 @@ function (
 		if(!is.data.frame(data)){
 			stop('"data" cannot be a list when specifying only one dv.')
 		}
-		data = ezStats(data,dv,wid,within,between,between_full,diff,reverse_diff)
+		data = ezStats(data=data,dv=dv,wid=wid,within=within,between=between,between_full=between_full,diff=diff,reverse_diff=reverse_diff,type=type,check_args=F)
 	}else{
 		if(!is.null(row)){
 			stop('You may not specify a variable to "row" when also specifying multiple dvs.')
@@ -142,6 +142,7 @@ function (
 							, diff = diff
 							, reverse_diff = reverse_diff
 							, type = type
+							, check_args = FALSE
 						)
 						, dv = as.character(dv[this_dv])
 					)
