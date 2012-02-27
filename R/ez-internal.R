@@ -144,7 +144,7 @@ function(data, dv, wid, within, between){
 		}
 		wide_formula = paste(paste(wid,paste(between,collapse='+'),sep='+'),paste(within,collapse='+'),sep='~')
 		wide_formula = sub('+~','~',wide_formula,fixed=T)
-		wide = dcast(data, wide_formula, value_var = as.character(dv))
+		wide = dcast(data, wide_formula, value.var = as.character(dv))
 		to_return$idata=ldply(strsplit(names(wide)[!(names(wide) %in% c(between,wid))],'_'))
 		names(to_return$idata)=within
 		for(this_within in within){
