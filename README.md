@@ -12,16 +12,6 @@ To automatically download and install the very latest ez code any time you run a
 
     library(devtools)
     dev_mode()
-    install_github('ggplot2','hadley')
     install_github('ez','mike-lawrence')
     library(ez)
-
-The above will change to
-
-    library(devtools)
-    dev_mode()
-    install_github('ez','mike-lawrence')
-    library(ez)
-
-as soon as ggplot2 v0.9.0 is available on CRAN (March 1, 2012?).
 
