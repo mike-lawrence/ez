@@ -17,9 +17,11 @@ function(
 	, diff = NULL
 	, reverse_diff = NULL
 	, row_y_free = FALSE
-	, alarm = TRUE
+	, alarm = FALSE
 	, do_plot = TRUE
+	, parallel = FALSE
 ){
+	warning('This dev version of ezPlot2 has changed such that it now only returns a ggplot2 object by default (meaning you don\'t have to "print(myPlot$plot)" but can instead "print(myPlot)"). If you want the cell and bootstrap statistics, set the "do_plot" argument to FALSE and ezPlot2 will return a data frame. This message will be removed soon (when ez 4.0 is released?).')
 	args_to_check = c('x','split','row','col','diff')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
@@ -104,7 +106,6 @@ function(
 			}
 		}
 	}
-	#cat('ezBootPlot: Collapsing cells to requested design...')
 	cells = ddply(
 		.data = idata.frame(cells)
 		, .variables = structure(as.list(c(x,split,row,col,diff)),class = 'quoted')
@@ -114,8 +115,8 @@ function(
 			)
 			return(to_return)
 		}
+		, .parallel = parallel
 	)
-	#cat('\nezBootPlot: Collapsing boots to requested design...')
 	boots = boots
 	num_it = length(unique(boots$iteration))
 	if((num_it*nrow(cells))!=nrow(boots)){
@@ -160,7 +161,6 @@ function(
 				)
 			}
 			warning(paste('Collapsing "',as.character(this_diff),'" to a difference score ("',levels(cells[,names(cells)==as.character(this_diff)])[1],'"-"',levels(cells[,names(cells)==as.character(this_diff)])[2],'").',sep=''),immediate.=TRUE,call.=FALSE)
-			#cat('\nezBootPlot: Computing requested this_difference score within cells...')
 			temp = cells[cells[,names(cells)==as.character(this_diff)]==(levels(cells[,names(cells)==as.character(this_diff)])[1]),]
 			temp$value = temp$value - cells$value[cells[,names(cells)==as.character(this_diff)]==(levels(cells[,names(cells)==as.character(this_diff)])[2])]
 			cells = temp
@@ -185,7 +185,6 @@ function(
 			names(cells)[names(cells)==as.character(col)] = 'col'
 		}
 	}
-	#cat('\nezBootPlot: Computing confidence intervals...')
 	boot_stats = list()
 	for(i in 1:length(confidence)){
 		if(is.null(x)&is.null(row)&is.null(col)){
@@ -204,6 +203,7 @@ function(
 					)
 					return(to_return)
 				}
+				, .parallel = parallel
 			)
 		}
 		if(do_plot){
@@ -219,11 +219,6 @@ function(
 			}
 		}
 	}
-	to_return = list()
-	to_return$cells = cells
-	to_return$boots = boots
-	to_return$boot_stats = boot_stats
-	#cat('\nezBootPlot: Building plot...')
 	if(do_plot){
 		p = ggplot(
 			data = cells
@@ -365,9 +360,12 @@ function(
 		if(!is.null(col)){
 			names(cells)[names(cells)=='col'] = as.character(col)
 		}
-		to_return$plot = p
+		to_return = p
+	}else{
+		to_return = cells
+		to_return$lo = boot_stats$lo
+		to_return$hi = boot_stats$hi
 	}
-	#cat('\nezBootPlot: Done.\n')
 	if(alarm){
 		alarm()
 	}
