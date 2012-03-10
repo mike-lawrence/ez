@@ -22,7 +22,7 @@ function(
 	, parallel = FALSE
 ){
 	warning('This dev version of ezPlot2 has changed such that it now only returns a ggplot2 object by default (meaning you don\'t have to "print(myPlot$plot)" but can instead "print(myPlot)"). If you want the cell and bootstrap statistics, set the "do_plot" argument to FALSE and ezPlot2 will return a data frame. This message will be removed soon (when ez 4.0 is released?).')
-	args_to_check = c('x','split','row','col','diff')
+	args_to_check = c('x','split','row','col','diff','to_numeric')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
 		arg_name = names(args)[i]
