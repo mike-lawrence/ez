@@ -115,10 +115,10 @@ function(
 	}
 	cat('  bits e w effect\n------ - - ------\n\r')
 	process_term = function(this_term_num){
+		term_text = str_replace_all(term_labels[this_term_num],':','BY')
 		if(resume){
-			term_text = paste(str_replace_all(term_labels[this_term_num],':','BY'),'.RData',sep='')
 			if(term_text %in% terms_done){
-				eval(parse(text=paste("load(paste(progress_dir,'/",term_text,"',sep=''))",sep="")))
+				eval(parse(text=paste("load(paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
 				bits = format(c(out_from_process_term$summary$bits,-1), digits=1, nsmall = 2,scientific=T)
 				cat(
 					c(
@@ -453,7 +453,6 @@ function(
 				out_from_process_term$summary$bits = restricted_cLL - unrestricted_cLL
 			}
 			if(!is.null(progress_dir)){
-				term_text = str_replace_all(term_labels[this_term_num],':','BY')
 				eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
 				eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
 				eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
@@ -478,7 +477,6 @@ function(
 			if(!is.null(unrestricted_fit)){
 				unrestricted_cLL = correction(unrestricted_fit)*log2(exp(1))
 				if(!is.null(progress_dir)){
-					term_text = str_replace_all(term_labels[this_term_num],':','BY')
 					eval(parse(text=paste("dir.create(paste(progress_dir,'/models/",term_text,"',sep=''))",sep="")))
 					eval(parse(text=paste("save(unrestricted_fit, file = paste(progress_dir,'/models/",term_text,"/unrestricted_fit.RData',sep=''))",sep="")))
 				}else{
@@ -501,7 +499,6 @@ function(
 				restricted_cLL = correction(restricted_fit)*log2(exp(1))
 				out_from_process_term$summary$bits = restricted_cLL - unrestricted_cLL
 				if(!is.null(progress_dir)){
-					term_text = str_replace_all(term_labels[this_term_num],':','BY')
 					eval(parse(text=paste("save(restricted_fit, file = paste(progress_dir,'/models/",term_text,"/restricted_fit.RData',sep=''))",sep="")))
 				}else{
 					if(return_models){
