@@ -434,11 +434,11 @@ function(
 				, .parallel = TRUE
 			)
 			unrestricted_fit = out[[1]][[1]]
-			unrestricted_warnings = out[[1]][[2]]
-			unrestricted_errors = out[[1]][[3]]
+			unrestricted_warnings = out[[1]][[3]]
+			unrestricted_errors = out[[1]][[2]]
 			restricted_fit = out[[2]][[1]]
-			restricted_warnings = out[[2]][[2]]
-			restricted_errors = out[[2]][[3]]
+			restricted_warnings = out[[2]][[3]]
+			restricted_errors = out[[2]][[2]]
 			rm(out)
 			gc()
 			out_from_process_term$summary$errors = ifelse(is.null(unrestricted_errors)&is.null(restricted_errors),F,T)
@@ -466,8 +466,8 @@ function(
 		}else{
 			out = do_fit(unrestricted_formula)
 			unrestricted_fit = out[[1]]
-			unrestricted_warnings = out[[2]]
-			unrestricted_errors = out[[3]]
+			unrestricted_warnings = out[[3]]
+			unrestricted_errors = out[[2]]
 			rm(out)
 			gc()
 			out_from_process_term$summary$errors = ifelse(is.null(unrestricted_errors),F,T)
@@ -488,8 +488,8 @@ function(
 				gc()
 				out = do_fit(restricted_formula)
 				restricted_fit = out[[1]]
-				restricted_warnings = out[[2]]
-				restricted_errors = out[[3]]
+				restricted_warnings = out[[3]]
+				restricted_errors = out[[2]]
 				rm(out)
 				gc()
 				out_from_process_term$summary$errors = ifelse(is.null(restricted_errors)&!out_from_process_term$summary$errors,F,T)
