@@ -362,9 +362,10 @@ function(
 		}
 		to_return = p
 	}else{
-		to_return = cells
-		to_return$lo = boot_stats$lo
-		to_return$hi = boot_stats$hi
+		to_return = data.frame(cells)
+		names(to_return)[ncol(to_return)] = 'value'
+		to_return$lo = boot_stats[[1]]$lo
+		to_return$hi = boot_stats[[1]]$hi
 	}
 	if(alarm){
 		alarm()
