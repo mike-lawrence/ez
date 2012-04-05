@@ -117,7 +117,7 @@ function(
 	process_term = function(this_term_num){
 		term_text = str_replace_all(term_labels[this_term_num],':','BY')
 		if(resume){
-			if(term_text %in% terms_done){
+			if(paste(term_text,'.RData',sep='') %in% terms_done){
 				eval(parse(text=paste("load(paste(progress_dir,'/",term_text,".RData',sep=''))",sep="")))
 				bits = format(c(out_from_process_term$summary$bits,-1), digits=1, nsmall = 2,scientific=T)
 				cat(
