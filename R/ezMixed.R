@@ -388,7 +388,7 @@ function(
 								, REML = FALSE
 							)
 						}
-						, warning = function(x) {if(x!='extra arguments REML are disregarded'){w<<-c(w,x$message)}}
+						, warning = function(x) {if((x!='extra arguments REML are disregarded')&(x!="extra argument(s) ‘REML’ disregarded")){w<<-c(w,x$message)}}
 						, error = function(x) {e<<-c(e,x$message)}
 					)
 					, silent = T
