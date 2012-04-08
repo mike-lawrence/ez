@@ -20,6 +20,7 @@ function(
 	, progress_dir = NULL
 	, resume = FALSE
 	, parallelism = 'none'
+	, ...
 ){
 	args_to_check = c('dv','random','fixed','covariates')
 	args = as.list(match.call()[-1])
@@ -370,6 +371,7 @@ function(
 								, family = family
 								, data = this_data
 								, method = 'ML'
+								, ...
 							)
 						}
 						, warning = function(x) {w<<-c(w,x$message)}
@@ -386,6 +388,7 @@ function(
 								, family = family
 								, data = this_data
 								, REML = FALSE
+								, ...
 							)
 						}
 						, warning = function(x) {if((x!='extra arguments REML are disregarded')&(x!="extra argument(s) ‘REML’ disregarded")){w<<-c(w,x$message)}}
