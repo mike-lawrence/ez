@@ -50,7 +50,7 @@ function(
 	for(i in as.character(c(x,split,row,col,diff))){
 		if(is.factor(cells[,names(cells)==i])){
 			if(length(unique(cells[,names(cells)==i]))!=length(levels(cells[,names(cells)==i]))){
-				warning(paste('You have removed one or more levels from variable "',i,'". Refactoring for ezBootPlot.',sep=''),immediate.=TRUE,call.=FALSE)
+				warning(paste('You have removed one or more levels from variable "',i,'". Refactoring for ezPlot2.',sep=''),immediate.=TRUE,call.=FALSE)
 				cells[,names(cells)==i] = factor(cells[,names(cells)==i])
 				boots[,names(boots)==i] = factor(boots[,names(boots)==i])
 			}
