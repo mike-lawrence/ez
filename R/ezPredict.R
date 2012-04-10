@@ -8,11 +8,22 @@ function(
 	, effect_variability_only = TRUE
 ){
 	fit_class = class(fit)[1]
-	if(fit_class=='mer'){
+	if((fit_class=='mer')|(fit_class=='glmerMod')|(fit_class=='lmerMod')){
 		data = attr(fit,'frame')
-		vars = as.character(attr(attr(data,'terms'),'variables'))
-		dv = as.character(vars[2])
-		vars = vars[3:length(vars)]
+		vars = as.character(attr(data,'terms'))
+		dv = vars[2]
+		vars = gsub('\\(.+?\\) ?\\+','',vars[3])
+		vars = gsub('\\+ ?\\(.+?\\)','',vars)
+		# vars = gsub('\\(.+\\)','',vars[3])
+		vars = unlist(strsplit(vars,'+',fixed=T))
+		vars = str_replace_all(vars,' ','')
+		vars = vars[nchar(vars)>0]
+		these_terms = vars
+		vars = vars[!str_detect(vars,':')]
+		vars = unlist(strsplit(vars,'*',fixed=T))
+		# vars = as.character(attr(attr(data,'terms'),'variables'))
+		# dv = as.character(vars[2])
+		# vars = vars[3:length(vars)]
 	}else{
 		if(fit_class=='gam'){
 			data = fit$model
@@ -75,12 +86,12 @@ function(
 	}
 	to_return$ezDV = 0
 	names(to_return)[ncol(to_return)] = dv
-	if(fit_class=='mer'){
+	if((fit_class=='mer')|(fit_class=='glmerMod')|(fit_class=='lmerMod')){
 		requested_terms = terms(eval(parse(text=paste(
 			dv
 			, '~'
 			, paste(
-				attr(attr(data,'terms'),'term.labels')
+				these_terms#attr(attr(data,'terms'),'term.labels')
 				, collapse = '+'
 			)
 		))))
