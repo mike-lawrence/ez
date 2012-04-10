@@ -8,7 +8,6 @@ function(
 	, do_gam_for_numeric_fixed = TRUE
 	, covariates = NULL
 	, do_gam_for_numeric_covariates = TRUE
-	, family = gaussian
 	, gam_smooth = 'te'
 	, gam_bs = 'ts'
 	, gam_max_k_per_dim = Inf
@@ -368,7 +367,6 @@ function(
 						{ 
 							gam(
 								formula = eval(parse(text=formula))
-								, family = family
 								, data = this_data
 								, method = 'ML'
 								, ...
@@ -385,7 +383,6 @@ function(
 						{ 
 							lmer(
 								formula = eval(parse(text=formula))
-								, family = family
 								, data = this_data
 								, REML = FALSE
 								, ...
