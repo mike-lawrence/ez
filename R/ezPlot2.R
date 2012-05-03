@@ -8,6 +8,9 @@ function(
 	, col = NULL
 	, do_lines = TRUE
 	, ribbon = FALSE
+        , confidence_alpha = .5
+        , point_alpha = .8
+        , line_alpha = .8
 	, bar_width = NULL
 	, to_numeric = NULL
 	, x_lab = NULL
@@ -239,7 +242,7 @@ function(
 						, linetype = 1
 						, guide = 'none'
 						, width = bar_width[i]
-						, alpha = .5
+						, alpha = confidence_alpha
 					)
 				}else{
 					p = p+geom_ribbon(
@@ -251,7 +254,7 @@ function(
 						)
 						, colour = 'transparent'
 						, guide = 'none'
-						, alpha = .5
+						, alpha = confidence_alpha
 					)
 				}
 			}
@@ -262,7 +265,7 @@ function(
 						, shape = split
 						, y = value
 					)
-					, alpha = .8
+					, alpha = point_alpha
 				)
 			}
 			if(!is.null(split_lab)){
@@ -276,7 +279,7 @@ function(
 						, x = as.numeric(x)
 						, y = value
 					)
-					, alpha = .8
+					, alpha = line_alpha
 				)
 				if(!is.null(split_lab)){
 					p = p+labs(linetype = split_lab)
@@ -294,7 +297,7 @@ function(
 						, linetype = 1
 						, guide = 'none'
 						, width = bar_width[i]
-						, alpha = .5
+						, alpha = confidence_alpha
 					)
 				}else{
 					p = p+geom_ribbon(
@@ -305,7 +308,7 @@ function(
 						)
 						, colour = 'transparent'
 						, guide = 'none'
-						, alpha = .5
+						, alpha = confidence_alpha
 					)
 				}
 			}
