@@ -77,9 +77,12 @@ To keep up to date on developments related to this package, join the discussion 
     \code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezBootPlot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{link{ezMixedRel}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}, \code{\link{progress_timeCI}}
 }
 \examples{
+## Not run:
+
 ########
 # Set up some fake data
 ########
+install.packages(MASS)
 library(MASS)
 N=100
 
@@ -138,4 +141,5 @@ print(p)
 # http://had.co.nz/ggplot2/scale_hue.html
 # http://had.co.nz/ggplot2/scale_brewer.html
 
+## End(Not run)
 }
