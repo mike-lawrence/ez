@@ -155,7 +155,7 @@ function(
 		, geom_par = list(
 			colour = 'black'
 			, size = label_size
-			, alpha = .5
+			, alpha = label_alpha
 		)
 		, data = labels
 		, mapping = aes(
