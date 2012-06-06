@@ -15,7 +15,7 @@ function(
 	, test_alpha = .05
 ){
 	for(i in 1:length(data)){
-		data[,i]=(data[,i]-mean(data[,i]))/sd(data[,i])
+		data[,i]=(data[,i]-mean(data[,i],na.rm=T))/sd(data[,i],na.rm=T)
 	}
 	z=data.frame()
 	z_cor = data.frame()
@@ -28,6 +28,9 @@ function(
 		}else{
 			x = data[,i]
 			y = data[,j]
+			toss = is.na(x) | is.na(y)
+			x = x[!toss]
+			y = y[!toss]
 			temp=as.data.frame(cbind(x,y))
 			temp=cbind(temp,names(data)[i],names(data)[j])
 			z=rbind(z,temp)
@@ -69,7 +72,7 @@ function(
 		diag
 		, .(x_lab,y_lab)
 		, function(x){
-			d = density(x$value,adjust=density_adjust)
+			d = density(x$value[!is.na(x$value)],adjust=density_adjust)
 			d = data.frame(x=d$x,y=d$y)
 			d$ymax = d$y*(max(abs(c(z$x,z$y)))*2*density_height)/max(d$y) - max(abs(c(z$x,z$y)))*density_height
 			d$ymin = - max(abs(c(z$x,z$y)))*density_height
@@ -155,7 +158,7 @@ function(
 		, geom_par = list(
 			colour = 'black'
 			, size = label_size
-			, alpha = label_alpha
+			, alpha = .5
 		)
 		, data = labels
 		, mapping = aes(
