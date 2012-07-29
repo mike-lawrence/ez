@@ -81,14 +81,18 @@ function(
 		)
 		names(counts)[names(counts)==col] = 'col'
 	}
+	counts$ymin = y-.5
+	counts$ymax = y+.5
+	counts$xmin = x-.5
+	counts$xmax = x+.5
 	p = ggplot(
 		data = counts
-		,aes(
-			ymin = y-.5
-			, ymax = y+.5
-			, xmin = x-.5
-			, xmax = x+.5
-			, fill = Count	
+		,aes_string(
+			ymin = 'ymin'
+			, ymax = 'ymax'
+			, xmin = 'xmin'
+			, xmax = 'xmax'
+			, fill = 'Count'	
 		)
 	)+
 	geom_rect()+

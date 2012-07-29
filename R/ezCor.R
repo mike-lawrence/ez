@@ -97,9 +97,9 @@ function(
 			alpha = point_alpha
 		)
 		, data = z
-		, mapping = aes(
-			x = x
-			, y = y
+		, mapping = aes_string(
+			x = 'x'
+			, y = 'y'
 		)
 	)
 	lm_line_layer = layer(
@@ -110,9 +110,9 @@ function(
 		, stat = 'smooth'
 		, stat_params = list(method = 'lm')
 		, data = z
-		, mapping = aes(
-			x = x
-			, y = y
+		, mapping = aes_string(
+			x = 'x'
+			, y = 'y'
 		)
 	)
 	lm_ribbon_layer = layer(
@@ -124,21 +124,21 @@ function(
 		, stat = 'smooth'
 		, stat_params = list(method = 'lm')
 		, data = z
-		, mapping = aes(
-			x = x
-			, y = y
+		, mapping = aes_string(
+			x = 'x'
+			, y = 'y'
 		)
 	)
 	cor_text_layer = layer(
 		geom = 'text'
 		, data = z_cor
-		, mapping = aes(
-			x=0
-			, y=0
-			, label=cor
-			, size = rsq
-			, colour = p
+		, mapping = aes_string(
+			label = 'cor'
+			, size = 'rsq'
+			, colour = 'p'
 		)
+		, x = 0
+		, y = 0
 	)
 	dens_layer = layer(
 		geom = 'ribbon'
@@ -147,10 +147,10 @@ function(
 			, fill = 'white'
 		)
 		, data = dens
-		, mapping = aes(
-			x = x
-			, ymax = ymax
-			, ymin = ymin
+		, mapping = aes_string(
+			x = 'x'
+			, ymax = 'ymax'
+			, ymin = 'ymin'
 		)
 	)
 	label_layer = layer(
@@ -161,10 +161,10 @@ function(
 			, alpha = .5
 		)
 		, data = labels
-		, mapping = aes(
-			x=x
-			, y=y
-			, label=label
+		, mapping = aes_string(
+			x='x'
+			, y='y'
+			, label='label'
 		)
 	)
 	f = facet_grid(y_lab~x_lab)
