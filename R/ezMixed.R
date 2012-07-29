@@ -386,7 +386,7 @@ function(
 								eval(parse(text=paste(
 									"glmer( formula ="
 									, formula
-									", data = this_data, family = family"
+									, ", data = this_data, family = family"
 									, mer_args
 									, ")"
 								)))
