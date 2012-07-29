@@ -4,14 +4,15 @@ function(
 	, dv
 	, random
 	, fixed
-	, add_quantile_as_fixed = FALSE
-	, do_gam_for_numeric_fixed = TRUE
+	, family = gaussian
 	, covariates = NULL
-	, do_gam_for_numeric_covariates = TRUE
-	, gam_smooth = 'te'
+	, add_q = FALSE
+	, fix_gam = TRUE
+	, cov_gam = TRUE
+	, gam_smooth = c('s','te')
 	, gam_bs = 'ts'
-	, gam_max_k_per_dim = Inf
-	, alarm = TRUE
+	, gam_k = Inf
+	, alarm = FALSE
 	, term_labels = NULL
 	, highest = 0
 	, return_models = TRUE
@@ -19,7 +20,8 @@ function(
 	, progress_dir = NULL
 	, resume = FALSE
 	, parallelism = 'none'
-	, ...
+	, gam_args = NULL
+	, mer_args = NULL
 ){
 	args_to_check = c('dv','random','fixed','covariates')
 	args = as.list(match.call()[-1])
@@ -54,7 +56,6 @@ function(
 			)
 		}
 	}
-	#original_warn <- #options(warn=1)
 	start = proc.time()[3]
 	if(!is.data.frame(data)){
 		stop('"data" must be a data frame.')
@@ -73,7 +74,7 @@ function(
 		}
 	}
 	numeric_covariates = NULL
-	if(do_gam_for_numeric_covariates){
+	if(cov_gam){
 		for(i in 1:length(covariates)){
 			if(is.numeric(data[,names(data)==as.character(covariates[i])])){
 				numeric_covariates = c(numeric_covariates,as.character(covariates[i]))
@@ -81,7 +82,7 @@ function(
 		}		
 	}
 	numeric_fixed = NULL
-	if(do_gam_for_numeric_fixed){
+	if(fix_gam){
 		for(i in 1:length(fixed)){
 			if(is.numeric(data[,names(data)==as.character(fixed[i])])){
 				if(length(unique(data[,names(data)==as.character(fixed[i])]))>2){
@@ -149,6 +150,8 @@ function(
 		}
 		effect = term_labels[this_term_num]
 		effect_split = strsplit(effect,':')[[1]]
+		this_height = length(effect_split)
+		numeric_fixed_num = sum(effect_split%in%numeric_fixed)
 		this_data = data
 		for(i in effect_split[effect_split!='q']){
 			this_data = this_data[!is.na(this_data[,names(this_data)==i]),]
@@ -167,8 +170,7 @@ function(
 				}
 			)
 		}
-		this_height = length(effect_split)
-		if((!is.null(numeric_covariates)&do_gam_for_numeric_covariates)|(do_gam_for_numeric_fixed&(any(effect_split%in%numeric_fixed)))){
+		if((!is.null(numeric_covariates)&cov_gam)|(fix_gam&(numeric_fixed_num>0))){
 			formula_base = paste(
 				as.character(dv)
 				, '~'
@@ -181,14 +183,12 @@ function(
 				)
 				, '+'
 			)
-			formula_base = ifelse(
-				is.null(covariates[covariates %in% numeric_covariates])
-				, formula_base
-				, paste(
+			if(is.null(covariates[covariates %in% numeric_covariates])){
+				formula_base = paste(
 					formula_base
 					, '+'
 					, paste(
-						gam_smooth
+						gam_smooth[1]
 						,'('
 						, covariates[covariates %in% numeric_covariates]
 						, ',bs="'
@@ -200,11 +200,9 @@ function(
 					, '+'
 					, sep = ''
 				)
-			)
-			formula_base = ifelse(
-				is.null(covariates[!(covariates %in% numeric_covariates)])
-				, formula_base
-				, paste(
+			}
+			if(is.null(covariates[!(covariates %in% numeric_covariates)])){
+				formula_base = paste(
 					formula_base
 					, '+'
 					, paste(
@@ -213,8 +211,8 @@ function(
 					)
 					, '+'
 					, sep = ''
-				)
-			)			
+				)			
+			}
 		}else{
 			formula_base = paste(
 				as.character(dv)
@@ -228,10 +226,8 @@ function(
 				)
 				, '+'
 			)
-			formula_base = ifelse(
-				is.null(covariates)
-				, formula_base
-				, paste(
+			if(is.null(covariates)){
+				formula_base = paste(
 					formula_base
 					, '+'
 					, paste(
@@ -241,30 +237,26 @@ function(
 					, '+'
 					, sep = ''
 				)
-			)
+			}
 		}
-		if((do_gam_for_numeric_fixed&(any(effect_split%in%numeric_fixed)))){
+		if((fix_gam&(numeric_fixed_num>0))){
 			if(this_height==1){
 				restricted = 'NULL'
-				if(any(effect_split%in%numeric_fixed)){
-					k = min(
-						gam_max_k_per_dim
-						, length(unique(this_data[,names(this_data)==effect]))
-					)
-					unrestricted = paste(
-						gam_smooth
-						,'('
-						, effect
-						, ',k='
-						, k
-						, ',bs="'
-						, gam_bs
-						, '")'
-						, sep=''
-					)
-				}else{
-					unrestricted = effect
-				}
+				k = min(
+					gam_k
+					, length(unique(this_data[,names(this_data)==effect]))
+				)
+				unrestricted = paste(
+					gam_smooth[1]
+					,'('
+					, effect
+					, ',k='
+					, k
+					, ',bs="'
+					, gam_bs
+					, '")'
+					, sep=''
+				)
 			}else{
 				convert_to_gam_formula = function(formula){
 					temp = terms(eval(parse(text=formula)))
@@ -275,12 +267,12 @@ function(
 						if(length(temp_numeric)!=0){
 							k = rep(NA,length(temp_numeric))
 							for(j in 1:length(temp_numeric)){
-								k[j] = min(c(gam_max_k_per_dim,length(unique(this_data[,names(this_data)==temp_numeric[j]]))))
+								k[j] = min(c(gam_k,length(unique(this_data[,names(this_data)==temp_numeric[j]]))))
 							}
 							temp_not_numeric = temp_split[!(temp_split%in%numeric_fixed)]
 							if(length(temp_not_numeric)==0){
 								temp[i] = paste(
-									gam_smooth
+									ifelse(numeric_fixed_num>1,ifelse(length(gam_smooth)>1,gam_smooth[2],gam_smooth),gam_smooth[1])
 									,'('
 									, paste(temp_numeric,collapse=',')
 									, ',k=c('
@@ -302,7 +294,7 @@ function(
 								}
 								this_data[,names(this_data)==dummy] <<- ordered(this_data[,names(this_data)==dummy])
 								temp[i] = paste(
-									gam_smooth
+									ifelse(numeric_fixed_num>1,ifelse(length(gam_smooth)>1,gam_smooth[2],gam_smooth),gam_smooth[1])
 									,'('
 									, paste(temp_numeric,collapse=',')
 									, ',k=c('
@@ -357,20 +349,21 @@ function(
 			)
 		)
 		do_fit = function(formula){
-			options(warn=-1)
+			original_warn = options(warn=-1)
 			w = NULL
 			e = NULL
 			fit = NULL
-			if((!is.null(numeric_covariates)&do_gam_for_numeric_covariates)|(do_gam_for_numeric_fixed&(any(effect_split%in%numeric_fixed)))){
+			if((!is.null(numeric_covariates)&cov_gam)|(fix_gam&(numeric_fixed_num>0))){
 				try(
 					fit <- withCallingHandlers(
 						{ 
-							gam(
-								formula = eval(parse(text=formula))
-								, data = this_data
-								, method = 'ML'
-								, ...
-							)
+							eval(parse(text=paste(
+								"bam( formula ="
+								, formula
+								, ", data = this_data , method = 'ML' "
+								, gam_args
+								, ")"
+							)))
 						}
 						, warning = function(x) {w<<-c(w,x$message)}
 						, error = function(x) {e<<-c(e,x$message)}
@@ -381,20 +374,31 @@ function(
 				try(
 					fit <- withCallingHandlers(
 						{ 
-							lmer(
-								formula = eval(parse(text=formula))
-								, data = this_data
-								, REML = FALSE
-								, ...
-							)
+							if((family==gaussian)|(family=='gaussian')){
+								eval(parse(text=paste(
+									"lmer( formula = "
+									, formula
+									, ", data = this_data , REML = FALSE"
+									, mer_args
+									, ")"
+								)))
+							else{
+								eval(parse(text=paste(
+									"glmer( formula ="
+									, formula
+									", data = this_data, family = family"
+									, mer_args
+									, ")"
+								)))
+							}
 						}
-						, warning = function(x) {if((x!='extra arguments REML are disregarded')&(x!="extra argument(s) ‘REML’ disregarded")){w<<-c(w,x$message)}}
+						, warning = function(x) {w<<-c(w,x$message)}
 						, error = function(x) {e<<-c(e,x$message)}
 					)
 					, silent = T
 				)
 			}
-			options(warn=0)
+			options(original_warn)
 			out_from_do_fit = list(
 				fit = fit
 				, errors = e
@@ -434,11 +438,11 @@ function(
 				, .parallel = TRUE
 			)
 			unrestricted_fit = out[[1]][[1]]
-			unrestricted_warnings = out[[1]][[3]]
 			unrestricted_errors = out[[1]][[2]]
+			unrestricted_warnings = out[[1]][[3]]
 			restricted_fit = out[[2]][[1]]
-			restricted_warnings = out[[2]][[3]]
 			restricted_errors = out[[2]][[2]]
+			restricted_warnings = out[[2]][[3]]
 			rm(out)
 			gc()
 			out_from_process_term$summary$errors = ifelse(is.null(unrestricted_errors)&is.null(restricted_errors),F,T)
@@ -466,8 +470,8 @@ function(
 		}else{
 			out = do_fit(unrestricted_formula)
 			unrestricted_fit = out[[1]]
-			unrestricted_warnings = out[[3]]
 			unrestricted_errors = out[[2]]
+			unrestricted_warnings = out[[3]]
 			rm(out)
 			gc()
 			out_from_process_term$summary$errors = ifelse(is.null(unrestricted_errors),F,T)
@@ -488,8 +492,8 @@ function(
 				gc()
 				out = do_fit(restricted_formula)
 				restricted_fit = out[[1]]
-				restricted_warnings = out[[3]]
 				restricted_errors = out[[2]]
+				restricted_warnings = out[[3]]
 				rm(out)
 				gc()
 				out_from_process_term$summary$errors = ifelse(is.null(restricted_errors)&!out_from_process_term$summary$errors,F,T)
@@ -579,6 +583,5 @@ function(
 	if(alarm){
 		alarm()
 	}
-	#options(original_warn)
 	return(out_from_ezMixed)
 }
