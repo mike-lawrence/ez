@@ -382,7 +382,7 @@ function(
 									, mer_args
 									, ")"
 								)))
-							else{
+							}else{
 								eval(parse(text=paste(
 									"glmer( formula ="
 									, formula
