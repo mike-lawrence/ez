@@ -167,8 +167,8 @@ function(data, dv, wid, within, between){
 }
 
 ezANOVA_main <-
-function(data, dv, wid, within, between, observed, diff, reverse_diff, type, return_aov, white.adjust){
-	vars = as.character(c(dv,wid,between,within))
+function(data, dv, wid, within, within_full, between, observed, diff, reverse_diff, type, return_aov, white.adjust){
+	vars = as.character(c(dv,wid,between,within,diff,within_full))
 	for(var in vars){
 		if(!(var %in% names(data))){
 			stop(paste('"',var,'" is not a variable in the data frame provided.',sep=''))			
@@ -287,16 +287,48 @@ function(data, dv, wid, within, between, observed, diff, reverse_diff, type, ret
 			data[,names(data)==as.character(diff)] = factor(data[,names(data)==as.character(diff)],levels=rev(levels(data[,names(data)==as.character(diff)])))
 		}
 	}
-	temp = idata.frame(cbind(data,ezDV=data[,names(data) == as.character(dv)]))
-	data <- ddply(
-		temp
-		,structure(as.list(c(wid,between,within,diff)),class = 'quoted')
-		,function(x){
-			to_return = mean(x$ezDV)
-			names(to_return) = as.character(dv)
-			return(to_return)
+	########
+	# Collapsing the data to cell means
+	########
+	if(!is.null(within_full)){
+		warning(paste('Collapsing data to cell means first using variables supplied to "within_full", then collapsing the resulting means to means for the cells supplied to "within".',sep=''),immediate.=TRUE,call.=FALSE)
+		temp = idata.frame(cbind(data,ezDV=data[,names(data) == as.character(dv)]))
+		data <- ddply(
+			temp
+			,structure(as.list(c(wid,between,within_full,diff)),class = 'quoted')
+			,function(x){
+				to_return = mean(x$ezDV)
+				names(to_return) = as.character(dv)
+				return(to_return)
+			}
+		)
+		temp = idata.frame(cbind(data,ezDV=data[,names(data) == as.character(dv)]))
+		data <- ddply(
+			temp
+			,structure(as.list(c(wid,between,within,diff)),class = 'quoted')
+			,function(x){
+				to_return = mean(x$ezDV)
+				names(to_return) = as.character(dv)
+				return(to_return)
+			}
+		)
+	}else{
+		data <- ddply(
+			data
+			,structure(as.list(c(wid,between,within,diff)),class = 'quoted')
+			,function(x){
+				to_return = data.frame(
+					temp = mean(x[,names(x)==as.character(dv)])
+					, ezNum = nrow(x)
+				)
+				names(to_return)[1] = as.character(dv)
+				return(to_return)
+			}
+		)
+		if(any(data$ezNum>1)){
+			warning(paste('Collapsing data to cell means. *IF* the requested effects are a subset of the full design, you must use the "within_full" argument, else results may be inaccurate.',sep=''),immediate.=TRUE,call.=FALSE)
 		}
-	)
+	}
 	if(any(is.na(data[,names(data)==as.character(dv)]))){
 		stop('One or more cells returned NA when aggregated to a mean. Check your data.')
 	}

@@ -4,6 +4,7 @@ function(
 	, dv
 	, wid
 	, within = NULL
+	, within_full = NULL
 	, between = NULL
 	, observed = NULL
 	, diff = NULL
@@ -13,7 +14,7 @@ function(
 	, detailed = FALSE
 	, return_aov = FALSE
 ){
-	args_to_check = c('dv','wid','within','between','observed','diff')
+	args_to_check = c('dv','wid','within','between','observed','diff','within_full')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
 		arg_name = names(args)[i]
@@ -37,8 +38,8 @@ function(
 		, dv = dv
 		, wid = wid
 		, within = within
+		, within_full = within_full
 		, between = between
-		, observed = observed
 		, diff = diff
 		, reverse_diff = reverse_diff
 		, type = type

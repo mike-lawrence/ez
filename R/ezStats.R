@@ -4,6 +4,7 @@ function (
 	, dv
 	, wid
 	, within = NULL
+	, within_full = NULL
 	, between = NULL
 	, between_full = NULL
 	, diff = NULL
@@ -12,7 +13,7 @@ function (
 	, check_args = FALSE
 ){
 	if(check_args){
-		args_to_check = c('dv','wid','within','between','between_full','diff')
+		args_to_check = c('dv','wid','within','between','within_full','between_full','diff')
 		args = as.list(match.call()[-1])
 		for(i in 1:length(args)){
 			arg_name = names(args)[i]
@@ -43,8 +44,8 @@ function (
 		, dv = dv
 		, wid = wid
 		, within = within
+		, within_full = within_full
 		, between = temp_between
-		, observed = NULL
 		, diff = diff
 		, reverse_diff = reverse_diff
 		, type = type

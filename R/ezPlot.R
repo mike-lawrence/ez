@@ -4,6 +4,7 @@ function (
 	, dv
 	, wid
 	, within = NULL
+	, within_full = NULL
 	, between = NULL
 	, between_full = NULL
 	, x
@@ -26,7 +27,7 @@ function (
 	, dv_labs = NULL
 	, row_y_free = FALSE
 ){
-	args_to_check = c('dv','wid','within','between','between_full','diff','x','split','row','col','to_numeric')
+	args_to_check = c('dv','wid','within','between','within_full','between_full','diff','x','split','row','col','to_numeric')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
 		arg_name = names(args)[i]
@@ -137,6 +138,7 @@ function (
 							, dv = this_dot_dv
 							, wid = wid
 							, within = within
+							, within_full = within_full
 							, between = between
 							, between_full = between_full
 							, diff = diff
@@ -156,6 +158,7 @@ function (
 							, dv = this_dot_dv
 							, wid = wid
 							, within = within
+							, within_full = within_full
 							, between = between
 							, between_full = between_full
 							, diff = diff
