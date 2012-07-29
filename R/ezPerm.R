@@ -136,7 +136,7 @@ function(
 	perm_test$'p<.05' = ifelse(perm_test$p<.05,'*','')
 	if(alarm){
 		alarm()
-	)
+	}
 	return(perm_test)
 }
 
