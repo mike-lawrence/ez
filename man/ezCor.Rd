@@ -71,8 +71,7 @@ To report bugs or request features, please visit: \url{https://github.com/mike-l
 To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
 }
 \examples{
-## Not run:
-
+\dontrun{
 ########
 # Set up some fake data
 ########
@@ -135,5 +134,5 @@ print(p)
 # http://had.co.nz/ggplot2/scale_hue.html
 # http://had.co.nz/ggplot2/scale_brewer.html
 
-## End(Not run)
+}
 }
