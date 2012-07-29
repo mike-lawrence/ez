@@ -139,7 +139,7 @@ function(
 		, .fun = function(x){
 			done = FALSE
 			while(!done){
-				resampled_data = ezResample(data=data,wid=wid,within=within,between=between,resample_within=resample_within)
+				resampled_data = ezResample(data=data,wid=wid,within=within,between=between,resample_within=resample_within,check_args=F)
 				if(lmer){
 					fit = lmer(
 						formula = eval(parse(text=formula))
