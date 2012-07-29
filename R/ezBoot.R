@@ -5,7 +5,7 @@ function(
 	, wid
 	, within = NULL
 	, between = NULL
-	, resample_cells = TRUE
+	, resample_within = TRUE
 	, iterations = 1e3
 	, lmer = FALSE
 	, lmer_family = 'gaussian'
@@ -71,7 +71,7 @@ function(
 		}
 	}
 	names(data)[names(data)==as.character(dv)]='ezDV'
-	if(resample_cells){
+	if(resample_within){
 		cell_size_per_id = ddply(
 			.data = idata.frame(data)
 			, .variables = structure(as.list(c(wid,between,within)),class = 'quoted')
@@ -83,7 +83,7 @@ function(
 			}
 		)
 		if(all(cell_size_per_id$value<=1)){
-			stop(paste('There are no cells with multiple observations; please set the variable "resample_cells" to FALSE.'))
+			stop(paste('There are no within cells with multiple observations; please set the variable "resample_within" to FALSE.'))
 		}
 	}
 	if(lmer){
@@ -139,7 +139,7 @@ function(
 		, .fun = function(x){
 			done = FALSE
 			while(!done){
-				resampled_data = ezResample(data=data,wid=wid,within=within,between=between,resample_cells=resample_cells)
+				resampled_data = ezResample(data=data,wid=wid,within=within,between=between,resample_within=resample_within)
 				if(lmer){
 					fit = lmer(
 						formula = eval(parse(text=formula))
