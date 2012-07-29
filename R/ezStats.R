@@ -69,7 +69,7 @@ function (
 	))
 	N = ddply(
 		temp
-		,structure(as.list(c(.(dummy),between)),class = 'quoted')
+		,structure(as.list(c(as.symbol('dummy'),between)),class = 'quoted')
 		,function(x){
 			to_return = length(unique(x$ezWID))
 			names(to_return) = 'N'
