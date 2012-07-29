@@ -1,23 +1,20 @@
 \name{ezPrecis}
-\Rdversion{1.1}
 \alias{ezPrecis}
-\title{
-Function to obtain a structure summary of a given data frame.
-}
+\title{Obtain a structure summary of a given data frame}
 \description{
 This function provides a structure summary of a given data frame.
 }
 \usage{
 ezPrecis( 
-    data
-    , transpose = TRUE
+data
+, transpose = TRUE
 )
 }
 \arguments{
-  \item{data}{
+\item{data}{
 Data frame containing the data to be analyzed.
 }
-  \item{transpose}{
+\item{transpose}{
 Logical. If TRUE (default), triggers tranposition of the resulting summary data frame (useful when there are many columns in the original data frame, leading the untransposed summary data frame to wrap).
 }
 }
@@ -48,7 +45,7 @@ To report bugs or request features, please visit: \url{https://github.com/mike-l
 To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
 }
 \seealso{
-    \code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezBootPlot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{link{ezMixedRel}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}, \code{\link{progress_timeCI}}
+\code{\link{ezDesign}}
 }
 \examples{
 #Read in the ANT2 data (see ?ANT2).

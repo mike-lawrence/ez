@@ -1,9 +1,6 @@
 \name{ezResample}
-\Rdversion{1.1}
 \alias{ezResample}
-\title{
-Function to resample data.
-}
+\title{Resample data from a factorial experiment}
 \description{
 This function resamples data (useful when bootstrapping and used by \code{\link{ezBoot}}).
 }
@@ -17,19 +14,19 @@ ezResample(
 )
 }
 \arguments{
-  \item{data}{
+\item{data}{
 Data frame containing the data to be analyzed.
 }
-  \item{wid}{
+\item{wid}{
 .() object specifying the column in \code{data} that contains the variable specifying the case/Ss identifier.
 }
-  \item{within}{
+\item{within}{
 Optional .() object specifying one or more columns in \code{data} that contain predictor variables that are manipulated (or observed) within-Ss.
 }
-  \item{between}{
+\item{between}{
 Optional .() object specifying one or more columns in \code{data} that contain predictor variables that are manipulated (or observed) between-Ss.
 }
-  \item{resample_within}{
+\item{resample_within}{
 Logical. If TRUE, and if there are multiple observations per subject within each cell of the design specified by the factorial combination of variables supplied to \code{within} and \code{between}, then these observations-within-cells are resampled with replacement.
 }
 
@@ -43,7 +40,7 @@ To report bugs or request features, please visit: \url{https://github.com/mike-l
 To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
 }
 \seealso{
-    \code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezBootPlot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{link{ezMixedRel}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}, \code{\link{progress_timeCI}}
+\code{\link{ezBoot}}
 }
 \examples{
 #Read in the ANT data (see ?ANT).
@@ -59,9 +56,9 @@ var_boots = ldply(
 		this_resample = ezResample(
 			data = ANT[ANT$error==0,]
 			, dv = .(rt)
-		    , wid = .(subnum)
-		    , within = .(cue,flank)
-		    , between = .(group)
+		 , wid = .(subnum)
+		 , within = .(cue,flank)
+		 , between = .(group)
 		)
 		cell_vars = ddply(
 			.data = this_resample

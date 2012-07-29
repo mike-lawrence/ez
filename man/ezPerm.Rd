@@ -1,44 +1,45 @@
 \name{ezPerm}
-\Rdversion{1.1}
 \alias{ezPerm}
-\title{
-Function to perform a factorial permutation test
-}
+\title{Perform a factorial permutation test}
 \description{
-This function provides easy non-parametric permutation test analysis of data from factorial experiments, including purely within-Ss designs (a.k.a. "repeated measures"), purely between-Ss designs, and mixed within-and-between-Ss designs.
+This function provides easy non-parametric permutation test analysis of data from factorial experiments, including purely within-Ss designs (a.k.a. \dQuote{repeated measures}), purely between-Ss designs, and mixed within-and-between-Ss designs.
 }
 \usage{
 ezPerm(
-    data
-    , dv
-    , wid
-    , within = NULL
-    , between = NULL
-    , perms
-    , alarm = TRUE
+data
+, dv
+, wid
+, within = NULL
+, between = NULL
+, perms = 1e3
+, parallel = FALSE
+, alarm = FALSE
 )
 }
 \arguments{
-  \item{data}{
+\item{data}{
 Data frame containing the data to be analyzed.
 }
-  \item{dv}{
-.() object specifying the column in \code{data} that contains the dependent variable. Values in this column must be numeric.
+\item{dv}{
+Name of the column in \code{data} that contains the dependent variable. Values in this column must be numeric.
 }
-  \item{wid}{
-.() object specifying the column in \code{data} that contains the variable specifying the case/Ss identifier.
+\item{wid}{
+Name of the column in \code{data} that contains the variable specifying the case/Ss identifier.
 }
-  \item{within}{
-Optional .() object specifying one or more columns in \code{data} that contain predictor variables that are manipulated within-Ss.
+\item{within}{
+Names of columns in \code{data} that contain predictor variables that are manipulated (or observed) within-Ss. If a single value, may be specified by name alone; if multiple values, must be specified as a .() list.
 }
-  \item{between}{
-Optional .() object specifying one or more columns in \code{data} that contain predictor variables that are manipulated between-Ss.
+\item{between}{
+Names of columns in \code{data} that contain predictor variables that are manipulated (or observed) between-Ss. If a single value, may be specified by name alone; if multiple values, must be specified as a .() list.
 }
-  \item{perms}{
+\item{perms}{
 An integer \code{>} 0 specifying the number of permutations to compute.
 }
-  \item{alarm}{
-Logical. If TRUE (default), call the \code{\link[utils]{alarm}} function when \code{\link{ezPerm}} completes.
+\item{parallel}{
+Logical. If TRUE, computation will be parallel, assuming that a parallel backend has been specified (as in \code{library(doMC);options(cores=4);registerDoMC()}. Likely only to work when running R from a unix terminal.)
+}
+\item{alarm}{
+Logical. If TRUE, call the \code{\link[utils]{alarm}} function when \code{\link{ezPerm}} completes.
 }
 }
 \details{
@@ -56,7 +57,7 @@ To report bugs or request features, please visit: \url{https://github.com/mike-l
 To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
 }
 \seealso{
-    \code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezBootPlot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{link{ezMixedRel}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}, \code{\link{progress_timeCI}}
+\code{link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezMixed}}
 }
 \examples{
 #Read in the ANT data (see ?ANT).
@@ -66,36 +67,43 @@ ezPrecis(ANT)
 
 #Compute some useful statistics per cell.
 cell_stats = ddply(
-    .data = ANT
-    , .variables = .( subnum , group , cue , flank )
-    , .fun <- function(x){
-        #Compute error rate as percent.
-        error_rate = mean(x$error)*100
-        #Compute mean RT (only accurate trials).
-        mean_rt = mean(x$rt[x$error==0])
-        #Compute SD RT (only accurate trials).
-        sd_rt = sd(x$rt[x$error==0])
-        return(c(error_rate=error_rate,mean_rt=mean_rt,sd_rt=sd_rt))
-    }
+.data = ANT
+, .variables = .( subnum , group , cue , flank )
+, .fun = function(x){
+#Compute error rate as percent.
+error_rate = mean(x$error)*100
+#Compute mean RT (only accurate trials).
+mean_rt = mean(x$rt[x$error==0])
+#Compute SD RT (only accurate trials).
+sd_rt = sd(x$rt[x$error==0])
+		to_return = data.frame(
+			error_rate = error_rate
+			, mean_rt = mean_rt
+			, sd_rt = sd_rt
+		)
+return(to_return)
+}
 )
 
 #Compute the grand mean RT per Ss.
 gmrt = ddply(
-    .data = cell_stats
-    , .variables = .( subnum , group )
-    , .fun <- function(x){
-        y = mean(x$mean_rt)
-        return(c(y=y))
-    }
+.data = cell_stats
+, .variables = .( subnum , group )
+, .fun = function(x){
+to_return = data.frame(
+			mrt = mean(x$mean_rt)
+		)
+return(to_return)
+}
 )
 
-#Run a purely between-Ss ANOVA on the mean_rt data. 
+#Run a purely between-Ss permutation test on the mean_rt data. 
 mean_rt_perm = ezPerm(
-   data = gmrt
-   , dv = .(y)
-   , wid = .(subnum)
-   , between = .(group)
-   , perms = 1e1 #1e3 or higher is best for publication
+data = gmrt
+, dv = mrt
+, wid = subnum
+, between = group
+, perms = 1e1 #1e3 or higher is best for publication
 )
 
 #Show the Permutation test.
