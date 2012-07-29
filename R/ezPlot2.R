@@ -222,10 +222,11 @@ function(
 		}
 	}
 	if(do_plot){
+		cells$x_num = as.numeric(cells$x)
 		p = ggplot(
 			data = cells
-			, mapping = aes(
-				x = x
+			, mapping = aes_string(
+				x = 'x'
 			)
 		)
 		if(!is.null(split)){
@@ -233,10 +234,10 @@ function(
 				if(!ribbon){
 					p = p+geom_errorbar(
 						data = boot_stats[[i]]
-						, mapping = aes(
-							colour = split
-							, ymin = lo
-							, ymax = hi
+						, mapping = aes_string(
+							colour = 'split'
+							, ymin = 'lo'
+							, ymax = 'hi'
 						)
 						, linetype = 1
 						, show_guide = FALSE
@@ -246,10 +247,10 @@ function(
 				}else{
 					p = p+geom_ribbon(
 						data = boot_stats[[i]]
-						, mapping = aes(
-							fill = split
-							, ymin = lo
-							, ymax = hi
+						, mapping = aes_string(
+							fill = 'split'
+							, ymin = 'lo'
+							, ymax = 'hi'
 						)
 						, colour = 'transparent'
 						, show_guide = FALSE
@@ -259,10 +260,10 @@ function(
 			}
 			if(!ribbon){
 				p = p+geom_point(
-					aes(
-						colour = split
-						, shape = split
-						, y = value
+					aes_string(
+						colour = 'split'
+						, shape = 'split'
+						, y = 'value'
 					)
 					, alpha = point_alpha
 				)
@@ -272,11 +273,11 @@ function(
 			}
 			if(do_lines){
 				p = p+geom_line(
-					aes(
-						colour = split
-						, linetype = split
-						, x = as.numeric(x)
-						, y = value
+					aes_string(
+						colour = 'split'
+						, linetype = 'split'
+						, x = 'x_num'
+						, y = 'value'
 					)
 					, alpha = line_alpha
 				)
@@ -290,8 +291,8 @@ function(
 					p = p+geom_errorbar(
 						data = boot_stats[[i]]
 						, mapping = aes(
-							, ymin = lo
-							, ymax = hi
+							, ymin = 'lo'
+							, ymax = 'hi'
 						)
 						, linetype = 1
 						, show_guide = FALSE
@@ -302,8 +303,8 @@ function(
 					p = p+geom_ribbon(
 						data = boot_stats[[i]]
 						, mapping = aes(
-							, ymin = lo
-							, ymax = hi
+							, ymin = 'lo'
+							, ymax = 'hi'
 						)
 						, colour = 'transparent'
 						, show_guide = FALSE
@@ -314,15 +315,15 @@ function(
 			if(!ribbon){
 				p = p+geom_point(
 					mapping = aes(
-						y = value
+						y = 'value'
 					)
 				)
 			}
 			if(do_lines){
 				p = p+geom_line(
 					mapping = aes(
-						x = as.numeric(x)
-						, y = value
+						x = 'x_num'
+						, y = 'value'
 					)
 				)
 			}

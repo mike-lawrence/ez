@@ -214,18 +214,19 @@ function (
 	if(!is.null(col)){
 		names(data)[names(data) == col] = 'col'
 	}
+	data$x_num = as.numeric(data$x)
 	p = ggplot(
 		data = data
-		,aes(
-			y = Mean
-			,x = x
+		,aes_string(
+			y = 'Mean'
+			,x = 'x'
 		)
 	)
 	if(!is.null(split)){
 		p = p+geom_point(
-			aes(
-				colour = split
-				, shape = split
+			aes_string(
+				colour = 'split'
+				, shape = 'split'
 			)
 			, alpha = .8
 		)
@@ -235,10 +236,10 @@ function (
 		}
 		if(do_lines){
 			p = p+geom_line(
-				aes(
-					colour = split
-					,linetype = split
-					,x = as.numeric(x)
+				aes_string(
+					colour = 'split'
+					,linetype = 'split'
+					,x = 'x_num'
 				)
 				, alpha = .8
 			)
@@ -248,10 +249,10 @@ function (
 		}
 		if(do_bars){
 			p = p+geom_errorbar(
-				aes(
-					colour = split
-					,ymin = ymin
-					,ymax = ymax
+				aes_string(
+					colour = 'split'
+					,ymin = 'ymin'
+					,ymax = 'ymax'
 				)
 				,linetype = 1
 				,guide = 'none'
@@ -262,13 +263,13 @@ function (
 	}else{
 		p = p+geom_point()
 		if(do_lines){
-			p = p+geom_line(aes(x = as.numeric(x)))
+			p = p+geom_line(aes_string(x = 'x_num'))
 		}
 		if(do_bars){
 			p = p+geom_errorbar(
-				aes(
-					ymin = ymin
-					,ymax = ymax
+				aes_string(
+					ymin = 'ymin'
+					,ymax = 'ymax'
 				)
 				,linetype = 1
 				,guide = 'none'
