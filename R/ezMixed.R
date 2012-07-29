@@ -93,7 +93,7 @@ function(
 			}
 		}		
 	}
-	if(add_quantile_as_fixed){
+	if(add_q){
 		numeric_fixed = c(numeric_fixed,'q')
 		fixed =  structure(as.list(c(fixed,.(q))),class = 'quoted')
 	}
@@ -111,7 +111,7 @@ function(
 		term_labels[i] = paste(temp,collapse=':')
 	}
 	term_labels = term_labels[order(str_count(term_labels,':'),term_labels)]
-	if(add_quantile_as_fixed){
+	if(add_q){
 		term_labels = term_labels[term_labels!='q']
 	}
 	cat('  bits e w effect\n------ - - ------\n\r')
