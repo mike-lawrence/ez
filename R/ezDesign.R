@@ -81,10 +81,10 @@ function(
 		)
 		names(counts)[names(counts)==col] = 'col'
 	}
-	counts$ymin = y-.5
-	counts$ymax = y+.5
-	counts$xmin = x-.5
-	counts$xmax = x+.5
+	counts$ymin = counts$y-.5
+	counts$ymax = counts$y+.5
+	counts$xmin = counts$x-.5
+	counts$xmax = counts$x+.5
 	p = ggplot(
 		data = counts
 		,aes_string(
