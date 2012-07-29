@@ -5,14 +5,12 @@ function(
 	, wid
 	, within = NULL
 	, between = NULL
-	, resample_within = TRUE
+	, resample_cells = TRUE
 	, iterations = 1e3
-	, lmer = TRUE
-	, use_residuals = TRUE
-	, family = 'gaussian'
+	, lmer = FALSE
+	, lmer_family = 'gaussian'
 	, parallel = FALSE
-	, alarm = TRUE
-	, show_progress = TRUE
+	, alarm = FALSE
 ){
 	args_to_check = c('dv','wid','within','between')
 	args = as.list(match.call()[-1])
@@ -73,7 +71,7 @@ function(
 		}
 	}
 	names(data)[names(data)==as.character(dv)]='ezDV'
-	if(resample_within){
+	if(resample_cells){
 		cell_size_per_id = ddply(
 			.data = idata.frame(data)
 			, .variables = structure(as.list(c(wid,between,within)),class = 'quoted')
@@ -85,7 +83,7 @@ function(
 			}
 		)
 		if(all(cell_size_per_id$value<=1)){
-			stop(paste('There are no cells with multiple observations; please set the variable "resample_within" to FALSE.'))
+			stop(paste('There are no cells with multiple observations; please set the variable "resample_cells" to FALSE.'))
 		}
 	}
 	if(lmer){
@@ -98,7 +96,7 @@ function(
 		)
 		fit = lmer(
 			formula = eval(parse(text=formula))
-			, family = family
+			, family = lmer_family
 			, data = data
 		)
 		temp = list()
@@ -114,9 +112,6 @@ function(
 		value = mm %*% fixef(fit)
 		cell_means$value = as.numeric(value[,1])
 		cell_means = cell_means[,names(cell_means)!='ezDV']
-		if(use_residuals){
-			data$ezDV[!is.na(data$ezDV)] = residuals(fit)
-		}
 	}else{
 		cell_means_by_wid = ddply(
 			.data = idata.frame(data)
@@ -144,25 +139,15 @@ function(
 		, .fun = function(x){
 			done = FALSE
 			while(!done){
-				resampled_data = ezResample(data=data,wid=wid,within=within,between=between,resample_within=resample_within)
+				resampled_data = ezResample(data=data,wid=wid,within=within,between=between,resample_cells=resample_cells)
 				if(lmer){
-					if(use_residuals){
-						original_preds = cell_means$value
-						fit = lmer(
-							formula = eval(parse(text=formula))
-							, family = gaussian
-							, data = resampled_data
-						)
-						cell_means$value = original_preds + (mm %*% fixef(fit))
-					}else{
-						fit = lmer(
-							formula = eval(parse(text=formula))
-							, family = family
-							, data = resampled_data
-						)
-						value = mm %*% fixef(fit)
-						cell_means$value = as.numeric(value[,1])
-					}
+					fit = lmer(
+						formula = eval(parse(text=formula))
+						, family = lmer_family
+						, data = resampled_data
+					)
+					value = mm %*% fixef(fit)
+					cell_means$value = as.numeric(value[,1])
 				}else{
 					cell_means_by_wid = ddply(
 						.data = idata.frame(resampled_data)
@@ -192,7 +177,7 @@ function(
 			cell_means$iteration = x
 			return(cell_means)
 		}
-		, .progress = ifelse(show_progress,'time','none')
+		, .progress = 'time'
 		, .parallel = parallel
 	)
 	boots = Filter(Negate(empty), boots)
