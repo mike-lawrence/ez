@@ -280,13 +280,13 @@ function (
 	}
 	if(!is.null(row)){
 		if(!is.null(col)){
-			if(row_y_free){
+			if(y_free){
 				p = p+facet_grid(row~col,scales='free_y')
 			}else{
 				p = p+facet_grid(row~col)
 			}
 		}else{
-			if(row_y_free){
+			if(y_free){
 				p = p+facet_grid(row~.,scales='free_y')
 			}else{
 				p = p+facet_grid(row~.)

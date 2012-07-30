@@ -98,7 +98,7 @@ function(
 		mm = model.matrix(requested_terms,to_return)
 		f = fixef(fit)
 		v = vcov(fit)
-		if(effect_variability_only){
+		if(zero_intercept_variance){
 			v[1,] = 0
 			v[,1] = 0
 		}
@@ -112,7 +112,7 @@ function(
 			f[grep(paste('s(',i,')',sep=''),names(f),fixed=T)] = 0 #zero the subject entry	
 		}
 		v = vcov(fit)
-		if(effect_variability_only){
+		if(zero_intercept_variance){
 			v[1,] = 0
 			v[,1] = 0
 		}
