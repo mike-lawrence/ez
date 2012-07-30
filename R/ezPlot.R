@@ -25,7 +25,7 @@ function (
 	, type = 2
 	, dv_levs = NULL
 	, dv_labs = NULL
-	, row_y_free = FALSE
+	, y_free = FALSE
 ){
 	args_to_check = c('dv','wid','within','between','within_full','between_full','diff','x','split','row','col','to_numeric')
 	args = as.list(match.call()[-1])

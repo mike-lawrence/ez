@@ -1,6 +1,6 @@
 ezPlot2 <-
 function(
-	predictions
+	preds
 	, confidence = .95
 	, x = NULL
 	, split = NULL

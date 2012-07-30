@@ -5,7 +5,7 @@ function(
 	, numeric_res = 0
 	, do_parametric_bootstrap = TRUE
 	, parametric_bootstrap_iterations = 1e3
-	, effect_variability_only = TRUE
+	, zero_intercept_variance = TRUE
 ){
 	fit_class = class(fit)[1]
 	if((fit_class=='mer')|(fit_class=='glmerMod')|(fit_class=='lmerMod')){

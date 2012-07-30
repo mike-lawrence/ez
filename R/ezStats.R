@@ -10,7 +10,7 @@ function (
 	, diff = NULL
 	, reverse_diff = FALSE
 	, type = 2
-	, check_args = FALSE
+	, check_args = TRUE
 ){
 	if(check_args){
 		args_to_check = c('dv','wid','within','between','within_full','between_full','diff')
