@@ -6,14 +6,14 @@ This function provides easy non-parametric permutation test analysis of data fro
 }
 \usage{
 ezPerm(
-data
-, dv
-, wid
-, within = NULL
-, between = NULL
-, perms = 1e3
-, parallel = FALSE
-, alarm = FALSE
+	data
+	, dv
+	, wid
+	, within = NULL
+	, between = NULL
+	, perms = 1e3
+	, parallel = FALSE
+	, alarm = FALSE
 )
 }
 \arguments{

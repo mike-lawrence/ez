@@ -6,7 +6,7 @@ This function provides easy visualization of any given user-requested effect fro
 }
 \usage{
 ezPlot2(
-	predictions
+	preds
 	, confidence = .95
 	, x = NULL
 	, split = NULL
@@ -14,6 +14,9 @@ ezPlot2(
 	, col = NULL
 	, do_lines = TRUE
 	, ribbon = FALSE
+	, confidence_alpha = .5
+	, point_alpha = .8
+	, line_alpha = .8
 	, bar_width = NULL
 	, to_numeric = NULL
 	, x_lab = NULL

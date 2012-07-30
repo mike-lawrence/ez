@@ -6,12 +6,12 @@ This function provides easy visualization of the balance of data in a data set g
 }
 \usage{
 ezDesign(
-data
-, x
-, y
-, row = NULL
-, col = NULL
-, cell_border_size = 10
+	data
+	, x
+	, y
+	, row = NULL
+	, col = NULL
+	, cell_border_size = 10
 )
 }
 \arguments{

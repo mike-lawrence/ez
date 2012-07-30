@@ -10,6 +10,7 @@ ezANOVA(
 	, dv
 	, wid
 	, within = NULL
+	, within_full = NULL
 	, between = NULL
 	, observed = NULL
 	, diff = NULL

@@ -9,6 +9,9 @@ ezPredict(
 	fit
 	, to_predict = NULL
 	, numeric_res = 0
+	, do_parametric_bootstrap = TRUE
+	, parametric_bootstrap_iterations = 1e3
+	, zero_intercept_variance = TRUE
 )
 }
 \arguments{

@@ -6,8 +6,8 @@ This function provides a structure summary of a given data frame.
 }
 \usage{
 ezPrecis( 
-data
-, transpose = TRUE
+	data
+	, transpose = TRUE
 )
 }
 \arguments{

@@ -6,31 +6,32 @@ This function provides easy visualization of any given user-requested effect fro
 }
 \usage{
 ezPlot(
-data
-, dv
-, wid
-, within = NULL
-, between = NULL
-, between_full = NULL
-, x
-, do_lines = TRUE
-, do_bars = TRUE
-, bar_width = NULL
-, bar_size = NULL
-, split = NULL
-, row = NULL
-, col = NULL
-, to_numeric = NULL
-, x_lab = NULL
-, y_lab = NULL
-, split_lab = NULL
-, levels = NULL
-, diff = NULL
-, reverse_diff = FALSE
+	data
+	, dv
+	, wid
+	, within = NULL
+	, within_full = NULL
+	, between = NULL
+	, between_full = NULL
+	, x
+	, do_lines = TRUE
+	, do_bars = TRUE
+	, bar_width = NULL
+	, bar_size = NULL
+	, split = NULL
+	, row = NULL
+	, col = NULL
+	, to_numeric = NULL
+	, x_lab = NULL
+	, y_lab = NULL
+	, split_lab = NULL
+	, levels = NULL
+	, diff = NULL
+	, reverse_diff = FALSE
 	, type = 2
-, dv_levs = NULL
-, dv_labs = NULL
-, row_y_free = FALSE
+	, dv_levs = NULL
+	, dv_labs = NULL
+	, y_free = FALSE
 )
 }
 \arguments{

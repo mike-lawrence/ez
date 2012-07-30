@@ -11,10 +11,10 @@ ezBoot(
 	, wid
 	, within = NULL
 	, between = NULL
-	, resample_cells = TRUE
+	, resample_within = TRUE
 	, iterations = 1e3
 	, lmer = FALSE
-	, lmer_family = 'gaussian'
+	, lmer_family = gaussian
 	, parallel = FALSE
 	, alarm = FALSE
 )

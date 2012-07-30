@@ -11,6 +11,8 @@ ezResample(
 	, within = NULL
 	, between = NULL
 	, resample_within = FALSE
+	, resample_between = TRUE
+	, check_args = TRUE
 )
 }
 \arguments{

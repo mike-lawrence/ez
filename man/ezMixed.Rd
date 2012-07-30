@@ -10,15 +10,15 @@ ezMixed(
 	, dv
 	, random
 	, fixed
-	, add_quantile_as_fixed = FALSE
-	, do_gam_for_numeric_fixed = TRUE
-	, covariates = NULL
-	, do_gam_for_numeric_covariates = TRUE
 	, family = gaussian
-	, gam_smooth = 'te'
+	, covariates = NULL
+	, add_q = FALSE
+	, fix_gam = TRUE
+	, cov_gam = TRUE
+	, gam_smooth = c('s','te')
 	, gam_bs = 'ts'
-	, gam_max_k_per_dim = Inf
-	, alarm = TRUE
+	, gam_k = Inf
+	, alarm = FALSE
 	, term_labels = NULL
 	, highest = 0
 	, return_models = TRUE
@@ -26,6 +26,8 @@ ezMixed(
 	, progress_dir = NULL
 	, resume = FALSE
 	, parallelism = 'none'
+	, gam_args = NULL
+	, mer_args = NULL
 )
 }
 \arguments{

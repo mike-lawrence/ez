@@ -6,16 +6,17 @@ This function provides easy computation of descriptive statistics (between-Ss me
 }
 \usage{
 ezStats(
-data
-, dv
-, wid
-, within = NULL
-, between = NULL
-, between_full = NULL
-, diff = NULL
-, reverse_diff = FALSE
+	data
+	, dv
+	, wid
+	, within = NULL
+	, within_full = NULL
+	, between = NULL
+	, between_full = NULL
+	, diff = NULL
+	, reverse_diff = FALSE
 	, type = 2
-	, check_args = FALSE
+	, check_args = TRUE
 )
 }
 \arguments{
@@ -98,7 +99,7 @@ group_descriptives = ezStats(
 data = ANT[ANT$error==0,]
 , dv = rt
 , wid = subnum
-, between = group
+, between = .(group)
 )
 
 #Show the descriptives.

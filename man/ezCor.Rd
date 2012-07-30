@@ -6,19 +6,19 @@ This function provides simultaneous visualization of a correlation matrix, scatt
 }
 \usage{
 ezCor(
-data
-, r_size_lims = c(10,30)
-, point_alpha = .5
-, density_height = 1
-, density_adjust = 1
-, density_colour = 'white'
-, label_size = 10
-, label_colour = 'black'
-, label_alpha = .5
-, lm_colour = 'red'
-, ci_colour = 'green'
-, ci_alpha = .5 
-, test_alpha = .05
+	data
+	, r_size_lims = c(10,30)
+	, point_alpha = .5
+	, density_height = 1
+	, density_adjust = 1
+	, density_colour = 'white'
+	, label_size = 10
+	, label_colour = 'black'
+	, label_alpha = .5
+	, lm_colour = 'red'
+	, ci_colour = 'green'
+	, ci_alpha = .5
+	, test_alpha = .05
 )
 }
 \arguments{
