@@ -206,7 +206,7 @@ function(
 					formula_base
 					, '+'
 					, paste(
-						, covariates[!(covariates %in% numeric_covariates)]
+						covariates[!(covariates %in% numeric_covariates)]
 						, collapse = '+'
 					)
 					, '+'
