@@ -50,35 +50,14 @@ er_preds = ezPredict(
 	fit = er_fit
 )
 
-#compute 95% CI for each prediction
-er_preds$lo = er_preds$value - qnorm(.975)*sqrt(er_preds$var)
-er_preds$hi = er_preds$value + qnorm(.975)*sqrt(er_preds$var)
-
 
 #visualize the predictions
-ggplot(
-	data = er_preds
-	, mapping = aes(
-		x = flank
-		, y = value
-		, ymin = lo
-		, ymax = hi
-	)
-)+
-geom_point(
-	alpha = .75
-)+
-geom_line(
-	alpha = .5
-)+
-geom_errorbar(
-	alpha = .5
-)+
-facet_grid(
-	cue ~ group
-)+
-labs(
-	y = 'Error Rate (log odds)'
+ezPlot2(
+	predictions = er_preds
+	, x = flank
+	, row = cue
+	, col = group
+	, y_lab = 'Error rate (log-odds)'
 )
 
 }

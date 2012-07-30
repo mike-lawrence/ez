@@ -210,7 +210,7 @@ print(cue_by_flank_plot)
 #Plot the cue*flank interaction by collapsing the cue effect to 
 ##the difference between None and Double
 cue_by_flank_plot2 = ezPlot(
-data = ANT[ ANT$error==0 and (ANT$cue \%in\% c('None','Double')) ,]
+data = ANT[ ANT$error==0 & (ANT$cue \%in\% c('None','Double')) ,]
 , dv = .(rt)
 , wid = .(subnum)
 , within = .(flank)

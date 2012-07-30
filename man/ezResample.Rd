@@ -55,10 +55,9 @@ var_boots = ldply(
 	, .fun = function(x){
 		this_resample = ezResample(
 			data = ANT[ANT$error==0,]
-			, dv = .(rt)
-		 , wid = .(subnum)
-		 , within = .(cue,flank)
-		 , between = .(group)
+			, wid = .(subnum)
+			, within = .(cue,flank)
+			, between = .(group)
 		)
 		cell_vars = ddply(
 			.data = this_resample
