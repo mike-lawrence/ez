@@ -231,7 +231,7 @@ function(
 					formula_base
 					, '+'
 					, paste(
-						, covariates
+						covariates
 						, collapse = '+'
 					)
 					, '+'
