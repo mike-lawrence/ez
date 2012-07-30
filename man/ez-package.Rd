@@ -29,7 +29,6 @@ This package contains several useful functions:
 \item{\code{\link{ezResample}}}{Resamples data, useful when bootstrapping.}
 \item{\code{\link{ezStats}}}{Provides between-Ss descriptive statistics for any given user-requested effect.}
 \item{\code{\link{progress_time}}}{A progress bar that estimates time remaining.}
-\item{\code{\link{progress_timeCI}}}{A progress bar that estimates time remaining, including a bootstrapped confidence interval (useful when operations vary in duration).}
 This package also contains two data sets:
 \item{\code{\link{ANT}}}{Simulated data from the Attention Network Test}
 \item{\code{\link{ANT2}}}{Messy version of the ANT data set}
@@ -41,6 +40,6 @@ To report bugs or request features, please visit: \url{https://github.com/mike-l
 To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
 }
 \seealso{
-\code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezBootPlot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{link{ezMixedRel}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}, \code{\link{progress_timeCI}}
+\code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezBootPlot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{link{ezMixedRel}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}
 }
 \keyword{ package }

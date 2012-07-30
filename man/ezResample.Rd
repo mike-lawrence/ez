@@ -84,7 +84,7 @@ var_boots = ldply(
 		mean_cell_vars$iteration = x
 		return(mean_cell_vars)
 	}
-	, .progress = 'timeCI'
+	, .progress = 'time'
 )
 
 
