@@ -56,7 +56,7 @@ er_preds = ezPredict(
 
 #visualize the predictions
 ezPlot2(
-	predictions = er_preds
+	preds = er_preds
 	, x = flank
 	, row = cue
 	, col = group

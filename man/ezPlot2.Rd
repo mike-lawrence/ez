@@ -32,7 +32,7 @@ ezPlot2(
 )
 }
 \arguments{
-\item{predictions}{
+\item{preds}{
 An list object resulting from a call to \code{\link{ezPredict}} or \code{\link{ezBoot}}.
 }
 \item{confidence}{
@@ -102,5 +102,5 @@ To keep up to date on developments related to this package, join the discussion 
 \code{\link{ezBoot}}, \code{\link{ezMixed}}, \code{\link{ezPredict}}
 }
 \examples{
-#see examples in ezBoot
+
 }

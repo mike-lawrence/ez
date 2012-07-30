@@ -89,7 +89,7 @@ data = ANT
 
 #plot the full design
 p = ezPlot2(
-predictions = rt
+preds = rt
 , x = flank
 , split = cue
 , col = group
@@ -98,7 +98,7 @@ print(p)
 
 #plot the effect of group across the flank*cue design
 p = ezPlot2(
-predictions = rt
+preds = rt
 , x = flank
 , split = cue
 , diff = group
@@ -107,7 +107,7 @@ print(p)
 
 #plot the flank*cue design, averaging across group
 p = ezPlot2(
-predictions = rt
+preds = rt
 , x = flank
 , split = cue
 )
