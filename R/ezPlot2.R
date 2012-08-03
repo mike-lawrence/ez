@@ -247,7 +247,7 @@ function(
 			if(!is.null(split)){
 				p = paste(p,"\n\t\t, colour = ",split,"\n\t\t, linetype = ",split,sep='')
 			}
-			p = paste(p,"\n\t)\n, alpha = ",line_alpha,")",sep='')
+			p = paste(p,"\n\t)\n\t, alpha = ",line_alpha,"\n)",sep='')
 		}
 		if(!is.null(row)){
 			if(!is.null(col)){
