@@ -186,8 +186,8 @@ function (
 	if(is.null(bar_size)){
 		bar_size = stats$FLSD
 	}
-	stats$ymin = stats$Mean-bar_size/2
-	stats$ymax = stats$Mean+bar_size/2
+	stats$lo = stats$Mean-bar_size/2
+	stats$hi = stats$Mean+bar_size/2
 	for(i in to_numeric){
 		stats[,names(stats) == i] = as.numeric(as.character(stats[,names(stats) == i]))
 	}
@@ -211,7 +211,7 @@ function (
 			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, linetype = ",split,"\n\t\t, x = I(as.numeric(",x,"))\n\t)\n\t, alpha = .8\n)",sep='')
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = lo\n\t\t, ymax = hi\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}else{
 		p = paste(p,"+\ngeom_point()",sep='')
@@ -219,7 +219,7 @@ function (
 			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tx = I(as.numeric(",x,"))\n\t)\n)",sep='')
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = lo\n\t\t, ymax = hi\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}
 	if(!is.null(row)){
