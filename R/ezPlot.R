@@ -209,16 +209,16 @@ function (
 	if(!is.null(split)){
 		p = paste(p,"+\ngeom_point(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, shape = ",split,"\n\t)\n\t, alpha = .8\n)",sep='')
 		if(!is.null(split_lab)){
-			p = paste(p,"+labs(\n\tcolour = ",split_lab,"\n\t, shape = ",split_lab,"\n)",sep='')
+			p = paste(p,"+labs(\n\tcolour = '",split_lab,"'\n\t, shape = '",split_lab,"'\n)",sep='')
 		}
 		if(do_lines){
 			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t,linetype = ",split,"\n\t\t, x = I(as.numeric(",x,"))\n\t)\n\t, alpha = .8\n)",sep='')
 			if(!is.null(split_lab)){
-				p = paste(p,"+\nlabs(\n\tlinetype = ",split_lab,")",sep='')
+				p = paste(p,"+\nlabs(\n\tlinetype = '",split_lab,"')",sep='')
 			}
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}else{
 		p = paste(p,"+\ngeom_point()",sep='')
@@ -226,7 +226,7 @@ function (
 			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tx = I(as.numeric(",x,"))\n\t)\n)",sep='')
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}
 	if(!is.null(row)){
@@ -249,10 +249,10 @@ function (
 		}
 	}
 	if(!is.null(x_lab)){
-		p = paste(p,"+\nlabs(\n\tx = ",x_lab,"\n)",sep='')
+		p = paste(p,"+\nlabs(\n\tx = '",x_lab,"'\n)",sep='')
 	}
 	if(!is.null(y_lab)){
-		p = paste(p,"+\nlabs(\n\ty = ",y_lab,"\n)",sep='')
+		p = paste(p,"+\nlabs(\n\ty = '",y_lab,"'\n)",sep='')
 	}
 	if(print_code){
 		cat(p)
