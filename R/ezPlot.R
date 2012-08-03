@@ -118,7 +118,7 @@ function (
 		if(!is.data.frame(data)){
 			stop('"data" cannot be a list when specifying only one dv.')
 		}
-		data = ezStats(data=data,dv=dv,wid=wid,within=within,between=between,between_full=between_full,diff=diff,reverse_diff=reverse_diff,type=type,check_args=F)
+		stats = ezStats(data=data,dv=dv,wid=wid,within=within,between=between,between_full=between_full,diff=diff,reverse_diff=reverse_diff,type=type,check_args=F)
 	}else{
 		if(!is.null(row)){
 			stop('You may not specify a variable to "row" when also specifying multiple dvs.')
@@ -127,12 +127,12 @@ function (
 			stop('When specifying multiple dvs, you must provide a list to "data" with as many elements as there are dvs..')
 		}
 		row = .(dv)
-		data_combined = NULL
+		stats = NULL
 		for(this_dv in 1:length(dv)){
 			this_dot_dv = structure(as.list(c(dv[this_dv])),class = 'quoted')
 			if(!is.data.frame(data)){
-				data_combined = rbind(
-					data_combined
+				stats = rbind(
+					stats
 					, cbind(
 						ezStats(
 							data = data[[this_dv]]
@@ -151,8 +151,8 @@ function (
 					)
 				)
 			}else{
-				data_combined = rbind(
-					data_combined
+				stats = rbind(
+					stats
 					, cbind(
 						ezStats(
 							data = data[[this_dv]]
@@ -171,26 +171,25 @@ function (
 				)
 			}
 		}
-		data = data_combined
 		if(!is.null(dv_levs)){
 			if(!is.null(dv_labs)){
-				data$dv = factor(data$dv, levels = dv_levs, labels = dv_labs)
+				stats$dv = factor(stats$dv, levels = dv_levs, labels = dv_labs)
 			}else{
-				data$dv = factor(data$dv, levels = dv_levs)				
+				stats$dv = factor(stats$dv, levels = dv_levs)				
 			}
 		}else{
 			 if(!is.null(dv_labs)){
-				levels(data$dv) = dv_labs
+				levels(stats$dv) = dv_labs
 			}
 		}
 	}
 	if(is.null(bar_size)){
-		bar_size = data$FLSD
+		bar_size = stats$FLSD
 	}
-	data$ymin = data$Mean-bar_size/2
-	data$ymax = data$Mean+bar_size/2
+	stats$ymin = stats$Mean-bar_size/2
+	stats$ymax = stats$Mean+bar_size/2
 	for(i in to_numeric){
-		data[,names(data) == i] = as.numeric(as.character(data[,names(data) == i]))
+		stats[,names(stats) == i] = as.numeric(as.character(stats[,names(stats) == i]))
 	}
 	if(!is.null(bar_width)){
 		if(!is.numeric(bar_width)){
@@ -201,21 +200,15 @@ function (
 			}
 		}
 	}else{
-		if(!is.numeric(data[,names(data)==x])){
+		if(!is.numeric(stats[,names(stats)==x])){
 			bar_width = .25
 		}
 	}
-	p = paste("ggplot(\n\tdata = data\n\t, mapping = aes(\n\t\ty = Mean\n\t\t, x = ",x,"\n\t)\n)",sep='')
+	p = paste("ggplot(\n\tdata = stats\n\t, mapping = aes(\n\t\ty = Mean\n\t\t, x = ",x,"\n\t)\n)",sep='')
 	if(!is.null(split)){
 		p = paste(p,"+\ngeom_point(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, shape = ",split,"\n\t)\n\t, alpha = .8\n)",sep='')
-		if(!is.null(split_lab)){
-			p = paste(p,"+labs(\n\tcolour = '",split_lab,"'\n\t, shape = '",split_lab,"'\n)",sep='')
-		}
 		if(do_lines){
-			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t,linetype = ",split,"\n\t\t, x = I(as.numeric(",x,"))\n\t)\n\t, alpha = .8\n)",sep='')
-			if(!is.null(split_lab)){
-				p = paste(p,"+\nlabs(\n\tlinetype = '",split_lab,"')",sep='')
-			}
+			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, linetype = ",split,"\n\t\t, x = I(as.numeric(",x,"))\n\t)\n\t, alpha = .8\n)",sep='')
 		}
 		if(do_bars){
 			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
@@ -226,37 +219,69 @@ function (
 			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tx = I(as.numeric(",x,"))\n\t)\n)",sep='')
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none'\n\t, width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}
 	if(!is.null(row)){
 		if(!is.null(col)){
 			if(y_free){
-				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
+				p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
 			}else{
-				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ ",col,"\n)",sep='')
+				p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ ",col,"\n)",sep='')
 			}
 		}else{
 			if(y_free){
-				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ .\n\t, scales = 'free_y'\n)",sep='')
+				p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ .\n\t, scales = 'free_y'\n)",sep='')
 			}else{
-				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ .\n)",sep='')
+				p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ .\n)",sep='')
 			}
 		}
 	}else{
 		if(!is.null(col)){
-			p = paste(p,"+\nfacet_grid(facets = \n\t. ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
+			p = paste(p,"+\nfacet_grid(\n\tfacets = . ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
 		}
 	}
-	if(!is.null(x_lab)){
-		p = paste(p,"+\nlabs(\n\tx = '",x_lab,"'\n)",sep='')
-	}
-	if(!is.null(y_lab)){
-		p = paste(p,"+\nlabs(\n\ty = '",y_lab,"'\n)",sep='')
+	if(any(c((!is.null(x_lab)),(!is.null(y_lab)),(!is.null(split_lab))))){
+		p = paste(p,'+\nlabs(',sep='')
+		if(!is.null(x_lab)){
+			p = paste(p,"\n\tx = '",x_lab,"'",sep='')
+			if(!is.null(y_lab)){
+				p = paste(p,"\n\t, y = '",y_lab,"'",sep='')
+			}
+			if(!is.null(split_lab)){
+				p = paste(p,"\n\t, colour = '",split_lab,"'",sep='')
+				p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
+				if(do_lines){
+					p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
+				}
+			}
+		}else{
+			if(!is.null(y_lab)){
+				p = paste(p,"\n\ty = '",y_lab,"'",sep='')
+				if(!is.null(split_lab)){
+					p = paste(p,"\n\t, colour = '",split_lab,"'",sep='')
+					p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
+					if(do_lines){
+						p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
+					}
+				}
+			}else{
+				if(!is.null(split_lab)){
+					p = paste(p,"\n\tcolour = '",split_lab,"'",sep='')
+					p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
+					if(do_lines){
+						p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
+					}
+				}
+			}
+		}
+		p = paste(p,'\n)',sep='')
 	}
 	if(print_code){
 		cat(p)
+		return(stats)
+	}else{
+		return(eval(parse(text=p)))
 	}
-	return(eval(parse(text=p)))
 }
 
