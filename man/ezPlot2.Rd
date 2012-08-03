@@ -25,7 +25,7 @@ ezPlot2(
 	, levels = NULL
 	, diff = NULL
 	, reverse_diff = NULL
-	, row_y_free = FALSE
+	, y_free = FALSE
 	, alarm = FALSE
 	, do_plot = TRUE
 	, parallel = FALSE
@@ -77,7 +77,7 @@ Names of any variables to collapse to a difference score. If a single value, may
 \item{reverse_diff}{
 Logical. If TRUE, triggers reversal of the difference collapse requested by \code{diff}. Take care with variables with more than 2 levels.
 }
-\item{row_y_free}{
+\item{y_free}{
 Logical. If TRUE, then rows will permit different y-axis scales.
 }
 \item{alarm}{
