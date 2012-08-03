@@ -26,6 +26,7 @@ function (
 	, dv_levs = NULL
 	, dv_labs = NULL
 	, y_free = FALSE
+	, print_code = FALSE
 ){
 	args_to_check = c('dv','wid','within','between','within_full','between_full','diff','x','split','row','col','to_numeric')
 	args = as.list(match.call()[-1])
@@ -204,105 +205,58 @@ function (
 			bar_width = .25
 		}
 	}
-	names(data)[names(data) == x] = 'x'
+	p = paste("ggplot(\n\tdata = data\n\t, mapping = aes(\n\t\ty = Mean\n\t\t, x = ",x,"\n\t)\n)",sep='')
 	if(!is.null(split)){
-		names(data)[names(data) == split] = 'split'
-	}
-	if(!is.null(row)){
-		names(data)[names(data) == row] = 'row'
-	}
-	if(!is.null(col)){
-		names(data)[names(data) == col] = 'col'
-	}
-	data$x_num = as.numeric(data$x)
-	p = ggplot(
-		data = data
-		,aes_string(
-			y = 'Mean'
-			,x = 'x'
-		)
-	)
-	if(!is.null(split)){
-		p = p+geom_point(
-			aes_string(
-				colour = 'split'
-				, shape = 'split'
-			)
-			, alpha = .8
-		)
-		#p = p+opts(legend.background = theme_rect(colour='transparent',fill='transparent')) #used to be necessary
+		p = paste(p,"+\ngeom_point(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, shape = ",split,"\n\t)\n\t, alpha = .8\n)",sep='')
 		if(!is.null(split_lab)){
-			p = p+labs(colour = split_lab,shape = split_lab)
+			p = paste(p,"+labs(\n\tcolour = ",split_lab,"\n\t, shape = ",split_lab,"\n)",sep='')
 		}
 		if(do_lines){
-			p = p+geom_line(
-				aes_string(
-					colour = 'split'
-					,linetype = 'split'
-					,x = 'x_num'
-				)
-				, alpha = .8
-			)
+			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t,linetype = ",split,"\n\t\t, x = I(as.numeric(,"x",))\n\t)\n\t, alpha = .8\n)",sep='')
 			if(!is.null(split_lab)){
-				p = p+labs(linetype = split_lab)
+				p = paste(p,"+\nlabs(\n\tlinetype = ,",split_lab,")",sep='')
 			}
 		}
 		if(do_bars){
-			p = p+geom_errorbar(
-				aes_string(
-					colour = 'split'
-					,ymin = 'ymin'
-					,ymax = 'ymax'
-				)
-				,linetype = 1
-				,guide = 'none'
-				,width = bar_width
-				, alpha = .5
-			)
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ",ymin,"\n\t\t, ymax = ",ymax,"\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}else{
-		p = p+geom_point()
+		p = paste(p,"+\ngeom_point()",sep='')
 		if(do_lines){
-			p = p+geom_line(aes_string(x = 'x_num'))
+			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tx = I(as.numeric(,",x,"))\n\t)\n)",sep='')
 		}
 		if(do_bars){
-			p = p+geom_errorbar(
-				aes_string(
-					ymin = 'ymin'
-					,ymax = 'ymax'
-				)
-				,linetype = 1
-				,guide = 'none'
-				,width = bar_width
-				,alpha = .5
-			)
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ",ymin,"\n\t\t, ymax = ",ymax,"\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}
 	if(!is.null(row)){
 		if(!is.null(col)){
 			if(y_free){
-				p = p+facet_grid(row~col,scales='free_y')
+				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
 			}else{
-				p = p+facet_grid(row~col)
+				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ ",col,"\n)",sep='')
 			}
 		}else{
 			if(y_free){
-				p = p+facet_grid(row~.,scales='free_y')
+				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ .\n\t, scales = 'free_y'\n)",sep='')
 			}else{
-				p = p+facet_grid(row~.)
+				p = paste(p,"+\nfacet_grid(facets = \n\t",row," ~ .\n)",sep='')
 			}
 		}
 	}else{
 		if(!is.null(col)){
-			p = p+facet_grid(.~col)
+			p = paste(p,"+\nfacet_grid(facets = \n\t. ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
 		}
 	}
 	if(!is.null(x_lab)){
-		p = p+labs(x = x_lab)
+		p = paste(p,"+\nlabs(\n\tx = ",x_lab,"\n)",sep='')
 	}
 	if(!is.null(y_lab)){
-		p = p+labs(y = y_lab)
+		p = paste(p,"+\nlabs(\n\ty = ",y_lab,"\n)",sep='')
 	}
-	return(p)
+	if(print_code){
+		cat(p)
+	}
+	return(eval(parse(text=p)))
 }
 
