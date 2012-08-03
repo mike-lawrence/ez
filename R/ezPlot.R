@@ -218,7 +218,7 @@ function (
 			}
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ",ymin,"\n\t\t, ymax = ",ymax,"\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tcolour = ",split,"\n\t\t, ymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}else{
 		p = paste(p,"+\ngeom_point()",sep='')
@@ -226,7 +226,7 @@ function (
 			p = paste(p,"+\ngeom_line(\n\tmapping = aes(\n\t\tx = I(as.numeric(",x,"))\n\t)\n)",sep='')
 		}
 		if(do_bars){
-			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ",ymin,"\n\t\t, ymax = ",ymax,"\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
+			p = paste(p,"+\ngeom_errorbar(\n\tmapping = aes(\n\t\tymin = ymin\n\t\t, ymax = ymax\n\t)\n\t, linetype = 1\n\t, guide = 'none',\n\t,width = ",bar_width,"\n\t, alpha = .5\n)",sep='')
 		}
 	}
 	if(!is.null(row)){
