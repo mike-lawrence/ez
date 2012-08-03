@@ -1,14 +1,14 @@
 ezPlot2 <-
 function(
 	preds
-	, confidence = .95
+	, CI = .95
 	, x = NULL
 	, split = NULL
 	, row = NULL
 	, col = NULL
 	, do_lines = TRUE
 	, ribbon = FALSE
-	, confidence_alpha = .5
+	, CI_alpha = .5
 	, point_alpha = .8
 	, line_alpha = .8
 	, bar_width = NULL
@@ -19,9 +19,10 @@ function(
 	, levels = NULL
 	, diff = NULL
 	, reverse_diff = NULL
-	, row_y_free = FALSE
+	, y_free = FALSE
 	, alarm = FALSE
 	, do_plot = TRUE
+	, print_code = FALSE
 	, parallel = FALSE
 ){
 	args_to_check = c('x','split','row','col','diff','to_numeric')
@@ -77,8 +78,8 @@ function(
 			}
 		}
 	}
-	if(any(confidence>=1) | any(confidence<=0)){
-		stop('"confidence" must be either greater than 0 and less than 1.')
+	if(any(CI>=1) | any(CI<=0)){
+		stop('"CI" must be either greater than 0 and less than 1.')
 	}
 	for(i in to_numeric){
 		cells[,names(cells) == i] = as.numeric(as.character(cells[,names(cells) == i]))
@@ -93,11 +94,11 @@ function(
 			}
 		}
 		if((length(bar_width)!=1)){
-			if(length(confidence)==1){
+			if(length(CI)==1){
 				stop('Too many values supplied to "bar_width".')
 			}else{
-				if(length(bar_width)!=length(confidence)){
-					stop('"bar_width" must have a length of either 1 or the same length as "confidence".')
+				if(length(bar_width)!=length(CI)){
+					stop('"bar_width" must have a length of either 1 or the same length as "CI".')
 				}
 			}
 		}
@@ -175,195 +176,155 @@ function(
 			boots = boots[,names(boots)!=as.character(this_diff)]
 		}
 	}
-	if(do_plot){
-		names(cells)[names(cells)==as.character(x)] = 'x'
-		if(!is.null(split)){
-			names(cells)[names(cells)==as.character(split)] = 'split'
-		}
-		if(!is.null(row)){
-			names(cells)[names(cells)==as.character(row)] = 'row'
-		}
-		if(!is.null(col)){
-			names(cells)[names(cells)==as.character(col)] = 'col'
-		}
-	}
-	boot_stats = list()
-	for(i in 1:length(confidence)){
+	boot_stats = NULL
+	for(i in 1:length(CI)){
 		if(is.null(x)&is.null(row)&is.null(col)){
-			boot_stats[[i]] = data.frame(
-				lo = quantile(boots$value,(1-confidence[i])/2)
-				, hi = quantile(boots$value,1-(1-confidence[i])/2)
+			boot_stats = rbind(
+				boot_stats
+				, data.frame(
+					lo = quantile(boots$value,(1-CI[i])/2)
+					, hi = quantile(boots$value,1-(1-CI[i])/2)
+					, CI = CI[i]
+				)
 			)
 		}else{
-			boot_stats[[i]] = ddply(
-				.data = idata.frame(boots)
-				, .variables = structure(as.list(c(x,split,row,col)),class = 'quoted')
-				, .fun = function(z){
-					to_return = data.frame(
-						lo = quantile(z$value,(1-confidence[i])/2)
-						, hi = quantile(z$value,1-(1-confidence[i])/2)
+			boot_stats = rbind(
+				boot_stats
+				, cbind(
+					ddply(
+						.data = idata.frame(boots)
+						, .variables = structure(as.list(c(x,split,row,col)),class = 'quoted')
+						, .fun = function(z){
+							to_return = data.frame(
+								lo = quantile(z$value,(1-CI[i])/2)
+								, hi = quantile(z$value,1-(1-CI[i])/2)
+							)
+							return(to_return)
+						}
+						, .parallel = parallel
 					)
-					return(to_return)
-				}
-				, .parallel = parallel
+					, CI = CI[i]
+				)
 			)
-		}
-		if(do_plot){
-			names(boot_stats[[i]])[names(boot_stats[[i]])==as.character(x)] = 'x'
-			if(!is.null(split)){
-				names(boot_stats[[i]])[names(boot_stats[[i]])==as.character(split)] = 'split'
-			}
-			if(!is.null(row)){
-				names(boot_stats[[i]])[names(boot_stats[[i]])==as.character(row)] = 'row'
-			}
-			if(!is.null(col)){
-				names(boot_stats[[i]])[names(boot_stats[[i]])==as.character(col)] = 'col'
-			}
 		}
 	}
 	if(do_plot){
-		cells$x_num = as.numeric(cells$x)
-		p = ggplot(
-			data = cells
-			, mapping = aes_string(
-				x = 'x'
-			)
-		)
-		if(!is.null(split)){
-			for(i in 1:length(confidence)){
-				if(!ribbon){
-					p = p+geom_errorbar(
-						data = boot_stats[[i]]
-						, mapping = aes_string(
-							colour = 'split'
-							, ymin = 'lo'
-							, ymax = 'hi'
-						)
-						, linetype = 1
-						, show_guide = FALSE
-						, width = bar_width[i]
-						, alpha = confidence_alpha
-					)
-				}else{
-					p = p+geom_ribbon(
-						data = boot_stats[[i]]
-						, mapping = aes_string(
-							fill = 'split'
-							, ymin = 'lo'
-							, ymax = 'hi'
-						)
-						, colour = 'transparent'
-						, show_guide = FALSE
-						, alpha = confidence_alpha
-					)
-				}
+		p = paste("ggplot()",sep='')
+		if(!ribbon){
+			p = paste(p,"+\ngeom_errorbar(\n\tdata = boot_stats\n\t, mapping = aes(\n\t\tx = ",x,"\n\t\t, ymin = lo\n\t\t, ymax = hi",sep = '')
+			if(!is.null(split)){
+				p = paste(p,"\n\t\t, colour = ",split,sep = '')
 			}
-			if(!ribbon){
-				p = p+geom_point(
-					aes_string(
-						colour = 'split'
-						, shape = 'split'
-						, y = 'value'
-					)
-					, alpha = point_alpha
-				)
+			if(length(CI)>1){
+				p = paste(p,"\n\t\t, width = CI",split,sep = '')
 			}
-			if(!is.null(split_lab)){
-				p = p+labs(colour = split_lab,shape = split_lab,linetype = split_lab,fill = split_lab)
+			p = paste(p,"\n\t)\n\t, linetype = 1\n\t, show_guide = FALSE",sep = '')
+			if(length(CI)==1){
+				p = paste(p,"\n\t, width = ",bar_width,sep='')
 			}
-			if(do_lines){
-				p = p+geom_line(
-					aes_string(
-						colour = 'split'
-						, linetype = 'split'
-						, x = 'x_num'
-						, y = 'value'
-					)
-					, alpha = line_alpha
-				)
-				if(!is.null(split_lab)){
-					p = p+labs(linetype = split_lab)
-				}
+			p = paste(p,"\n\t, alpha = ",CI_alpha,"\n)",sep='')
+			p = paste(p,"+\ngeom_point(\n\tdata = cells\n\t, mapping = aes(\n\t\tx = ",x,"\n\t\t, y = value",sep='')
+			if(!is.null(split)){
+				p = paste(p,"\n\t\tcolour = ",split,"\n\t\t, shape = ",split,sep='')
 			}
+			p = paste(p,"\n\t)\n\t, alpha = ",point_alpha,"\n)")
 		}else{
-			for(i in 1:length(confidence)){
-				if(!ribbon){
-					p = p+geom_errorbar(
-						data = boot_stats[[i]]
-						, mapping = aes(
-							, ymin = 'lo'
-							, ymax = 'hi'
-						)
-						, linetype = 1
-						, show_guide = FALSE
-						, width = bar_width[i]
-						, alpha = confidence_alpha
-					)
-				}else{
-					p = p+geom_ribbon(
-						data = boot_stats[[i]]
-						, mapping = aes(
-							, ymin = 'lo'
-							, ymax = 'hi'
-						)
-						, colour = 'transparent'
-						, show_guide = FALSE
-						, alpha = confidence_alpha
-					)
-				}
+			p = paste(p,"+\ngeom_ribbon(\n\tdata = boot_stats\n\t, mapping = aes(\n\t\tx = ",x,"\n\t\t, ymin = lo\n\t\t, ymax = hi",sep = '')
+			if(!is.null(split)){
+				p = paste(p,"\n\t\t, fill = ",split,sep = '')					
 			}
-			if(!ribbon){
-				p = p+geom_point(
-					mapping = aes(
-						y = 'value'
-					)
-				)
+			if(length(CI)>1){
+				p = paste(p,"\n\t\t, alpha = CI",split,sep = '')					
 			}
-			if(do_lines){
-				p = p+geom_line(
-					mapping = aes(
-						x = 'x_num'
-						, y = 'value'
-					)
-				)
+			p = paste(p,"\n\t)\n\t, color = 'transparent'\n\t, show_guide = FALSE",sep = '')
+			if(length(CI)==1){
+				p = paste(p,"\n\t, alpha = ",CI_alpha,sep='')
 			}
+			p = paste(p,"\n)",sep='')
+		}
+		if(do_lines){
+			p = paste(p,"+\ngeom_line(\n\tdata = cells\n\t, mapping = aes(\n\t\tx = I(as.numeric(",x,"))\n\t\t, y = value",sep='')
+			if(!is.null(split)){
+				p = paste(p,"\n\t\t, colour = ",split,"\n\t\t, linetype = ",split,sep='')
+			}
+			p = paste(p,"\n\t)\n, alpha = ",line_alpha,")",sep='')
 		}
 		if(!is.null(row)){
 			if(!is.null(col)){
-				if(row_y_free){
-					p = p+facet_grid(row~col,scales='free_y')
+				if(y_free){
+					p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
 				}else{
-					p = p+facet_grid(row~col)
+					p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ ",col,"\n)",sep='')
 				}
 			}else{
-				if(row_y_free){
-					p = p+facet_grid(row~.,scales='free_y')
+				if(y_free){
+					p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ .\n\t, scales = 'free_y'\n)",sep='')
 				}else{
-					p = p+facet_grid(row~.)
+					p = paste(p,"+\nfacet_grid(\n\tfacets = ",row," ~ .\n)",sep='')
 				}
 			}
 		}else{
 			if(!is.null(col)){
-				p = p+facet_grid(.~col)
+				p = paste(p,"+\nfacet_grid(\n\tfacets = . ~ ",col,"\n\t, scales = 'free_y'\n)",sep='')
 			}
 		}
-		if(!is.null(x_lab)){
-			p = p+labs(x = x_lab)
+		if(str_detect(p,"alpha = CI")){
+			p = paste(p,"+\nscale_alpha_manual(\n\tvalues = c(",sep='')
+			for(i in 1:(length(confidence)-1)){
+				paste(p,bar_width[i],",",sep='')
+			}
+			paste(p,bar_width[i+1],")\n)",sep='')
 		}
-		if(!is.null(y_lab)){
-			p = p+labs(y = y_lab)
+		if(str_detect(p,"width = CI")){
+			p = paste(p,"+\nscale_width_manual(\n\tvalues = c(",sep='')
+			for(i in 1:(length(confidence)-1)){
+				paste(p,bar_width[i],",",sep='')
+			}
+			paste(p,bar_width[i+1],")\n)",sep='')
 		}
-		names(cells)[names(cells)=='x'] = as.character(x)
-		if(!is.null(split)){
-			names(cells)[names(cells)=='split'] = as.character(split)
-		}
-		if(!is.null(row)){
-			names(cells)[names(cells)=='row'] = as.character(row)
-		}
-		if(!is.null(col)){
-			names(cells)[names(cells)=='col'] = as.character(col)
+		if(any(c((!is.null(x_lab)),(!is.null(y_lab)),(!is.null(split_lab))))){
+			p = paste(p,'+\nlabs(',sep='')
+			if(!is.null(x_lab)){
+				p = paste(p,"\n\tx = '",x_lab,"'",sep='')
+				if(!is.null(y_lab)){
+					p = paste(p,"\n\t, y = '",y_lab,"'",sep='')
+				}
+				if(!is.null(split_lab)){
+					p = paste(p,"\n\t, colour = '",split_lab,"'",sep='')
+					p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
+					if(do_lines){
+						p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
+					}
+				}
+			}else{
+				if(!is.null(y_lab)){
+					p = paste(p,"\n\ty = '",y_lab,"'",sep='')
+					if(!is.null(split_lab)){
+						p = paste(p,"\n\t, colour = '",split_lab,"'",sep='')
+						p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
+						if(do_lines){
+							p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
+						}
+					}
+				}else{
+					if(!is.null(split_lab)){
+						p = paste(p,"\n\tcolour = '",split_lab,"'",sep='')
+						p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
+						if(do_lines){
+							p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
+						}
+					}
+				}
+			}
+			p = paste(p,'\n)',sep='')
 		}
 		to_return = p
+		if(print_code){
+			cat(p)
+			return(list(cells=cells,boot_stats=boot_stats))
+		}else{
+			return(eval(parse(text=p)))
+		}
 	}else{
 		to_return = data.frame(cells)
 		names(to_return)[ncol(to_return)] = 'value'
