@@ -290,7 +290,7 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 	########
 	# computing residuals from covariates
 	########
-	if((!is.null(between_covariates))|(!is.null(between_covariates))){
+	if((!is.null(between_covariates))|(!is.null(within_covariates))){
 		warning("Implementation of ANCOVA in this version of ez is experimental and not yet fully validated. Also, note that ANCOVA is intended purely as a tool to increase statistical power; ANCOVA can not eliminate confounds in the data. Specifically, covariates should: (1) be uncorrelated with other predictors and (2) should have effects on the DV that are independent of other predictors. Failure to meet these conditions may dramatically increase the rate of false-positives.",immediate.=TRUE,call.=FALSE)
 	}
 	if(!is.null(between_covariates)){
@@ -315,15 +315,16 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 			}
 		)
 		for(cov in between_covariates){
-			if(is.factor(temp[,names(temp)==cov])){
-				contrasts(temp[,names(temp)==cov]) = 'contr.helmert'
+			temp$ezCov = temp[,names(temp)==cov]
+			if(is.factor(temp$ezCov)){
+				contrasts(temp$ezCov) = 'contr.helmert'
 			}else{
-				temp[,names(temp)==cov] = temp[,names(temp)==cov] - mean(temp[,names(temp)==cov])
+				temp$ezCov = temp$ezCov - mean(temp$ezCov)
 			}
-			fit = eval(parse(text=paste('lm(formula=',dv,'~',cov,',data=temp)',)
+			fit = eval(parse(text=paste('lm(formula=',dv,'~ezCov,data=temp)')))
 			temp$fitted = fitted(fit)
-			for(cov_lev in unique(data[,names(data)==cov])){
-				data[data[,names(data)==cov]==cov_lev,names(data)==dv] = data[data[,names(data)==cov]==cov_lev,names(data)==dv] - temp$fitted[temp[,names(temp)==cov]==cov_lev][1] + as.numeric(coef(fit)[1])
+			for(cov_lev in as.character(unique(temp[,names(temp)==cov]))){
+				data[as.character(data[,names(data)==cov])==cov_lev,names(data)==dv] = data[as.character(data[,names(data)==cov])==cov_lev,names(data)==dv] - temp$fitted[as.character(temp[,names(temp)==cov])==cov_lev][1] + as.numeric(coef(fit)[1])
 			}
 		}
 	}
@@ -338,28 +339,30 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 				return(to_return)
 			}
 		)
-		for(cov in within_covariates){
-			temp2 = idata.frame(cbind(temp,ezDV=temp[,names(temp) == as.character(dv)]))
+		for(cov in as.character(within_covariates)){
 			temp2 <- ddply(
-				temp2
-				,structure(as.list(c(wid,cov)),class = 'quoted')
-				,function(x){
-					to_return = mean(x$ezDV)
+				.data = temp
+				, .variables = eval(parse(text=paste('.(',wid,',',cov,')')))#structure(as.list(c(wid,as.symbol(cov)))),class = 'quoted')
+				, .fun = function(x){
+					to_return = data.frame(
+						value = mean(x[,names(x)==dv])
+					)
 					names(to_return) = as.character(dv)
 					return(to_return)
 				}
-			)			
-			for(this_wid in unique(data[,names(data)==wid])){
+			)
+			for(this_wid in unique(as.character(data[,names(data)==wid]))){
 				temp3 = temp2[temp2[,names(temp2)==wid]==this_wid,]
-				if(is.factor(temp3[,names(temp3)==cov])){
-					contrasts(temp3[,names(temp3)==cov]) = 'contr.helmert'
+				temp3$ezCov = temp3[,names(temp3)==cov]
+				if(is.factor(temp3$ezCov)){
+					contrasts(temp3$ezCov) = 'contr.helmert'
 				}else{
-					temp3[,names(temp3)==cov] = temp3[,names(temp3)==cov] - mean(temp3[,names(temp3)==cov])
+					temp3$ezCov = temp3$ezCov - mean(temp3$ezCov)
 				}
-				fit = eval(parse(text=paste('lm(formula=',dv,'~',cov,',data=temp3)',)
+				fit = eval(parse(text=paste('lm(formula=',dv,'~ezCov,data=temp3)')))
 				temp3$fitted = fitted(fit)
-				for(cov_lev in unique(temp3[,names(temp3)==cov])){
-					data[(data[,names(data)==cov]==cov_lev)&(data[,names(data)==wid]==this_wid),names(data)==dv] = data[(data[,names(data)==cov]==cov_lev)&(data[,names(data)==wid]==this_wid),names(data)==dv] - temp3$fitted[temp[,names(temp3)==cov]==cov_lev][1] + as.numeric(coef(fit)[1])
+				for(cov_lev in unique(as.character(temp3[,names(temp3)==cov]))){
+					data[(as.character(data[,names(data)==cov])==cov_lev)&(data[,names(data)==wid]==this_wid),names(data)==dv] = data[(as.character(data[,names(data)==cov])==cov_lev)&(data[,names(data)==wid]==this_wid),names(data)==dv] - temp3$fitted[as.character(temp3[,names(temp3)==cov])==cov_lev][1] + as.numeric(coef(fit)[1])
 				}
 			}
 		}
@@ -372,7 +375,7 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 		temp = idata.frame(cbind(data,ezDV=data[,names(data) == as.character(dv)]))
 		data <- ddply(
 			temp
-			,structure(as.list(c(wid,between,within_full,diff)),class = 'quoted')
+			,structure(as.list(c(wid,between,within,within_full,diff)),class = 'quoted')
 			,function(x){
 				to_return = mean(x$ezDV)
 				names(to_return) = as.character(dv)

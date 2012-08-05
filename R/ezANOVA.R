@@ -7,7 +7,7 @@ function(
 	, within_full = NULL
 	, within_covariates = NULL
 	, between = NULL
-	, betwen_covariates
+	, between_covariates = NULL
 	, observed = NULL
 	, diff = NULL
 	, reverse_diff = FALSE
