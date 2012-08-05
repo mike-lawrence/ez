@@ -3,8 +3,8 @@ function(
 	fit
 	, to_predict = NULL
 	, numeric_res = 0
-	, do_parametric_bootstrap = TRUE
-	, parametric_bootstrap_iterations = 1e3
+	, boot = TRUE
+	, iterations = 1e3
 	, zero_intercept_variance = TRUE
 ){
 	fit_class = class(fit)[1]
@@ -128,10 +128,10 @@ function(
 	tc = Matrix::tcrossprod(v,mm)
 	to_return$var = Matrix::diag(mm %*% tc)
 	to_return = to_return[,names(to_return) %in% c(data_vars,'value','var')]
-	if(do_parametric_bootstrap){
-		samples = mvrnorm(parametric_bootstrap_iterations,f,v)
-		mat = matrix(NA,nrow=nrow(to_return),ncol=parametric_bootstrap_iterations)
-		for(i in 1:parametric_bootstrap_iterations){
+	if(boot){
+		samples = mvrnorm(iterations,f,v)
+		mat = matrix(NA,nrow=nrow(to_return),ncol=iterations)
+		for(i in 1:iterations){
 			mat[,i] <- mm%*%samples[i,]
 		}
 		boots = as.data.frame(to_return[,names(to_return) %in% data_vars])
@@ -139,7 +139,7 @@ function(
 		boots = cbind(boots,as.data.frame(mat))
 		boots = melt(
 			data = boots
-			, id.vars = names(boots)[1:(ncol(boots)-parametric_bootstrap_iterations)]
+			, id.vars = names(boots)[1:(ncol(boots)-iterations)]
 			, variable.name = 'iteration'
 		)
 		to_return = list(
