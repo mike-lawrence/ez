@@ -167,7 +167,7 @@ function(data, dv, wid, within, between){
 }
 
 ezANOVA_main <-
-function(data, dv, wid, within, within_full, between, observed, diff, reverse_diff, type, return_aov, white.adjust){
+function(data, dv, wid, within, within_full, within_covariates, between, between_covariates, observed, diff, reverse_diff, type, return_aov, white.adjust){
 	vars = as.character(c(dv,wid,between,within,diff,within_full))
 	for(var in vars){
 		if(!(var %in% names(data))){
@@ -285,6 +285,83 @@ function(data, dv, wid, within, within_full, between, observed, diff, reverse_di
 		}
 		if(reverse_diff){
 			data[,names(data)==as.character(diff)] = factor(data[,names(data)==as.character(diff)],levels=rev(levels(data[,names(data)==as.character(diff)])))
+		}
+	}
+	########
+	# computing residuals from covariates
+	########
+	if((!is.null(between_covariates))|(!is.null(between_covariates))){
+		warning("Implementation of ANCOVA in this version of ez is experimental and not yet fully validated. Also, note that ANCOVA is intended purely as a tool to increase statistical power; ANCOVA can not eliminate confounds in the data. Specifically, covariates should: (1) be uncorrelated with other predictors and (2) should have effects on the DV that are independent of other predictors. Failure to meet these conditions may dramatically increase the rate of false-positives.",immediate.=TRUE,call.=FALSE)
+	}
+	if(!is.null(between_covariates)){
+		temp = idata.frame(cbind(data,ezDV=data[,names(data) == as.character(dv)]))
+		temp <- ddply(
+			temp
+			,structure(as.list(c(wid,between_covariates,within,within_full,diff)),class = 'quoted')
+			,function(x){
+				to_return = mean(x$ezDV)
+				names(to_return) = as.character(dv)
+				return(to_return)
+			}
+		)
+		temp = idata.frame(cbind(temp,ezDV=temp[,names(temp) == as.character(dv)]))
+		temp <- ddply(
+			temp
+			,structure(as.list(c(wid,between_covariates)),class = 'quoted')
+			,function(x){
+				to_return = mean(x$ezDV)
+				names(to_return) = as.character(dv)
+				return(to_return)
+			}
+		)
+		for(cov in between_covariates){
+			if(is.factor(temp[,names(temp)==cov])){
+				contrasts(temp[,names(temp)==cov]) = 'contr.helmert'
+			}else{
+				temp[,names(temp)==cov] = temp[,names(temp)==cov] - mean(temp[,names(temp)==cov])
+			}
+			fit = eval(parse(text=paste('lm(formula=',dv,'~',cov,',data=temp)',)
+			temp$fitted = fitted(fit)
+			for(cov_lev in unique(data[,names(data)==cov])){
+				data[data[,names(data)==cov]==cov_lev,names(data)==dv] = data[data[,names(data)==cov]==cov_lev,names(data)==dv] - temp$fitted[temp[,names(temp)==cov]==cov_lev][1] + as.numeric(coef(fit)[1])
+			}
+		}
+	}
+	if(!is.null(within_covariates)){
+		temp = idata.frame(cbind(data,ezDV=data[,names(data) == as.character(dv)]))
+		temp <- ddply(
+			temp
+			,structure(as.list(c(wid,within_covariates,within,within_full,diff)),class = 'quoted')
+			,function(x){
+				to_return = mean(x$ezDV)
+				names(to_return) = as.character(dv)
+				return(to_return)
+			}
+		)
+		for(cov in within_covariates){
+			temp2 = idata.frame(cbind(temp,ezDV=temp[,names(temp) == as.character(dv)]))
+			temp2 <- ddply(
+				temp2
+				,structure(as.list(c(wid,cov)),class = 'quoted')
+				,function(x){
+					to_return = mean(x$ezDV)
+					names(to_return) = as.character(dv)
+					return(to_return)
+				}
+			)			
+			for(this_wid in unique(data[,names(data)==wid])){
+				temp3 = temp2[temp2[,names(temp2)==wid]==this_wid,]
+				if(is.factor(temp3[,names(temp3)==cov])){
+					contrasts(temp3[,names(temp3)==cov]) = 'contr.helmert'
+				}else{
+					temp3[,names(temp3)==cov] = temp3[,names(temp3)==cov] - mean(temp3[,names(temp3)==cov])
+				}
+				fit = eval(parse(text=paste('lm(formula=',dv,'~',cov,',data=temp3)',)
+				temp3$fitted = fitted(fit)
+				for(cov_lev in unique(temp3[,names(temp3)==cov])){
+					data[(data[,names(data)==cov]==cov_lev)&(data[,names(data)==wid]==this_wid),names(data)==dv] = data[(data[,names(data)==cov]==cov_lev)&(data[,names(data)==wid]==this_wid),names(data)==dv] - temp3$fitted[temp[,names(temp3)==cov]==cov_lev][1] + as.numeric(coef(fit)[1])
+				}
+			}
 		}
 	}
 	########

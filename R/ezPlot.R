@@ -5,8 +5,10 @@ function (
 	, wid
 	, within = NULL
 	, within_full = NULL
+	, within_covariates = NULL
 	, between = NULL
 	, between_full = NULL
+	, between_covariates = NULL
 	, x
 	, do_lines = TRUE
 	, do_bars = TRUE
@@ -28,7 +30,7 @@ function (
 	, y_free = FALSE
 	, print_code = FALSE
 ){
-	args_to_check = c('dv','wid','within','between','within_full','between_full','diff','x','split','row','col','to_numeric')
+	args_to_check = c('dv','wid','within','between','within_full','between_full','diff','x','split','row','col','to_numeric','within_covariates','between_covariates')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
 		arg_name = names(args)[i]
@@ -118,7 +120,7 @@ function (
 		if(!is.data.frame(data)){
 			stop('"data" cannot be a list when specifying only one dv.')
 		}
-		stats = ezStats(data=data,dv=dv,wid=wid,within=within,between=between,between_full=between_full,diff=diff,reverse_diff=reverse_diff,type=type,check_args=F)
+		stats = ezStats(data=data,dv=dv,wid=wid,within=within,within_full=within_full,within_covariates=within_covariates,between=between,between_full=between_full,between_covariates=between_covariates,diff=diff,reverse_diff=reverse_diff,type=type,check_args=F)
 	}else{
 		if(!is.null(row)){
 			stop('You may not specify a variable to "row" when also specifying multiple dvs.')
@@ -140,8 +142,10 @@ function (
 							, wid = wid
 							, within = within
 							, within_full = within_full
+							, within_covariates = within_covariates
 							, between = between
 							, between_full = between_full
+							, between_covariates = between_covariates
 							, diff = diff
 							, reverse_diff = reverse_diff
 							, type = type

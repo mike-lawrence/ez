@@ -5,15 +5,17 @@ function (
 	, wid
 	, within = NULL
 	, within_full = NULL
+	, within_covariates = NULL
 	, between = NULL
 	, between_full = NULL
+	, between_covariates = NULL
 	, diff = NULL
 	, reverse_diff = FALSE
 	, type = 2
 	, check_args = TRUE
 ){
 	if(check_args){
-		args_to_check = c('dv','wid','within','between','within_full','between_full','diff')
+		args_to_check = c('dv','wid','within','between','within_full','between_full','diff','within_covariates','between_covariates')
 		args = as.list(match.call()[-1])
 		for(i in 1:length(args)){
 			arg_name = names(args)[i]
@@ -45,7 +47,9 @@ function (
 		, wid = wid
 		, within = within
 		, within_full = within_full
+		, within_covariates = within_covariates
 		, between = temp_between
+		, between_covariates = between_covariates
 		, diff = diff
 		, reverse_diff = reverse_diff
 		, type = type
@@ -93,7 +97,6 @@ function (
 		data
 		, ezDV = data[,names(data) == as.character(dv)]
 	))
-	
 	data <- ddply(
 		temp
 		,structure(as.list(c(between,within)),class = 'quoted')

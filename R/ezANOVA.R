@@ -5,7 +5,9 @@ function(
 	, wid
 	, within = NULL
 	, within_full = NULL
+	, within_covariates = NULL
 	, between = NULL
+	, betwen_covariates
 	, observed = NULL
 	, diff = NULL
 	, reverse_diff = FALSE
@@ -14,7 +16,7 @@ function(
 	, detailed = FALSE
 	, return_aov = FALSE
 ){
-	args_to_check = c('dv','wid','within','between','observed','diff','within_full')
+	args_to_check = c('dv','wid','within','between','observed','diff','within_full','within_covariates','between_covariates')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
 		arg_name = names(args)[i]
@@ -39,7 +41,9 @@ function(
 		, wid = wid
 		, within = within
 		, within_full = within_full
+		, within_covariates = within_covariates
 		, between = between
+		, between_covariates = between_covariates
 		, diff = diff
 		, reverse_diff = reverse_diff
 		, type = type
