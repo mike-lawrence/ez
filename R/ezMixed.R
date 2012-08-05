@@ -43,14 +43,18 @@ function(
 		}
 	}
 	if(!is.null(progress_dir)){
-		dir.create(progress_dir)
-		dir.create(paste(progress_dir,'models',sep='/'))
+		if(!file.exists(progress_dir)){
+			dir.create(progress_dir)
+		}
+		if(!file.exists(paste(progress_dir,'models',sep='/'))){
+			dir.create(paste(progress_dir,'models',sep='/'))
+		}
 		if(return_models){
 			warning(paste('"progress_dir" set to "',progress_dir,'"; setting "return_models" to FALSE.',sep=''),immediate.=TRUE,call.=FALSE)
 			return_models = FALSE
 		}
 		if(resume){
-			terms_done= list.files(
+			terms_done = list.files(
 				path = progress_dir
 				, pattern = '.RData'
 			)
