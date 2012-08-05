@@ -241,6 +241,23 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 				return(to_return)
 			}
 		)
+		wid_temp = data.frame(table(temp$wid))
+		if(any(wid_temp$Freq>1)){
+			warning(paste('The column supplied as the wid variable contains non-unique values across levels of the supplied between-Ss variables. Automatically fixing this by generating unique wid labels.',sep=''),immediate.=TRUE,call.=FALSE)
+			data[,names(data)==wid] = as.character(data[,names(data)==wid])
+			for(i in unique(as.character(between))){
+				data[,names(data)==wid] = paste(data[,names(data)==wid],data[,names(data)==i])
+			}
+			data[,names(data)==wid] = factor(data[,names(data)==wid])
+			temp = ddply(
+				idata.frame(data)
+				,structure(as.list(c(wid,between)),class = 'quoted')
+				,function(x){
+					to_return = 0
+					return(to_return)
+				}
+			)
+		}
 		temp = ddply(
 			temp
 			,structure(as.list(c(between)),class = 'quoted')
