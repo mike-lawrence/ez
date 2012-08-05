@@ -13,7 +13,16 @@ function(
 	, ci_colour = 'green'
 	, ci_alpha = .5
 	, test_alpha = .05
+	, test_correction = 'none'
 ){
+	ntests = ((((ncol(data)-1)^2)-(ncol(data)-1))/2)
+	if(test_correction[1]=='bonferroni'){
+		test_alpha = test_alpha/ntests
+	}else{
+		if(test_correction[1]=='sidak'){
+			test_alpha = 1-(1-test_alpha)^(1/ntests)
+		}
+	}
 	for(i in 1:length(data)){
 		data[,i]=(data[,i]-mean(data[,i],na.rm=T))/sd(data[,i],na.rm=T)
 	}
