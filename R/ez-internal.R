@@ -337,6 +337,7 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 				contrasts(temp$ezCov) = 'contr.helmert'
 			}else{
 				temp$ezCov = temp$ezCov - mean(temp$ezCov)
+				warning('Covariate"',cov,'" is numeric and will therefore be fit to a linear effect.',immediate.=TRUE,call.=FALSE)
 			}
 			fit = eval(parse(text=paste('lm(formula=',dv,'~ezCov,data=temp)')))
 			temp$fitted = fitted(fit)
@@ -368,6 +369,9 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 					return(to_return)
 				}
 			)
+			if(is.numeric(temp2[,names(temp2)==cov])){
+				warning('Covariate"',cov,'" is numeric and will therefore be fit to a linear effect.',immediate.=TRUE,call.=FALSE)
+			}
 			for(this_wid in unique(as.character(data[,names(data)==wid]))){
 				temp3 = temp2[temp2[,names(temp2)==wid]==this_wid,]
 				temp3$ezCov = temp3[,names(temp3)==cov]
