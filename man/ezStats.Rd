@@ -76,7 +76,7 @@ The descriptives include Fisher's Least Significant Difference for the plotted e
 A data frame containing the descriptive statistics for the requested effect. N = number of Ss per cell. Mean = between-Ss mean. SD = between-Ss SD. FLSD = Fisher's Least Significant Difference.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Michael A. Lawrence \email{mike.lwrnc@gmail.com}\cr
 Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
 for the bug/issue tracker and the link to the mailing list.
 }

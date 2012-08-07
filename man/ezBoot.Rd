@@ -64,7 +64,7 @@ A list containing either two or three components:
 \item{boots}{A data frame containing predictions for each cell of the design from each iteration of the bootstrap procedure.}
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Michael A. Lawrence \email{mike.lwrnc@gmail.com}\cr
 Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
 for the bug/issue tracker and the link to the mailing list.
 }

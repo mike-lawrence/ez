@@ -38,7 +38,7 @@ Logical. If TRUE (default), bootstrap samples will be obtained after setting the
 A data frame containing the prediction value (and estimated variance of this value) for each cell in the fixed effects design.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Michael A. Lawrence \email{mike.lwrnc@gmail.com}\cr
 Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
 for the bug/issue tracker and the link to the mailing list.
 }

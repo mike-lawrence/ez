@@ -110,7 +110,7 @@ Logical. If TRUE, computation will be parallel, assuming that a parallel backend
 If \code{do_plot} is TRUE (default) and \code{print_code} if FALSE (default), a printable/modifiable ggplot2 object representing the predictions and confidence intervals. If \code{do_plot} is FALSE or \code{print_code} is TRUE, a list containing the cell predictions and bootstrapped CIs is returned.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Michael A. Lawrence \email{mike.lwrnc@gmail.com}\cr
 Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
 for the bug/issue tracker and the link to the mailing list.
 }

@@ -49,7 +49,7 @@ A data frame containing the permutation test results.
 \code{ezPerm()} is a work in progress. Under the current implementation, only main effects may be trusted.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Michael A. Lawrence \email{mike.lwrnc@gmail.com}\cr
 Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
 for the bug/issue tracker and the link to the mailing list.
 }

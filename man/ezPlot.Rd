@@ -138,7 +138,7 @@ The default error bars are Fisher's Least Significant Difference for the plotted
 If \code{print_code} is FALSE, printable/modifiable ggplot2 object is returned. If \code{print_code} is TRUE, the code for creating the ggplot2 plot object is printed and the data to be plotted is returned instead of the plot itself.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Michael A. Lawrence \email{mike.lwrnc@gmail.com}\cr
 Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
 for the bug/issue tracker and the link to the mailing list.
 }

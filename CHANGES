@@ -1,6 +1,7 @@
 4.0-2
 - updated .Rbuildignore to ignore .gitignore
 - reduced time it takes to check examples by encapsulating unnecessary examples in \dontrun{}
+- fixed bug in ezANOVA/ezStats/ezPlot code that attempts to automatically fix situations when there are repeated wid levels across levels of between variables 
 
 4.0-1
 - All functions
