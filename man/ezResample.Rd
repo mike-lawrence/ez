@@ -67,7 +67,7 @@ var_boots = ldply(
             , between = .(group)
         )
         cell_vars = ddply(
-            .data = this_resample
+            .data = idata.frame(this_resample)
             , .variables = .(subnum,cue,flank,group)
             , .fun = function(x){
                 to_return = data.frame(
@@ -77,7 +77,7 @@ var_boots = ldply(
             }
         )
         mean_cell_vars = ddply(
-            .data = cell_vars
+            .data = idata.frame(cell_vars)
             , .variables = .(cue,flank,group)
             , .fun = function(x){
                 to_return = data.frame(

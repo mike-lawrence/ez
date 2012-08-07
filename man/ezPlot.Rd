@@ -152,6 +152,7 @@ head(ANT)
 ezPrecis(ANT)
 
 
+\dontrun{
 #Run an ANOVA on the mean correct RT data.
 mean_rt_anova = ezANOVA(
     data = ANT[ANT$error==0,]
@@ -163,7 +164,7 @@ mean_rt_anova = ezANOVA(
 
 #Show the ANOVA and assumption tests.
 print(mean_rt_anova)
-
+}
 
 #Plot the main effect of group.
 group_plot = ezPlot(

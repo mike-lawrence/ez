@@ -1,34 +1,55 @@
-4.0-0
-- rolled back R version dependency to 2.11-0
+4.0-2
+- updated .Rbuildignore to ignore .gitignore
+- reduced time it takes to check examples by encapsulating unnecessary examples in \dontrun{}
+
+4.0-1
+- All functions
+-    Previously, ez used the .() function to permit referral to column names without having to use quotes or the my_data$my_column format. One still needs to use .() when supplying multiple column names, but in cases where an argument is being supplied with a single column name, you no longer even have to type .(); you can simply type the column name.
 - ezANOVA
--    fixed bug that caused ezANOVA to return type-2 SS results even when type-3 SS results were requested
--    fixed bug causing error when design is completely between-Ss and unbalanced
--    corrected documentation, which previously reported an interpretation of a p-value as "the probability of the null hypothesis, given the data", when the proper interpretation is (of course) "probability of the data, given the null hypothesis".
-- ezMixed
--     Added ability to estimate models in parallel using multiple cores
--     Added the left-hand-side of the formula to the formulas returned by ezMixed (this makes it easier to use the formulas for follow-up exploration)
--     Added ability to specify covariates
--     Fixed bug that might cause an error with specifying "results_as_progress=TRUE"
--     Fixed bug preventing exploration of polynomials greater than 9
-- ezResample
--     Speed improvements achieved by more efficient code 
--     Added "resample_between" argument
--     eliminated superfluous "dv" argument
+-    Added ability to specify covariates (applies to ezPlot and ezStats too)
+-    Added "within_full" argument to implement proper automatic collapsing of cell means when values supplied to "within" represent a subset of the full design. (applies to ezPlot and ezStats too)
+-    Fixed bug preventing use of returned aov object with stats::TukeyHSD()
+-    Fixed bug that caused ezANOVA to return type-2 SS results even when type-3 SS results were requested
+-    Fixed bug causing error when design is completely between-Ss and unbalanced (applies to ezPlot and ezStats too)
+-    Corrected documentation, which previously reported an interpretation of a p-value as "the probability of the null hypothesis, given the data", when the proper interpretation is (of course) "probability of the data, given the null hypothesis".
 - ezBoot
 -     Added "show_progress" argument that permits turning on/off the progress bar
 -     Added ability to perform computation in parallel using multiple cores
 -     Added ability to perform a residuals bootstrap
 -     Switched from "timeCI" progress bar to the simpler/faster "time" progress bar
 -     Fixed bug causing error when lmer=TRUE and only 1 predictor variable is supplied
-- ezBootPlot
--     Added ability to suppress creating a plot object (useful when simply trying to obtain the bootstrap stats)
--     Fixed bug that ignored the "alarm" argument
+- ezCor
+-    Added ability to apply various corrections for multiple comparisons
+- ezMixed
+-     Switched to "bits" representation of likelihood ratios
+-     Added ability to capture possibly-non-linear effects of numeric predictors via generalized additive modelling (no more polynomials!)
+-     Added ability to characterize predictors' effects on the distribution of residuals
+-     Added ability to estimate models in parallel using multiple cores
+-     Added ability to store results to file, saving RAM during computations
+-     Added ability to pass-through arguments to mgcv::gam and lme4::lmer/lme4::glmer (useful for modifying the control parameters for example)
+-     Added the left-hand-side of the formula to the formulas returned by ezMixed (this makes it easier to use the formulas for follow-up exploration)
+-     Added ability to specify covariates
+-     Fixed bug that might cause an error with specifying "results_as_progress=TRUE"
+-     Fixed bug preventing exploration of polynomials greater than 9
 - ezPerm
 -     Added ability to perform computation in parallel using multiple cores
+- ezPlot
+-     Added ability to print code to create the ggplot2 plot object (useful for learning ggplot2 or applying more nuanced tweaks than would be available from simply modifying the ggplot2 object typically returned)
+- ezPlot2 (previously ezBootPlot)
+-     Added ability to suppress creating a plot object (useful when simply trying to obtain the bootstrap stats)
+-     Added a number of arguments to tweak the aesthetics
+-     Added ability to print code to create the ggplot2 plot object (useful for learning ggplot2 or applying more nuanced tweaks than would be available from simply modifying the ggplot2 object typically returned)
+-     Fixed bug that ignored the "alarm" argument
 - ezPredict
+-     Added ability to compute parametric bootstrap samples, yielding output visualizable via ezPlot2
 -     Fixed bug that prevented obtaining predictions when the name of one variable appeared in the name of other variables.
 -     Fixed bug preventing custom specification of to_predict
--     Added ability to compute parametric bootstrap samples, yielding output visualizable via ezBootPlot
+- ezResample
+-     Speed improvements achieved by more efficient code 
+-     Added "resample_between" argument
+-     eliminated superfluous "dv" argument
+- progress_time_CI
+-     Removed
 
 3.0-0
 - added urls in all documentation pointing to the bug-report/feature-request site (https://github.com/mike-lawrence/ez/issues) and the discussion group (http://groups.google.com/group/ez4r).

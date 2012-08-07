@@ -66,6 +66,7 @@ ezDesign(
 )
 #subnum #7 is missing data from the last half of the experiment
 
+\dontrun{
 ezDesign(
     data = ANT2
     , x = flank
@@ -86,5 +87,5 @@ ezDesign(
 ##they made all errors in this condition
 #finally, subnum#12 has virtually no data, suggesting that they mistakenly 
 ##swapped responses
-
+}
 }

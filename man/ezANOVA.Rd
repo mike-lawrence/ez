@@ -116,6 +116,7 @@ for the bug/issue tracker and the link to the mailing list.
 \code{\link{ezBoot}}, \code{\link{ezMixed}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezStats}}
 }
 \examples{
+	
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)
@@ -134,7 +135,8 @@ rt_anova = ezANOVA(
 #Show the ANOVA and assumption tests.
 print(rt_anova)
 
-#Run an ANOVA on the mean_rt data, ignoring group.
+\dontrun{
+#Run an ANOVA on the mean correct RT data, ignoring group.
 rt_anova2 = ezANOVA(
     data = ANT[ANT$error==0,]
     , dv = rt
@@ -144,6 +146,7 @@ rt_anova2 = ezANOVA(
 
 #Show the ANOVA and assumption tests.
 print(rt_anova2)
+}
 
 #Run a purely between-Ss ANOVA on the mean_rt data.
 #NOTE use of within_full to ensure that the data are
@@ -163,6 +166,7 @@ print(rt_anova3)
 #add a within-Ss effect to be used as a covariate
 ANT$rt2 = ANT$rt + ANT$block*1000 #additive with and independent of the other predictors!
 
+\dontrun{
 #Run an anova that doesn't use the covariate
 rt_anova4a = ezANOVA(
     data = ANT[ANT$error==0,]
@@ -175,8 +179,9 @@ rt_anova4a = ezANOVA(
 #Show the ANOVA and assumption tests. 
 # Note loss of power to observe the within effects
 print(rt_anova4a)
+}
 
-#Run an anova that doesn't use the covariate
+#Run an anova that does use the covariate
 rt_anova4b = ezANOVA(
     data = ANT[ANT$error==0,]
     , dv = rt2
@@ -195,6 +200,7 @@ print(rt_anova4b)
 ANT$bc = as.numeric(as.character(ANT$subnum))\%\%10 #Note that the effect is balanced across groups
 ANT$rt3 = ANT$rt + ANT$bc*1000 #additive with and independent of the other predictors!
 
+\dontrun{
 #Run an anova that doesn't use the covariate
 rt_anova5a = ezANOVA(
     data = ANT[ANT$error==0,]
@@ -207,8 +213,9 @@ rt_anova5a = ezANOVA(
 #Show the ANOVA and assumption tests. 
 # Note loss of power to observe the between effects
 print(rt_anova5a)
+}
 
-#Run an anova that doesn't use the covariate
+#Run an anova that does use the covariate
 rt_anova5b = ezANOVA(
     data = ANT[ANT$error==0,]
     , dv = rt2

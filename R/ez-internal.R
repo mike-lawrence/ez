@@ -241,7 +241,7 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 				return(to_return)
 			}
 		)
-		wid_temp = data.frame(table(temp$wid))
+		wid_temp = data.frame(table(temp[,names(temp)==wid]))
 		if(any(wid_temp$Freq>1)){
 			warning(paste('The column supplied as the wid variable contains non-unique values across levels of the supplied between-Ss variables. Automatically fixing this by generating unique wid labels.',sep=''),immediate.=TRUE,call.=FALSE)
 			data[,names(data)==wid] = as.character(data[,names(data)==wid])

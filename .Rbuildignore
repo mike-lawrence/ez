@@ -1,2 +1,3 @@
-.git/
+.git*
 .md
+.DS_Store

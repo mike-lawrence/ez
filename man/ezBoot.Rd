@@ -72,6 +72,7 @@ for the bug/issue tracker and the link to the mailing list.
 \code{link{ezANOVA}}, \code{\link{ezMixed}}, \code{\link{ezPerm}}, \code{\link{ezPlot2}}, \code{\link{ezResample}}
 }
 \examples{
+
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)
@@ -87,6 +88,7 @@ rt = ezBoot(
     , iterations = 1e1 #1e3 or higher is best for publication
 )
 
+\dontrun{
 #plot the full design
 p = ezPlot2(
     preds = rt
@@ -112,5 +114,5 @@ p = ezPlot2(
     , split = cue
 )
 print(p)
-
+}
 }

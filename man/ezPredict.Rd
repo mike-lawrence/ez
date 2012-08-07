@@ -50,37 +50,25 @@ for the bug/issue tracker and the link to the mailing list.
 data(ANT)
 head(ANT)
 
-#fit a mixed effects model to the error rate data
-er_fit = lmer(
-    formula = error ~ cue*flank*group + (1|subnum)
-    , family = binomial
-    , data = ANT
+#fit a mixed effects model to the rt data
+rt_fit = lmer(
+    formula = rt ~ cue*flank*group + (1|subnum)
+    , data = ANT[ANT$error==0,]
 )
 
 #obtain the predictions from the model
-er_preds = ezPredict(
-    fit = er_fit
+rt_preds = ezPredict(
+    fit = rt_fit
 )
 
 
 #visualize the predictions
 ezPlot2(
-    preds = er_preds
+    preds = rt_preds
     , x = flank
     , row = cue
     , col = group
-    , y_lab = 'Error rate (log-odds)'
+    , y_lab = 'RT (ms)'
 )
-
-#visualize the predictions as a difference
-# score for the group effect
-ezPlot2(
-    preds = er_preds
-    , x = flank
-    , row = cue
-    , diff = group
-    , y_lab = 'Group effect on\nError rate (log-odds)'
-)
-
 
 }
