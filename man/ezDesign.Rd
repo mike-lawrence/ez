@@ -54,6 +54,9 @@ data(ANT2)
 head(ANT2)
 ezPrecis(ANT2)
 
+#toss NA trials
+ANT2 = ANT2[!is.na(ANT2$rt),]
+
 ezDesign(
     data = ANT2
     , x = trial
