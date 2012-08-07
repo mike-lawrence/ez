@@ -12,6 +12,7 @@ function(
 	, gam_smooth = c('s','te')
 	, gam_bs = 'ts'
 	, gam_k = Inf
+	, use_bam = FALSE
 	, alarm = FALSE
 	, term_labels = NULL
 	, highest = Inf
@@ -187,35 +188,37 @@ function(
 				)
 				, '+'
 			)
-			if(is.null(covariates[covariates %in% numeric_covariates])){
-				formula_base = paste(
-					formula_base
-					, '+'
-					, paste(
-						gam_smooth[1]
-						,'('
-						, covariates[covariates %in% numeric_covariates]
-						, ',bs="'
-						, gam_bs
-						, '")'
-						, collapse = '+'
+			if(!is.null(covariates)){
+				if(!is.null(covariates[covariates %in% numeric_covariates])){
+					formula_base = paste(
+						formula_base
+						, '+'
+						, paste(
+							gam_smooth[1]
+							,'('
+							, covariates[covariates %in% numeric_covariates]
+							, ',bs="'
+							, gam_bs
+							, '")'
+							, collapse = '+'
+							, sep = ''
+						)
+						, '+'
 						, sep = ''
 					)
-					, '+'
-					, sep = ''
-				)
-			}
-			if(is.null(covariates[!(covariates %in% numeric_covariates)])){
-				formula_base = paste(
-					formula_base
-					, '+'
-					, paste(
-						covariates[!(covariates %in% numeric_covariates)]
-						, collapse = '+'
-					)
-					, '+'
-					, sep = ''
-				)			
+				}
+				if(!is.null(covariates[!(covariates %in% numeric_covariates)])){
+					formula_base = paste(
+						formula_base
+						, '+'
+						, paste(
+							covariates[!(covariates %in% numeric_covariates)]
+							, collapse = '+'
+						)
+						, '+'
+						, sep = ''
+					)			
+				}
 			}
 		}else{
 			formula_base = paste(
@@ -362,11 +365,21 @@ function(
 					fit <- withCallingHandlers(
 						{ 
 							eval(parse(text=paste(
-								"bam( formula ="
+								ifelse(
+									use_bam
+									, 'bam'
+									, 'gam'
+								)
+								, "( formula ="
 								, formula
-								, ", data = this_data , method = 'ML' "
-								, gam_args
+								, ", data = this_data , method = 'ML' , family = family"
+								, ifelse(
+									!is.null(gam_args)
+									, paste(',',gam_args)
+									, ''
+								)
 								, ")"
+								, sep = ''
 							)))
 						}
 						, warning = function(x) {w<<-c(w,x$message)}
@@ -378,12 +391,16 @@ function(
 				try(
 					fit <- withCallingHandlers(
 						{ 
-							if(identical(family,gaussian)|(family=='gaussian')){
+							if(!identical(family,gaussian)|identical(family,'gaussian')){
 								eval(parse(text=paste(
 									"lmer( formula = "
 									, formula
 									, ", data = this_data , REML = FALSE"
-									, mer_args
+									, ifelse(
+										!is.null(mer_args)
+										, paste(',',mer_args)
+										, ''
+									)
 									, ")"
 								)))
 							}else{
@@ -391,7 +408,11 @@ function(
 									"glmer( formula ="
 									, formula
 									, ", data = this_data, family = family"
-									, mer_args
+									, ifelse(
+										!is.null(mer_args)
+										, paste(',',mer_args)
+										, ''
+									)
 									, ")"
 								)))
 							}

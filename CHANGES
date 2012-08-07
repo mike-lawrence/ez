@@ -1,6 +1,8 @@
 4.0-3
-- fixed bug in ezMixed when family=gaussian (default)
-- changed author email address
+- Fixed bug in ezMixed when family=gaussian (default)
+- Fixed bug in ezMixed use of gam_args and mer_args
+- Added ability to use bam instead of gam via argument to ezMixed
+- Changed author email address
 
 4.0-2
 - updated .Rbuildignore to ignore .gitignore
