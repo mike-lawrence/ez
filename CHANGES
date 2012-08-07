@@ -1,3 +1,7 @@
+4.0-3
+- fixed bug in ezMixed when family=gaussian (default)
+- changed author email address
+
 4.0-2
 - updated .Rbuildignore to ignore .gitignore
 - reduced time it takes to check examples by encapsulating unnecessary examples in \dontrun{}
