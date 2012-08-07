@@ -5,7 +5,7 @@ function(
 	, numeric_res = 0
 	, boot = TRUE
 	, iterations = 1e3
-	, zero_intercept_variance = TRUE
+	, zero_intercept_variance = FALSE
 ){
 	fit_class = class(fit)[1]
 	if((fit_class=='mer')|(fit_class=='glmerMod')|(fit_class=='lmerMod')){

@@ -2,9 +2,9 @@ ezMixed <-
 function(
 	data
 	, dv
+	, family = gaussian
 	, random
 	, fixed
-	, family = gaussian
 	, covariates = NULL
 	, add_q = FALSE
 	, fix_gam = TRUE
@@ -14,7 +14,7 @@ function(
 	, gam_k = Inf
 	, alarm = FALSE
 	, term_labels = NULL
-	, highest = 0
+	, highest = Inf
 	, return_models = TRUE
 	, correction = AIC
 	, progress_dir = NULL
@@ -106,7 +106,7 @@ function(
 		from_terms = terms(eval(parse(text=to_terms)))
 		term_labels = attr(from_terms,'term.labels')
 	}
-	if(highest>0){
+	if(is.finite(highest)){
 		term_labels = term_labels[laply((strsplit(term_labels,':')),length)<=highest]
 	}
 	for(i in 1:length(term_labels)){

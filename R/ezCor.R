@@ -176,20 +176,41 @@ function(
 			, label='label'
 		)
 	)
+	y_lab = NULL
+	x_lab = NULL
 	f = facet_grid(y_lab~x_lab)
-	o = opts(
-		panel.grid.minor = theme_blank()
-		,panel.grid.major = theme_blank()
-		,axis.ticks = theme_blank()
-		,axis.text.y = theme_blank()
-		,axis.text.x = theme_blank()
-		,axis.title.y = theme_blank()
-		,axis.title.x = theme_blank()
-		,legend.position='none'
-		,strip.background = theme_blank()
-		,strip.text.x = theme_blank()
-		,strip.text.y = theme_blank()
-	)
+	packs = installed.packages()
+	ggplot2_version_char = packs[dimnames(packs)[[1]]=='ggplot2',dimnames(packs)[[2]]=='Version']
+	ggplot2_version_char = strsplit(ggplot2_version_char,'.',fixed=T)[[1]]
+	if((ggplot2_version_char[1]>0)|(ggplot2_version_char[2]>9)|(ggplot2_version_char[3]>1)){
+		o = theme(
+			panel.grid.minor = element_blank()
+			,panel.grid.major = element_blank()
+			,axis.ticks = element_blank()
+			,axis.text.y = element_blank()
+			,axis.text.x = element_blank()
+			,axis.title.y = element_blank()
+			,axis.title.x = element_blank()
+			,legend.position='none'
+			,strip.background = element_blank()
+			,strip.text.x = element_blank()
+			,strip.text.y = element_blank()
+		)
+	}else{
+		o = opts(
+			panel.grid.minor = theme_blank()
+			,panel.grid.major = theme_blank()
+			,axis.ticks = theme_blank()
+			,axis.text.y = theme_blank()
+			,axis.text.x = theme_blank()
+			,axis.title.y = theme_blank()
+			,axis.title.x = theme_blank()
+			,legend.position='none'
+			,strip.background = theme_blank()
+			,strip.text.x = theme_blank()
+			,strip.text.y = theme_blank()
+		)
+	}
 	x_scale = scale_x_continuous(limits = c( -1*max(abs(dens$x)) , max(abs(dens$x)) ) )
 	size_scale = scale_size(limits = c(0,1),range=r_size_lims)
 	return(

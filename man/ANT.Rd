@@ -25,9 +25,9 @@ A data frame with 5760 observations on the following 10 variables.
 J Fan, BD McCandliss, T Sommer, A Raz, MI Posner (2002). Testing the efficiency and independence of attentional networks. \emph{Journal of Cognitive Neuroscience}, \bold{14}, 340-347.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}
-To report bugs or request features, please visit: \url{https://github.com/mike-lawrence/ez/issues}
-To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
+Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
+for the bug/issue tracker and the link to the mailing list.
 }
 \examples{
 data(ANT)

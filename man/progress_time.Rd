@@ -8,19 +8,19 @@ This function is intended to be used with the various plyr functions. See exampl
 progress_time()
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}
-To report bugs or request features, please visit: \url{https://github.com/mike-lawrence/ez/issues}
-To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
+Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
+for the bug/issue tracker and the link to the mailing list.
 }
 \examples{
 
 \dontrun{
 l_ply(
-	.data = 1:1e3
-	, .fun = function(x){
-		Sys.sleep(1)
-	}
-	, .progress = 'time'
+    .data = 1:1e3
+    , .fun = function(x){
+        Sys.sleep(1)
+    }
+    , .progress = 'time'
 )
 }
 

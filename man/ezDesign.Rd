@@ -6,12 +6,12 @@ This function provides easy visualization of the balance of data in a data set g
 }
 \usage{
 ezDesign(
-	data
-	, x
-	, y
-	, row = NULL
-	, col = NULL
-	, cell_border_size = 10
+    data
+    , x
+    , y
+    , row = NULL
+    , col = NULL
+    , cell_border_size = 10
 )
 }
 \arguments{
@@ -41,9 +41,9 @@ The function works by counting the number of rows in \code{data} in each cell of
 A printable/modifiable ggplot2 object.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}
-To report bugs or request features, please visit: \url{https://github.com/mike-lawrence/ez/issues}
-To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
+Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
+for the bug/issue tracker and the link to the mailing list.
 }
 \seealso{
 \code{\link{ezPrecis}}
@@ -55,28 +55,28 @@ head(ANT2)
 ezPrecis(ANT2)
 
 ezDesign(
-data = ANT2
-, x = trial
-, y = subnum
-, row = block
-, col = group
+    data = ANT2
+    , x = trial
+    , y = subnum
+    , row = block
+    , col = group
 )
 #subnum #7 is missing data from the last half of the experiment
 
 ezDesign(
-data = ANT2
-, x = flank
-, y = subnum
-, row = cue
+    data = ANT2
+    , x = flank
+    , y = subnum
+    , row = cue
 )
 #again, subnum#7 has half the data as the rest
 
 #now look at error rates, which affect the number of RTs we can use
 ezDesign(
-data = ANT2[ANT2$error==0,]
-, x = flank
-, y = subnum
-, row = cue
+    data = ANT2[ANT2$error==0,]
+    , x = flank
+    , y = subnum
+    , row = cue
 )
 #again, subnum#7 stands out because they have half the data as the rest
 #also, subnum#14 has no data in any incongruent cells, suggesting that 

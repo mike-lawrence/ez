@@ -225,7 +225,7 @@ function(
 			p = paste(p,"\n\t, alpha = ",CI_alpha,"\n)",sep='')
 			p = paste(p,"+\ngeom_point(\n\tdata = cells\n\t, mapping = aes(\n\t\tx = ",x,"\n\t\t, y = value",sep='')
 			if(!is.null(split)){
-				p = paste(p,"\n\t\tcolour = ",split,"\n\t\t, shape = ",split,sep='')
+				p = paste(p,"\n\t\t, colour = ",split,"\n\t\t, shape = ",split,sep='')
 			}
 			p = paste(p,"\n\t)\n\t, alpha = ",point_alpha,"\n)")
 		}else{
@@ -270,14 +270,14 @@ function(
 		}
 		if(str_detect(p,"alpha = CI")){
 			p = paste(p,"+\nscale_alpha_manual(\n\tvalues = c(",sep='')
-			for(i in 1:(length(confidence)-1)){
+			for(i in 1:(length(CI)-1)){
 				paste(p,bar_width[i],",",sep='')
 			}
 			paste(p,bar_width[i+1],")\n)",sep='')
 		}
 		if(str_detect(p,"width = CI")){
 			p = paste(p,"+\nscale_width_manual(\n\tvalues = c(",sep='')
-			for(i in 1:(length(confidence)-1)){
+			for(i in 1:(length(CI)-1)){
 				paste(p,bar_width[i],",",sep='')
 			}
 			paste(p,bar_width[i+1],")\n)",sep='')
@@ -308,7 +308,7 @@ function(
 					}
 				}else{
 					if(!is.null(split_lab)){
-						p = paste(p,"\n\tcolour = '",split_lab,"'",sep='')
+						p = paste(p,"\n\t, colour = '",split_lab,"'",sep='')
 						p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
 						if(do_lines){
 							p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')
@@ -319,6 +319,9 @@ function(
 			p = paste(p,'\n)',sep='')
 		}
 		to_return = p
+		if(alarm){
+			alarm()
+		}
 		if(print_code){
 			cat(p)
 			return(list(cells=cells,boot_stats=boot_stats))
@@ -326,13 +329,9 @@ function(
 			return(eval(parse(text=p)))
 		}
 	}else{
-		to_return = data.frame(cells)
-		names(to_return)[ncol(to_return)] = 'value'
-		to_return$lo = boot_stats[[1]]$lo
-		to_return$hi = boot_stats[[1]]$hi
+		if(alarm){
+			alarm()
+		}
+		return(list(cells=cells,boot_stats=boot_stats))
 	}
-	if(alarm){
-		alarm()
-	}
-	return(to_return)
 }

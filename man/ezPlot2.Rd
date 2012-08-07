@@ -6,36 +6,37 @@ This function provides easy visualization of any given user-requested effect fro
 }
 \usage{
 ezPlot2(
-	preds
-	, confidence = .95
-	, x = NULL
-	, split = NULL
-	, row = NULL
-	, col = NULL
-	, do_lines = TRUE
-	, ribbon = FALSE
-	, confidence_alpha = .5
-	, point_alpha = .8
-	, line_alpha = .8
-	, bar_width = NULL
-	, to_numeric = NULL
-	, x_lab = NULL
-	, y_lab = NULL
-	, split_lab = NULL
-	, levels = NULL
-	, diff = NULL
-	, reverse_diff = NULL
-	, y_free = FALSE
-	, alarm = FALSE
-	, do_plot = TRUE
-	, parallel = FALSE
+    preds
+    , CI = .95
+    , x = NULL
+    , split = NULL
+    , row = NULL
+    , col = NULL
+    , do_lines = TRUE
+    , ribbon = FALSE
+    , CI_alpha = .5
+    , point_alpha = .8
+    , line_alpha = .8
+    , bar_width = NULL
+    , to_numeric = NULL
+    , x_lab = NULL
+    , y_lab = NULL
+    , split_lab = NULL
+    , levels = NULL
+    , diff = NULL
+    , reverse_diff = NULL
+    , y_free = FALSE
+    , alarm = FALSE
+    , do_plot = TRUE
+    , print_code = FALSE
+    , parallel = FALSE
 )
 }
 \arguments{
 \item{preds}{
 An list object resulting from a call to \code{\link{ezPredict}} or \code{\link{ezBoot}}.
 }
-\item{confidence}{
+\item{CI}{
 Numeric vector of one or more confidence levels to use for plotting error bars. If plotting multiple confidence regions, it is suggested that an equal number of different values are supplied to the \code{bar_width} argument for differentiation.
 }
 \item{x}{
@@ -53,8 +54,20 @@ Name of a variable by which to split the data into facet columns.
 \item{do_lines}{
 Logical. If TRUE, lines will be plotted connecting groups of points.
 }
+\item{ribbon}{
+Logical. If TRUE, a ribbon will be plotted instead of error bars (and no points will actually be plotted, just lines).
+}
+\item{CI_alpha}{
+Numeric value between 0 and 1 specifying the opacity of the CI bars/ribbon.
+}
+\item{point_alpha}{
+Numeric value between 0 and 1 specifying the opacity of the plotted points.
+}
+\item{line_alpha}{
+Numeric value between 0 and 1 specifying the opacity of the plotted lines.
+}
 \item{bar_width}{
-Numeric value or vector specifying custom widths for the error bar hat. Must either have a length of 1, or the same length as \code{confidence}.
+Numeric value or vector specifying custom widths for the error bar hat. Must either have a length of 1, or the same length as \code{CI}.
 }
 \item{to_numeric}{
 Names of any variables that need to be converted to the numeric class before plotting. If a single value, may be specified by name alone; if multiple values, must be specified as a .() list.
@@ -86,21 +99,24 @@ Logical. If TRUE, call the \code{\link[utils]{alarm}} function when \code{\link{
 \item{do_plot}{
 Logical. If TRUE, no plot will be produced but instead a data frame containing point predictions and confidence limits will be returned.
 }
+\item{print_code}{
+Logical. If TRUE, the code for creating the ggplot2 plot object is printed and the data to be plotted is returned instead of the plot itself.
+}
 \item{parallel}{
 Logical. If TRUE, computation will be parallel, assuming that a parallel backend has been specified (as in \code{library(doMC);options(cores=4);registerDoMC()}. Likely only to work when running R from a unix terminal.)
 }
 }
 \value{
-If \code{do_plot} is TRUE (default), a printable/modifiable ggplot2 object representing the predictions and confidence intervals. If \code{do_plot} is FALSE, a data frame containing the predictions and confidence intervals.
+If \code{do_plot} is TRUE (default) and \code{print_code} if FALSE (default), a printable/modifiable ggplot2 object representing the predictions and confidence intervals. If \code{do_plot} is FALSE or \code{print_code} is TRUE, a list containing the cell predictions and bootstrapped CIs is returned.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}
-To report bugs or request features, please visit: \url{https://github.com/mike-lawrence/ez/issues}
-To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
+Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
+for the bug/issue tracker and the link to the mailing list.
 }
 \seealso{
 \code{\link{ezBoot}}, \code{\link{ezMixed}}, \code{\link{ezPredict}}
 }
 \examples{
-
+#see example in ezPredict documentation
 }

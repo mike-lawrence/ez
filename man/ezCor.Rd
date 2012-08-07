@@ -6,19 +6,20 @@ This function provides simultaneous visualization of a correlation matrix, scatt
 }
 \usage{
 ezCor(
-	data
-	, r_size_lims = c(10,30)
-	, point_alpha = .5
-	, density_height = 1
-	, density_adjust = 1
-	, density_colour = 'white'
-	, label_size = 10
-	, label_colour = 'black'
-	, label_alpha = .5
-	, lm_colour = 'red'
-	, ci_colour = 'green'
-	, ci_alpha = .5
-	, test_alpha = .05
+    data
+    , r_size_lims = c(10,30)
+    , point_alpha = .5
+    , density_height = 1
+    , density_adjust = 1
+    , density_colour = 'white'
+    , label_size = 10
+    , label_colour = 'black'
+    , label_alpha = .5
+    , lm_colour = 'red'
+    , ci_colour = 'green'
+    , ci_alpha = .5
+    , test_alpha = .05
+    , test_correction = 'none'
 )
 }
 \arguments{
@@ -35,7 +36,7 @@ Transparency of the data points (1 = opaque).
 Proportion of the facet height taken up by the density plots.
 }
 \item{density_adjust}{
-Adjusts the bandwidth of the univariate density estimator. See \code{adjust} parameter in \code{\link[stats]{density}}
+Adjusts the bandwidth of the univariate density estimator. See \code{adjust} parameter in \code{\link[stats]{density}}.
 }
 \item{density_colour}{
 Colour of the density plot.
@@ -61,14 +62,17 @@ Transparency of the confidence interval surrounding the fitted line (1 = opaque)
 \item{test_alpha}{
 Type-I error rate requested for colouring of the \dQuote{significant} correlation coefficients.
 }
+\item{test_correction}{
+Character string specifying the type of correction for multiple comparisons applied to the value specified by \code{test_alpha}. Possible values are \dQuote{none}, \dQuote{bonferroni}, and \dQuote{sidak},
+}
 }
 \value{
 A printable/modifiable ggplot2 object.
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}
-To report bugs or request features, please visit: \url{https://github.com/mike-lawrence/ez/issues}
-To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
+Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
+for the bug/issue tracker and the link to the mailing list.
 }
 \examples{
 \dontrun{
@@ -86,14 +90,14 @@ mean1=10
 mean2=20
 rho = .8
 Sigma=matrix(
-c(
-variance1
-, sqrt(variance1*variance2)*rho
-, sqrt(variance1*variance2)*rho
-, variance2
-)
-, 2
-, 2
+    c(
+        variance1
+        , sqrt(variance1*variance2)*rho
+        , sqrt(variance1*variance2)*rho
+        , variance2
+    )
+    , 2
+    , 2
 )
 pair1=mvrnorm(N,c(mean1,mean2),Sigma,empirical=TRUE)
 
@@ -104,14 +108,14 @@ mean1=100
 mean2=200
 rho = -.4
 Sigma=matrix(
-c(
-variance1
-, sqrt(variance1*variance2)*rho
-, sqrt(variance1*variance2)*rho
-, variance2
-)
-, 2
-, 2
+    c(
+        variance1
+        , sqrt(variance1*variance2)*rho
+        , sqrt(variance1*variance2)*rho
+        , variance2
+    )
+    , 2
+    , 2
 )
 pair2=mvrnorm(N,c(mean1,mean2),Sigma,empirical=TRUE)
 
@@ -121,7 +125,7 @@ my_data=data.frame(cbind(pair1,pair2))
 # Now plot
 ########
 p = ezCor(
-data = my_data
+    data = my_data
 )
 print(p)
 

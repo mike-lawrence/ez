@@ -96,12 +96,23 @@ function(
 		)
 	)+
 	geom_rect()+
-	labs(x=x_lab,y=y_lab)+
-	opts(
-		panel.grid.major = theme_blank()
-		, panel.grid.minor = theme_blank()
-		, legend.background = theme_rect(colour='transparent',fill='transparent')
-	)
+	labs(x=x_lab,y=y_lab)
+	packs = installed.packages()
+	ggplot2_version_char = packs[dimnames(packs)[[1]]=='ggplot2',dimnames(packs)[[2]]=='Version']
+	ggplot2_version_char = strsplit(ggplot2_version_char,'.',fixed=T)[[1]]
+	if((ggplot2_version_char[1]>0)|(ggplot2_version_char[2]>9)|(ggplot2_version_char[3]>1)){
+		p = p + theme(
+			panel.grid.major = element_blank()
+			, panel.grid.minor = element_blank()
+			, legend.background = element_rect(colour='transparent',fill='transparent')
+		)
+	}else{
+		p = p + opts(
+			panel.grid.major = theme_blank()
+			, panel.grid.minor = theme_blank()
+			, legend.background = theme_rect(colour='transparent',fill='transparent')
+		)
+	}
 	if(max(counts$Count)==min(counts$Count)){
 		p = p + scale_fill_gradient(
 			high = muted('blue')

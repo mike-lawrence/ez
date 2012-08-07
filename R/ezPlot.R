@@ -271,7 +271,7 @@ function (
 				}
 			}else{
 				if(!is.null(split_lab)){
-					p = paste(p,"\n\tcolour = '",split_lab,"'",sep='')
+					p = paste(p,"\n\t, colour = '",split_lab,"'",sep='')
 					p = paste(p,"\n\t, shape = '",split_lab,"'",sep='')
 					if(do_lines){
 						p = paste(p,"\n\t, linetype = '",split_lab,"'",sep='')

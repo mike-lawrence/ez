@@ -6,28 +6,28 @@ This function provides assessment of fixed effects and their interactions via ge
 }
 \usage{
 ezMixed(
-	data
-	, dv
-	, random
-	, fixed
-	, family = gaussian
-	, covariates = NULL
-	, add_q = FALSE
-	, fix_gam = TRUE
-	, cov_gam = TRUE
-	, gam_smooth = c('s','te')
-	, gam_bs = 'ts'
-	, gam_k = Inf
-	, alarm = FALSE
-	, term_labels = NULL
-	, highest = 0
-	, return_models = TRUE
-	, correction = AIC
-	, progress_dir = NULL
-	, resume = FALSE
-	, parallelism = 'none'
-	, gam_args = NULL
-	, mer_args = NULL
+    data
+    , dv
+    , family = gaussian
+    , random
+    , fixed
+    , covariates = NULL
+    , add_q = FALSE
+    , fix_gam = TRUE
+    , cov_gam = TRUE
+    , gam_smooth = c('s','te')
+    , gam_bs = 'ts'
+    , gam_k = Inf
+    , alarm = FALSE
+    , term_labels = NULL
+    , highest = Inf
+    , return_models = TRUE
+    , correction = AIC
+    , progress_dir = NULL
+    , resume = FALSE
+    , parallelism = 'none'
+    , gam_args = NULL
+    , mer_args = NULL
 )
 }
 \arguments{
@@ -37,35 +37,65 @@ Data frame containing the data to be analyzed.
 \item{dv}{
 .() object specifying the column in \code{data} that contains the dependent variable. Values in this column must be numeric.
 }
+\item{family}{
+Family to use to represent error. 
+}
 \item{random}{
 .() object specifying one or more columns in \code{data} that contain random effects.
 }
 \item{fixed}{
 .() object specifying one or more columns in \code{data} that contain fixed effects.
 }
-\item{fixed_poly}{
-Optional .() object specifying one or more columns in \code{data} that are already specified in \code{fixed} and contain fixed effects to be fit with polynomials.
+\item{covariates}{
+.() object specifying one or more columns in \code{data} that contain variables to be used as fixed effect covariates.
 }
-\item{fixed_poly_max}{
-Optional numeric vector with the same length as \code{fixed_poly} specifying the maximum polynomial degree for each corresponding variable supplied to \code{fixed_poly}. Otherwise, the default maximum degree is 5.
+\item{add_q}{
+Logical. If TRUE, quantile values of each observation will be computed for each effect and interaction and these quantile values will be added as a fixed effect predictor. This permits investigating the effect of the fixed effect predictors specified in \code{fixed} on the shape of the distribution of residuals. Of course, this only really makes sense when there IS a distribution of residuals (i.e. not binomial data).
 }
-\item{family}{
-a description of the error distribution and link function to be used in the model. This can be a character string naming a family function, a family function or the result of a call to a family function. See \code{\link[stats]{family}}.
+\item{fix_gam}{
+Logical. If TRUE (default), generalized additive modelling is used to evaluate the possibly-non-linear effects of numeric fixed effect predictors.
+}
+\item{cov_gam}{
+Logical. If TRUE (default), generalized additive modelling is used to represent the possibly-non-linear effects of numeric covariates.
+}
+\item{gam_smooth}{
+Vector of one or more elements that are character strings specifying the name of the smoother to use when using gam. If a list of two elements, the first element will be used when evaluating effects and interactions that include a single numeric predictor, while the second element will be used when evaluating effects and interactions that involve multiple numeric predictors.
+}
+\item{gam_bs}{
+Character specifying the name of the smooth term to use when using gam. 
+}
+\item{gam_k}{
+Numeric value specifying the maximum value for \code{k} to supply to calls to gam. Higher values yield longer computation times but may better capture non-linear phenomena. If set to \code{Inf} (default), \code{ezMixed} will automatically use the maximum possible value for k given the number of unique combinations of values in the numeric predictors being evaluated. If a finite positive value is supplied, k will be set to that value or less (if the supplied k exceeds the maximum possible k for a given effect).
 }
 \item{alarm}{
-Logical. If TRUE (default), call the \code{\link[utils]{alarm}} function when \code{\link{ezMixed}} completes.
+Logical. If TRUE, call the \code{\link[utils]{alarm}} function when \code{\link{ezMixed}} completes.
 }
-\item{results_as_progress}{
-Logical. Default is FALSE, but if TRUE, results are printed as they are computed (useful for very long computations).
+\item{term_labels}{
+Vector of one or more elements that are character strings specifying effects to explore (useful when you want only a subset of all possible effects and interactions between the predictors supplied to the \code{fixed} argument).
 }
 \item{highest}{
-Integer specifying the highest order interaction between the fixed effects to test. The default value, 0, will test to the highest possible order.
+Integer specifying the highest order interaction between the fixed effects to test. The default value, \code{Inf}, will test to the highest possible order.
 }
 \item{return_models}{
 Logical. If TRUE, the returned list object will also include each lmer model (can become memory intensive for complex models and/or large data sets).
 }
-\item{highest_first}{
-Logical. Default is TRUE, which computes the models for the highest order interaction first. 
+\item{correction}{
+Name of a correction for complexity to apply (ex. AIC, BIC, etc) to each model's likelihood before computing likelihood ratios.
+}
+\item{progress_dir}{
+Character string specifying name of a folder to be created to store results as they are computed (to save RAM).
+}
+\item{resume}{
+Logical. If TRUE and a value is passed to the \code{progress_dir} argument, the progress directory will be searched for already completed effects and resume from these. Useful if a run was interrupted.
+}
+\item{parallelism}{
+Character string specifying whether and how to compute models in parallel. If \dQuote{none}, no parallelism will be employed. If \dQuote{pair}, the restricted and unrestricted models for each effect will be computed in parallel (therefore using only 2 cores). If \dQuote{full}, then effects themselves will be computed in parallel (using all available cores). Parallelism assumes that a parallel backend has been specified (as in \code{library(doMC);options(cores=4);registerDoMC()}) and is likely only to work when running R from a unix terminal.
+}
+\item{gam_args}{
+Single character string representing arguments to be passed to calls to \code{\link[mgcv]{gam}}.
+}
+\item{mer_args}{
+Single character string representing arguments to be passed to calls to \code{\link[lme4]{lmer}} (or \code{\link[lme4]{glmer}} if the value to the \code{family} argument is not \code{gaussian}).
 }
 }
 \details{
@@ -81,24 +111,25 @@ The complexity-corrected likelihood ratio returned by \code{ezMixed} is represen
 }
 \value{
 A list with the following elements:
-\item{summary}{A data frame summarizing the results, including whether warnings or errors occurred during the assessment of each effect, raw natural-log likelihood of the unrestricted and restricted models (RLnLu and RLnLr, respectively), degrees of freedom of the unrestricted and restricted models (DFu and DFr, respectively), and log-base-10 likelihood ratios corrected via AIC and BIC (L10LRa and L10LRb, respectively)}
+\item{summary}{A data frame summarizing the results, including whether warnings or errors occurred during the assessment of each effect and the bits of evidence associated with each.}
 \item{formulae}{A list of lists, each named for an effect and containing two elements named \dQuote{unrestricted} and \dQuote{restricted}, which in turn contain the right-hand-side formulae used to fit the unrestricted and restricted models, respectively.}
 \item{errors}{A list similar to \code{formulae}, but instead storing errors encountered in fitting each model.}
 \item{warnings}{A list similar to \code{formulae}, but instead storing warnings encountered in fitting each model.}
 \item{models}{(If requested by setting \code{return_models=TRUE}) A list similar to \code{formulae} but instead storing each fitted model. }
 }
 \author{
-Michael A. Lawrence \email{Mike.Lawrence@dal.ca}
-To report bugs or request features, please visit: \url{https://github.com/mike-lawrence/ez/issues}
-To keep up to date on developments related to this package, join the discussion group at: \url{http://groups.google.com/group/ez4r}
+Michael A. Lawrence \email{Mike.Lawrence@dal.ca}\cr
+Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}\cr
+for the bug/issue tracker and the link to the mailing list.
 }
 \references{
 \itemize{
-\item Glover S, Dixon P. (2004) Likelihood ratios: a simple and flexible statistic for empirical psychologists. Psychonomic bulletin and review, 11 (5), 791-806.
+\item Glover S, Dixon P. (2004) Likelihood ratios: a simple and flexible statistic for empirical psychologists. Psychonomic Bulletin and Review, 11 (5), 791-806.
+\item Fang, Y. (2011). Asymptotic equivalence between cross-validations and Akaike information criteria in mixed-effects models. Journal of the American Statistical Association, 9, 15-21.
 }
 }
 \seealso{
-\code{\link{ezPredict}}, \code{\link{ezPlot2}}
+\code{\link[lme4]{lmer}}, \code{\link[lme4]{glmer}}, \code{\link[mgcv]{gam}}, \code{\link{ezMixedProgress}}, \code{\link{ezPredict}}, \code{\link{ezPlot2}}
 }
 \examples{
 #Read in the ANT data (see ?ANT).
@@ -108,21 +139,21 @@ ezPrecis(ANT)
 
 #Run ezMixed on the accurate RT data
 rt = ezMixed(
-data = ANT[ANT$error==0,]
-, dv = .(rt)
-, random = .(subnum)
-, fixed = .(cue,flank,group)
+    data = ANT[ANT$error==0,]
+    , dv = .(rt)
+    , random = .(subnum)
+    , fixed = .(cue,flank,group)
 )
 print(rt$summary)
 
 \dontrun{
 #Run ezMixed on the error rate data
 er = ezMixed(
-data = ANT
-, dv = .(error)
-, random = .(subnum)
-, fixed = .(cue,flank,group)
-, family = 'binomial'
+    data = ANT
+    , dv = .(error)
+    , random = .(subnum)
+    , fixed = .(cue,flank,group)
+    , family = 'binomial'
 )
 print(er$summary)
 }
