@@ -391,7 +391,7 @@ function(
 				try(
 					fit <- withCallingHandlers(
 						{ 
-							if(!identical(family,gaussian)|identical(family,'gaussian')){
+							if(identical(family,gaussian)|identical(family,'gaussian')){
 								eval(parse(text=paste(
 									"lmer( formula = "
 									, formula
