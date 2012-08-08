@@ -1,4 +1,8 @@
-4.0-3
+4.1-1
+- Fixed bug in ezPlot2 when x is continuous
+- Fixed bug in ezMixed when specifying non-gaussian family
+
+4.1-0
 - Fixed bug in ezMixed when family=gaussian (default)
 - Fixed bug in ezMixed use of gam_args and mer_args
 - Added ability to use bam instead of gam via argument to ezMixed

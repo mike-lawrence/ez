@@ -9,7 +9,7 @@ This package facilitates easy analysis of factorial experiments, including purel
 \tabular{ll}{
 Package: \tab ez\cr
 Type: \tab Package\cr
-Version: \tab 4.0-3\cr
+Version: \tab 4.1.1\cr
 Date: \tab 2012-08-07\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
