@@ -219,7 +219,7 @@ function(
 				p = paste(p,"\n\t\t, width = CI",split,sep = '')
 			}
 			p = paste(p,"\n\t)\n\t, linetype = 1\n\t, show_guide = FALSE",sep = '')
-			if(length(CI)==1){
+			if(length(CI)==1&(!is.null(bar_width))){
 				p = paste(p,"\n\t, width = ",bar_width,sep='')
 			}
 			p = paste(p,"\n\t, alpha = ",CI_alpha,"\n)",sep='')
