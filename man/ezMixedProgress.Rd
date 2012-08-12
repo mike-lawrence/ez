@@ -35,6 +35,7 @@ for the bug/issue tracker and the link to the mailing list.
 \code{\link{ezMixed}}
 }
 \examples{
+\dontrun{
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)
@@ -51,5 +52,6 @@ rt_mix = ezMixed(
 
 rt_mix = ezMixedProgress('rt_mix')
 print(rt_mix$summary)
+}
 
 }
