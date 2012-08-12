@@ -25,7 +25,7 @@ function(
 		# dv = as.character(vars[2])
 		# vars = vars[3:length(vars)]
 	}else{
-		if(fit_class=='gam'){
+		if(fit_class%in%c('gam','bam')){
 			data = fit$model
 			randoms = NULL
 			for(i in fit$smooth){
@@ -70,7 +70,7 @@ function(
 		to_return = to_predict
 	}
 	data_vars = names(to_return)
-	if(fit_class=='gam'){
+	if(fit_class%in%c('gam','bam')){
 		for(i in randoms){
 			to_return$EZTEMP = data[1,names(data)==i]
 			names(to_return)[ncol(to_return)] = i
