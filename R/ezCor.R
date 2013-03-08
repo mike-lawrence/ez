@@ -165,9 +165,9 @@ function(
 	label_layer = layer(
 		geom = 'text'
 		, geom_par = list(
-			colour = 'black'
+			colour = label_colour
 			, size = label_size
-			, alpha = .5
+			, alpha = label_alpha
 		)
 		, data = labels
 		, mapping = aes_string(
