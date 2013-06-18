@@ -162,7 +162,9 @@ function(data, dv, wid, within, between){
 	}else{
 		lm_formula=paste('wide_dv~',paste(between,collapse='*'),sep='')
 	}
+	op <- options( "contrasts" = c( "contr.sum", "contr.poly" ) )
 	to_return$lm = lm(eval(parse(text=lm_formula)),wide)
+	options(op)
 	return(to_return)
 }
 
