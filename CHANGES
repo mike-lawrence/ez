@@ -1,6 +1,7 @@
 4.2-0
 - Fixed bug in ezANOVA whereby the incorrect results are returned when performing a mixed-factor analysis with unbalanced groups and requesting type-III sums of squares.
 - Fixed bugs in ezCor preventing operation of the label_alpha and label_color arguments
+- removed progress_time as it is now part of plyr
 
 4.1-1
 - Fixed bug in ezPlot2 when x is continuous

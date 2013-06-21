@@ -9,8 +9,8 @@ This package facilitates easy analysis of factorial experiments, including purel
 \tabular{ll}{
 Package: \tab ez\cr
 Type: \tab Package\cr
-Version: \tab 4.1.1\cr
-Date: \tab 2012-08-11\cr
+Version: \tab 4.2-0\cr
+Date: \tab 2013-06-20\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
@@ -27,8 +27,7 @@ This package contains several useful functions:
 \item{\code{\link{ezPrecis}}}{ Provides a summary of a given data frame.}
 \item{\code{\link{ezPredict}}}{ Computes predicted values from the fixed effects of a mixed effects model.}
 \item{\code{\link{ezResample}}}{ Resamples data, useful when bootstrapping.}
-\item{\code{\link{ezStats}}}{ Provides between-Ss descriptive statistics for any given user-requested effect.}
-\item{\code{\link{progress_time}}}{ A progress bar that estimates time remaining.}\cr\cr\cr
+\item{\code{\link{ezStats}}}{ Provides between-Ss descriptive statistics for any given user-requested effect.}\cr\cr\cr
 This package also contains two data sets:
 \item{\code{\link{ANT}}}{ Simulated data from the Attention Network Test}
 \item{\code{\link{ANT2}}}{ Messy version of the ANT data set}
@@ -40,6 +39,6 @@ Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}
 for the bug/issue tracker and the link to the mailing list.
 }
 \seealso{
-\code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPlot2}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}, \code{\link{progress_time}}
+\code{\link{ANT}}, \code{\link{ANT2}}, \code{\link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezCor}}, \code{\link{ezDesign}}, \code{\link{ezMixed}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezPlot2}}, \code{\link{ezPrecis}}, \code{\link{ezPredict}}, \code{\link{ezResample}}, \code{\link{ezStats}}
 }
 \keyword{ package }
