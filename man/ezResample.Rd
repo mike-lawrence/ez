@@ -50,6 +50,7 @@ for the bug/issue tracker and the link to the mailing list.
 \code{\link{ezBoot}}
 }
 \examples{
+library(plyr)
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)

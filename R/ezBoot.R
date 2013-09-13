@@ -109,7 +109,7 @@ function(
 		names(cell_means) = as.character(structure(as.list(c(between,within)),class = 'quoted'))
 		cell_means$ezDV = 0
 		mm = model.matrix(terms(fit),cell_means)
-		value = mm %*% fixef(fit)
+		value = mm %*% lme4::fixef(fit)
 		cell_means$value = as.numeric(value[,1])
 		cell_means = cell_means[,names(cell_means)!='ezDV']
 	}else{

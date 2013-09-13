@@ -75,11 +75,9 @@ Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}
 for the bug/issue tracker and the link to the mailing list.
 }
 \examples{
-\dontrun{
 ########
 # Set up some fake data
 ########
-install.packages(MASS)
 library(MASS)
 N=100
 
@@ -131,6 +129,7 @@ print(p)
 
 #you can modify the default colours of the 
 ##correlation coefficients as follows
+library(ggplot2)
 p = p + scale_colour_manual(values = c('red','blue'))
 print(p)
 #see the following for alternatives:
@@ -138,5 +137,4 @@ print(p)
 # http://had.co.nz/ggplot2/scale_hue.html
 # http://had.co.nz/ggplot2/scale_brewer.html
 
-}
 }

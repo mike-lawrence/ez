@@ -46,6 +46,8 @@ for the bug/issue tracker and the link to the mailing list.
 \code{\link{ezMixed}}, \code{\link{ezPlot2}}
 }
 \examples{
+library(lme4)
+
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)

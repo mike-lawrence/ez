@@ -96,7 +96,7 @@ function(
 			)
 		))))
 		mm = model.matrix(requested_terms,to_return)
-		f = fixef(fit)
+		f = lme4::fixef(fit)
 		v = vcov(fit)
 		if(zero_intercept_variance){
 			v[1,] = 0

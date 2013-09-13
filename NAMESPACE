@@ -1,1 +1,27 @@
+
+importMethodsFrom(Matrix, diag, format, mean, rowMeans, solve, summary,
+                  t, which)
+
+importFrom(car,Anova)
+
+importFrom(ggplot2, aes_string, element_blank, element_rect,
+           facet_grid, geom_rect, ggplot, labs, layer, opts,
+           scale_fill_gradient, scale_size, scale_x_continuous,
+           scale_y_continuous, theme, theme_blank, theme_rect,
+           scale_colour_manual, aes, geom_point, geom_errorbar,
+           geom_line)
+
+importFrom(lme4, fixef)
+
+importFrom(MASS,mvrnorm)
+
+importFrom(plyr, ., ddply, dlply, empty, idata.frame, laply, ldply, llply)
+
+importFrom(reshape2, dcast, melt)
+
+importFrom(scales, muted)
+
+importFrom(stringr, str_count, str_detect, str_replace,
+           str_replace_all, str_split)
+
 export(ezANOVA,ezBoot,ezCor,ezDesign,ezMixed,ezMixedProgress,ezPerm,ezPlot,ezPlot2,ezPrecis,ezPredict,ezResample,ezStats)

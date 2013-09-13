@@ -57,6 +57,7 @@ for the bug/issue tracker and the link to the mailing list.
 \code{link{ezANOVA}}, \code{\link{ezBoot}}, \code{\link{ezMixed}}
 }
 \examples{
+library(plyr)
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)
