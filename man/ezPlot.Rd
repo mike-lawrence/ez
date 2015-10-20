@@ -181,15 +181,7 @@ group_plot = ezPlot(
 #Show the plot.
 print(group_plot)
 
-#tweak the plot (if using ggplot2 version 0.9.1)
-# group_plot = group_plot + 
-# opts(
-#     panel.grid.major = theme_blank()
-#     , panel.grid.minor = theme_blank()
-# )
-# print(group_plot)
-
-#tweak the plot (if using ggplot2 version 0.9.2)
+#tweak the plot
 # group_plot = group_plot + 
 # theme(
 #     panel.grid.major = element_blank()
