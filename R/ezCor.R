@@ -100,11 +100,16 @@ function(
 			return(to_return)
 		}
 	)
+	#ggplot() +
+	#  geom_point(aes_string(x = "x", y = "y"), data = z, alpha = point_alpha)
 	points_layer = layer(
 		geom = 'point'
-		, geom_par = list(
+		, params = list(
 			alpha = point_alpha
+			, na.rm = TRUE
 		)
+		, stat = "identity"
+		, position = "identity"
 		, data = z
 		, mapping = aes_string(
 			x = 'x'
@@ -113,11 +118,13 @@ function(
 	)
 	lm_line_layer = layer(
 		geom = 'line'
-		, geom_params = list(
-			colour = lm_colour
-		)
 		, stat = 'smooth'
-		, stat_params = list(method = 'lm')
+		, position = "identity"
+		, params = list(
+			colour = lm_colour
+			, method = 'lm'
+			, na.rm = TRUE
+		)
 		, data = z
 		, mapping = aes_string(
 			x = 'x'
@@ -126,12 +133,14 @@ function(
 	)
 	lm_ribbon_layer = layer(
 		geom = 'ribbon'
-		, geom_params = list(
+		, stat = 'smooth'
+		, position = "identity"
+		, params = list(
 			fill = ci_colour
 			, alpha = ci_alpha
+			, method = 'lm'
+			, na.rm = TRUE
 		)
-		, stat = 'smooth'
-		, stat_params = list(method = 'lm')
 		, data = z
 		, mapping = aes_string(
 			x = 'x'
@@ -140,20 +149,28 @@ function(
 	)
 	cor_text_layer = layer(
 		geom = 'text'
+		, stat = "identity"
+		, position = "identity"
 		, data = z_cor
 		, mapping = aes_string(
 			label = 'cor'
 			, size = 'rsq'
 			, colour = 'p'
 		)
-		, x = 0
-		, y = 0
+		, params = list(
+		  x = 0
+		  , y = 0
+		  , na.rm = TRUE
+		)
 	)
 	dens_layer = layer(
 		geom = 'ribbon'
-		, geom_par = list(
+		, stat = "identity"
+		, position = "identity"
+		, params = list(
 			colour = 'transparent'
 			, fill = 'white'
+			, na.rm = TRUE
 		)
 		, data = dens
 		, mapping = aes_string(
@@ -164,10 +181,13 @@ function(
 	)
 	label_layer = layer(
 		geom = 'text'
-		, geom_par = list(
+		, stat = "identity"
+		, position = "identity"
+		, params = list(
 			colour = label_colour
 			, size = label_size
 			, alpha = label_alpha
+			, na.rm = TRUE
 		)
 		, data = labels
 		, mapping = aes_string(
@@ -179,11 +199,7 @@ function(
 	y_lab = NULL
 	x_lab = NULL
 	f = facet_grid(y_lab~x_lab)
-	packs = installed.packages()
-	ggplot2_version_char = packs[dimnames(packs)[[1]]=='ggplot2',dimnames(packs)[[2]]=='Version']
-	ggplot2_version_char = strsplit(ggplot2_version_char,'.',fixed=T)[[1]]
-	if((ggplot2_version_char[1]>0)|(ggplot2_version_char[2]>9)|(ggplot2_version_char[3]>1)){
-		o = theme(
+	o = theme(
 			panel.grid.minor = element_blank()
 			,panel.grid.major = element_blank()
 			,axis.ticks = element_blank()
@@ -195,22 +211,7 @@ function(
 			,strip.background = element_blank()
 			,strip.text.x = element_blank()
 			,strip.text.y = element_blank()
-		)
-	}else{
-		o = opts(
-			panel.grid.minor = theme_blank()
-			,panel.grid.major = theme_blank()
-			,axis.ticks = theme_blank()
-			,axis.text.y = theme_blank()
-			,axis.text.x = theme_blank()
-			,axis.title.y = theme_blank()
-			,axis.title.x = theme_blank()
-			,legend.position='none'
-			,strip.background = theme_blank()
-			,strip.text.x = theme_blank()
-			,strip.text.y = theme_blank()
-		)
-	}
+	)
 	x_scale = scale_x_continuous(limits = c( -1*max(abs(dens$x)) , max(abs(dens$x)) ) )
 	size_scale = scale_size(limits = c(0,1),range=r_size_lims)
 	return(
