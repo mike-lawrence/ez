@@ -1,3 +1,9 @@
+4.2-2
+- More import fixes for compatibility with R-devel
+
+4.2-1
+- Fixed ez imports for compatibility with other packages on CRAN
+
 4.2-0
 - Fixed bug in ezANOVA whereby the incorrect results are returned when performing a mixed-factor analysis with unbalanced groups and requesting type-III sums of squares.
 - Fixed bugs in ezCor preventing operation of the label_alpha and label_color arguments
