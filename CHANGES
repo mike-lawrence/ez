@@ -1,3 +1,6 @@
+4.3
+- Update for compatibility with ggplot2 v1.1
+
 4.2-2
 - More import fixes for compatibility with R-devel
 

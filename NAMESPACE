@@ -1,6 +1,15 @@
-
 importMethodsFrom(Matrix, diag, format, mean, rowMeans, solve, summary,
                   t, which)
+importFrom("stats", "AIC", "anova", "aov", "coef", "contrasts",
+     "contrasts<-", "cor", "cor.test", "density", "fitted",
+     "formula", "gaussian", "lm", "median", "model.frame",
+     "model.matrix", "pchisq", "pf", "qt", "quantile", "sd",
+     "terms", "vcov")
+
+importFrom("utils", "flush.console", "installed.packages")
+
+
+importFrom(mgcv,gam,bam)
 
 importFrom(car,Anova)
 

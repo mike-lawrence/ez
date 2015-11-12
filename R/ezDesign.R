@@ -121,7 +121,7 @@ function(
 		p = p + geom_rect(
 			size = cell_border_size
 			, colour = 'grey90'
-			, guide = 'none'
+			, show_guide = FALSE
 		)
 	}
 	p = p + scale_x_continuous(
