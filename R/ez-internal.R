@@ -179,6 +179,9 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 	if(is.null(within) & is.null(between)){
 		stop('is.null(within) & is.null(between)\nYou must specify at least one independent variable.')
 	}
+	if(inherits(data, "tbl_df")) {
+	  data <- as.data.frame(data)
+	}
 	if(!is.data.frame(data)){
 		stop('"data" must be a data frame.')
 	}
