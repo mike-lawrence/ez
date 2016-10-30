@@ -170,6 +170,9 @@ function(data, dv, wid, within, between){
 
 ezANOVA_main <-
 function(data, dv, wid, within, within_full, within_covariates, between, between_covariates, observed, diff, reverse_diff, type, return_aov, white.adjust){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	vars = as.character(c(dv,wid,between,within,diff,within_full))
 	for(var in vars){
 		if(!(var %in% names(data))){
