@@ -218,7 +218,7 @@ function(
 			if(length(CI)>1){
 				p = paste(p,"\n\t\t, width = CI",split,sep = '')
 			}
-			p = paste(p,"\n\t)\n\t, linetype = 1\n\t, show_guide = FALSE",sep = '')
+			p = paste(p,"\n\t)\n\t, linetype = 1\n\t, show.legend = FALSE",sep = '')
 			if(length(CI)==1&(!is.null(bar_width))){
 				p = paste(p,"\n\t, width = ",bar_width,sep='')
 			}
@@ -231,12 +231,12 @@ function(
 		}else{
 			p = paste(p,"+\ngeom_ribbon(\n\tdata = boot_stats\n\t, mapping = aes(\n\t\tx = ",x,"\n\t\t, ymin = lo\n\t\t, ymax = hi",sep = '')
 			if(!is.null(split)){
-				p = paste(p,"\n\t\t, fill = ",split,sep = '')					
+				p = paste(p,"\n\t\t, fill = ",split,sep = '')
 			}
 			if(length(CI)>1){
-				p = paste(p,"\n\t\t, alpha = CI",split,sep = '')					
+				p = paste(p,"\n\t\t, alpha = CI",split,sep = '')
 			}
-			p = paste(p,"\n\t)\n\t, color = 'transparent'\n\t, show_guide = FALSE",sep = '')
+			p = paste(p,"\n\t)\n\t, color = 'transparent'\n\t, show.legend = FALSE",sep = '')
 			if(length(CI)==1){
 				p = paste(p,"\n\t, alpha = ",CI_alpha,sep='')
 			}

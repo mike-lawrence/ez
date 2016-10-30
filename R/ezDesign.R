@@ -57,7 +57,7 @@ function(
 	if(length(unique(counts$y))>length(unique(counts$x))){
 		cell_border_size = cell_border_size/length(unique(counts$y))
 	}else{
-		cell_border_size = cell_border_size/length(unique(counts$x))		
+		cell_border_size = cell_border_size/length(unique(counts$x))
 	}
 	if(!is.null(row)){
 		if(!is.factor(counts[,names(counts)==row])){
@@ -92,7 +92,7 @@ function(
 			, ymax = 'ymax'
 			, xmin = 'xmin'
 			, xmax = 'xmax'
-			, fill = 'Count'	
+			, fill = 'Count'
 		)
 	)+
 	geom_rect()+
@@ -121,7 +121,7 @@ function(
 		p = p + geom_rect(
 			size = cell_border_size
 			, colour = 'grey90'
-			, show_guide = FALSE
+			, show.legend = FALSE
 		)
 	}
 	p = p + scale_x_continuous(
