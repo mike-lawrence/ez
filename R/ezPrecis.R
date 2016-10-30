@@ -3,6 +3,9 @@ function(
 	data
 	, transpose = TRUE
 ){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	cat('Data frame dimensions:',nrow(data),'rows,',ncol(data),'columns\n')
 	to_return = as.data.frame(
 		matrix(

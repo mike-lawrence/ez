@@ -7,6 +7,9 @@ function(
 	, col = NULL
 	, cell_border_size = 10
 ){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	args_to_check = c('x','y','row','col')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){

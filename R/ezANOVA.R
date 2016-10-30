@@ -16,6 +16,9 @@ function(
 	, detailed = FALSE
 	, return_aov = FALSE
 ){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	args_to_check = c('dv','wid','within','between','observed','diff','within_full','within_covariates','between_covariates')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){

@@ -15,6 +15,9 @@ function(
 	, test_alpha = .05
 	, test_correction = 'none'
 ){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	ntests = ((((ncol(data)-1)^2)-(ncol(data)-1))/2)
 	if(test_correction[1]=='bonferroni'){
 		test_alpha = test_alpha/ntests

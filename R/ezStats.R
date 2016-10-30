@@ -14,6 +14,9 @@ function (
 	, type = 2
 	, check_args = TRUE
 ){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	if(check_args){
 		args_to_check = c('dv','wid','within','between','within_full','between_full','diff','within_covariates','between_covariates')
 		args = as.list(match.call()[-1])

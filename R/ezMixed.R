@@ -24,6 +24,9 @@ function(
 	, gam_args = NULL
 	, mer_args = NULL
 ){
+	if(inherits(data, "tbl_df")) {
+		data <- as.data.frame(data)
+	}
 	args_to_check = c('dv','random','fixed','covariates')
 	args = as.list(match.call()[-1])
 	for(i in 1:length(args)){
