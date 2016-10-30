@@ -12,6 +12,6 @@ To automatically download and install the very latest ez code any time you run a
 
     library(devtools)
     dev_mode()
-    install_github('ez','mike-lawrence')
+    install_github('mike-lawrence/ez')
     library(ez)
 
