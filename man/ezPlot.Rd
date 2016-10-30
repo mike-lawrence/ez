@@ -143,7 +143,7 @@ Visit the \code{ez} development site at \url{http://github.com/mike-lawrence/ez}
 for the bug/issue tracker and the link to the mailing list.
 }
 \seealso{
-\code{link{ezANOVA}}, \code{\link{ezStats}}
+\code{\link{ezANOVA}}, \code{\link{ezStats}}
 }
 \examples{
 #Read in the ANT data (see ?ANT).
@@ -182,7 +182,7 @@ group_plot = ezPlot(
 print(group_plot)
 
 #tweak the plot
-# group_plot = group_plot + 
+# group_plot = group_plot +
 # theme(
 #     panel.grid.major = element_blank()
 #     , panel.grid.minor = element_blank()
@@ -191,13 +191,13 @@ print(group_plot)
 
 
 
-#use the "print_code" argument to print the 
+#use the "print_code" argument to print the
 # code for creating the plot and return the
 # data to plot. This is useful when you want
 # to learn how to create plots from scratch
 # (which can in turn be useful when you can't
-# get a combination of ezPlot and tweaking to 
-# achieve what you want) 
+# get a combination of ezPlot and tweaking to
+# achieve what you want)
 group_plot_data = ezPlot(
     data = ANT[ANT$error==0,]
     , dv = .(rt)
@@ -251,7 +251,7 @@ cue_by_flank_plot = ezPlot(
 print(cue_by_flank_plot)
 
 
-#Plot the cue*flank interaction by collapsing the cue effect to 
+#Plot the cue*flank interaction by collapsing the cue effect to
 ##the difference between None and Double
 cue_by_flank_plot2 = ezPlot(
     data = ANT[ ANT$error==0 & (ANT$cue \%in\% c('None','Double')) ,]
