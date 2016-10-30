@@ -95,7 +95,7 @@ gmrt = ddply(
     }
 )
 
-#Run a purely between-Ss permutation test on the mean_rt data. 
+#Run a purely between-Ss permutation test on the mean_rt data.
 mean_rt_perm = ezPerm(
     data = gmrt
     , dv = mrt

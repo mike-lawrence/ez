@@ -39,7 +39,7 @@ Data frame containing the data to be analyzed.
 .() object specifying the column in \code{data} that contains the dependent variable. Values in this column must be numeric.
 }
 \item{family}{
-Family to use to represent error. 
+Family to use to represent error.
 }
 \item{random}{
 .() object specifying one or more columns in \code{data} that contain random effects.
@@ -63,7 +63,7 @@ Logical. If TRUE (default), generalized additive modelling is used to represent 
 Vector of one or more elements that are character strings specifying the name of the smoother to use when using gam. If a list of two elements, the first element will be used when evaluating effects and interactions that include a single numeric predictor, while the second element will be used when evaluating effects and interactions that involve multiple numeric predictors.
 }
 \item{gam_bs}{
-Character specifying the name of the smooth term to use when using gam. 
+Character specifying the name of the smooth term to use when using gam.
 }
 \item{gam_k}{
 Numeric value specifying the maximum value for \code{k} to supply to calls to gam. Higher values yield longer computation times but may better capture non-linear phenomena. If set to \code{Inf} (default), \code{ezMixed} will automatically use the maximum possible value for k given the number of unique combinations of values in the numeric predictors being evaluated. If a finite positive value is supplied, k will be set to that value or less (if the supplied k exceeds the maximum possible k for a given effect).

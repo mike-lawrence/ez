@@ -41,7 +41,7 @@ function(
 		stop('"perms" must be numeric.')
 	}else{
 		if(perms<0){
-			stop('"perms" must be >= 0.')			
+			stop('"perms" must be >= 0.')
 		}else{
 			if(perms%%1){
 				stop('"perms" must be an integer.')
@@ -89,7 +89,7 @@ function(
 			)
 		)
 		,sep = ''
-	)	
+	)
 	obs = ezPerm_aov(data,aov_formula)
 	sim_data=data
 	if(!is.null(between)){
@@ -139,4 +139,3 @@ function(
 	}
 	return(perm_test)
 }
-

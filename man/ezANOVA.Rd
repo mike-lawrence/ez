@@ -116,7 +116,7 @@ for the bug/issue tracker and the link to the mailing list.
 \code{\link{ezBoot}}, \code{\link{ezMixed}}, \code{\link{ezPerm}}, \code{\link{ezPlot}}, \code{\link{ezStats}}
 }
 \examples{
-	
+
 #Read in the ANT data (see ?ANT).
 data(ANT)
 head(ANT)
@@ -176,7 +176,7 @@ rt_anova4a = ezANOVA(
     , between = group
 )
 
-#Show the ANOVA and assumption tests. 
+#Show the ANOVA and assumption tests.
 # Note loss of power to observe the within effects
 print(rt_anova4a)
 }
@@ -191,7 +191,7 @@ rt_anova4b = ezANOVA(
     , between = group
 )
 
-#Show the ANOVA and assumption tests. 
+#Show the ANOVA and assumption tests.
 # Note power to observe the within effects has returned
 print(rt_anova4b)
 
@@ -210,7 +210,7 @@ rt_anova5a = ezANOVA(
     , between = group
 )
 
-#Show the ANOVA and assumption tests. 
+#Show the ANOVA and assumption tests.
 # Note loss of power to observe the between effects
 print(rt_anova5a)
 }
@@ -225,7 +225,7 @@ rt_anova5b = ezANOVA(
     , between_covariates = bc
 )
 
-#Show the ANOVA and assumption tests. 
+#Show the ANOVA and assumption tests.
 # Note power to observe the between effects has returned
 print(rt_anova5b)
 

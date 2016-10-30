@@ -71,7 +71,7 @@ function(
 	vars = as.character(c(dv,random,fixed,covariates))
 	for(var in vars){
 		if(!(var %in% names(data))){
-			stop(paste('"',var,'" is not a variable in the data frame provided.',sep=''))			
+			stop(paste('"',var,'" is not a variable in the data frame provided.',sep=''))
 		}
 		if(is.character(data[,names(data)==var])){
 			data[,names(data)==var] = factor(data[,names(data)==var])
@@ -84,7 +84,7 @@ function(
 			if(is.numeric(data[,names(data)==as.character(covariates[i])])){
 				numeric_covariates = c(numeric_covariates,as.character(covariates[i]))
 			}
-		}		
+		}
 	}
 	numeric_fixed = NULL
 	if(fix_gam){
@@ -96,7 +96,7 @@ function(
 			}else{
 				data[,names(data)==as.character(fixed[i])] = ordered(data[,names(data)==as.character(fixed[i])])
 			}
-		}		
+		}
 	}
 	if(add_q){
 		numeric_fixed = c(numeric_fixed,'q')
@@ -217,7 +217,7 @@ function(
 						)
 						, '+'
 						, sep = ''
-					)			
+					)
 				}
 			}
 		}else{
@@ -320,7 +320,7 @@ function(
 				}
 				restricted = convert_to_gam_formula(paste('y~',gsub(':','*',effect),'-',effect))
 				unrestricted = convert_to_gam_formula(paste('y~',gsub(':','*',effect)))
-			}					
+			}
 		}else{
 			if(this_height==1){
 				restricted = 'NULL'
@@ -363,7 +363,7 @@ function(
 			if((!is.null(numeric_covariates)&cov_gam)|(fix_gam&(numeric_fixed_num>0))){
 				try(
 					fit <- withCallingHandlers(
-						{ 
+						{
 							eval(parse(text=paste(
 								ifelse(
 									use_bam
@@ -390,7 +390,7 @@ function(
 			}else{
 				try(
 					fit <- withCallingHandlers(
-						{ 
+						{
 							if(identical(family,gaussian)|identical(family,'gaussian')){
 								eval(parse(text=paste(
 									"lmer( formula = "
@@ -533,7 +533,7 @@ function(
 					if(return_models){
 						out_from_process_term$models$restricted = restricted_fit
 					}
-				}			
+				}
 				rm(restricted_fit)
 				gc()
 			}

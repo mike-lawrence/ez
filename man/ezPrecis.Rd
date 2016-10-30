@@ -5,7 +5,7 @@
 This function provides a structure summary of a given data frame.
 }
 \usage{
-ezPrecis( 
+ezPrecis(
     data
     , transpose = TRUE
 )

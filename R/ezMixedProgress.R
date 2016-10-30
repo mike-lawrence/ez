@@ -38,8 +38,8 @@ function(
 				eval(parse(text=paste('to_return$models$"',this_effect_name,'"$"',this_fit_name,'" = ',this_fit_name,sep='')))
 			}
 		}
-		
-		
+
+
 	}
 	return(to_return)
 }

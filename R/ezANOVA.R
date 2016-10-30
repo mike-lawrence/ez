@@ -49,8 +49,8 @@ function(
 		, type = type
 		, return_aov = return_aov
 		, white.adjust = white.adjust
-	)	
-	
+	)
+
 	########
 	# Compute effect size
 	########
@@ -86,4 +86,3 @@ function(
 	#all done!
 	return(to_return)
 }
-

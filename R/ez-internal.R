@@ -10,7 +10,7 @@ function (y) {
 		if (length(grep("\\+ | \\| | \\^ | \\:",form))>0) stop("Model must be completely crossed formula only.")
 		group <- interaction(mf[,2:dim(mf)[2]])
 	}
-	if (!is.numeric(y)) 
+	if (!is.numeric(y))
 		stop(deparse(substitute(y)), " is not a numeric variable")
 	if (!is.factor(group)) {
 		warning(deparse(substitute(group)), " coerced to factor.")
@@ -30,7 +30,7 @@ function(object){
 	to_return=list()
 	GG <- function(SSPE, P){
 		p <- nrow(SSPE)
-		if (p < 2) return(NA) 
+		if (p < 2) return(NA)
 		lambda <- eigen(SSPE %*% solve(t(P) %*% P))$values
 		lambda <- lambda[lambda > 0]
 		((sum(lambda)/p)^2)/(sum(lambda^2)/p)
@@ -44,14 +44,14 @@ function(object){
 		Tr <- function (X) sum(diag(X))
 		p <- nrow(P)
 		I <- diag(p)
-		Psi <- t(P) %*% I %*% P 
-		B <- SSD 
-		pp <- nrow(SSD) 
+		Psi <- t(P) %*% I %*% P
+		B <- SSD
+		pp <- nrow(SSD)
 		U <- solve(Psi, B)
-		n <- df 
+		n <- df
 		logW <- log(det(U)) - pp * log(Tr(U/pp))
 		rho <- 1 - (2 * pp^2 + pp + 2)/(6 * pp * n)
-		w2 <- (pp + 2) * (pp - 1) * (pp - 2) * (2 * pp^3 + 6 * pp^2 + 
+		w2 <- (pp + 2) * (pp - 1) * (pp - 2) * (2 * pp^3 + 6 * pp^2 +
 				3 * p + 2)/(288 * (n * pp * rho)^2)
 		z <- -n * rho * logW
 		f <- pp * (pp + 1)/2 - 1
@@ -59,7 +59,7 @@ function(object){
 		Pr2 <- pchisq(z, f + 4, lower.tail = FALSE)
 		pval <- Pr1 + w2 * (Pr2 - Pr1)
 		c(statistic = c(W = exp(logW)), p.value = pval)
-	}		
+	}
 	test.statistic <- 1:4
 	nterms <- length(object$terms)
 	error.df <- object$error.df
@@ -89,7 +89,7 @@ function(object){
 		table2[term, "GGe"] <- gg
 		table2[term, "HFe"] <- HF(gg, error.df, p)
 		table3[term,2:3] <- mauchly(SSPE, P, object$error.df)
-		table3[term, "p<.05"] = ifelse(table3[term, "p"]<.05,'*','')		
+		table3[term, "p<.05"] = ifelse(table3[term, "p"]<.05,'*','')
 	}
 	ANOVA = as.data.frame(table)
 	to_return$ANOVA=ANOVA
@@ -173,7 +173,7 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 	vars = as.character(c(dv,wid,between,within,diff,within_full))
 	for(var in vars){
 		if(!(var %in% names(data))){
-			stop(paste('"',var,'" is not a variable in the data frame provided.',sep=''))			
+			stop(paste('"',var,'" is not a variable in the data frame provided.',sep=''))
 		}
 	}
 	if(is.null(within) & is.null(between)){
@@ -210,8 +210,8 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 					data[,names(data)==within[i]]=factor(data[,names(data)==within[i]])
 				}
 				if(length(levels(data[,names(data)==within[i]]))==1){
-					stop(paste('"',within[i],'" has only one level."',sep=''))			
-				}	
+					stop(paste('"',within[i],'" has only one level."',sep=''))
+				}
 			}
 		}
 	}
@@ -231,8 +231,8 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 					data[,names(data)==between[i]]=factor(data[,names(data)==between[i]])
 				}
 				if(length(levels(data[,names(data)==between[i]]))==1){
-					stop(paste('"',between[i],'" has only one level."',sep=''))			
-				}	
+					stop(paste('"',between[i],'" has only one level."',sep=''))
+				}
 			}
 		}
 		temp = ddply(
@@ -442,7 +442,7 @@ function(data, dv, wid, within, within_full, within_covariates, between, between
 	}else{
 		if(!all(as.data.frame(table(data[,names(data) %in% c(wid,within,diff)]))$Freq==1)){
 			stop('One or more cells is missing data. Try using ezDesign() to check your data.')
-		}		
+		}
 	}
 	if(!is.null(between)){
 		if(any(as.data.frame(table(data[,names(data) %in% c(between)]))$Freq==0)){
@@ -642,7 +642,7 @@ function(data, dv, wid, within, between){
 			)
 		)
 		,sep = ''
-	)	
+	)
 	this_aov = aov(
 		formula(aov_formula)
 		,data = data

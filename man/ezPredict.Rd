@@ -5,7 +5,7 @@
 This function computes the predicted values from the fixed effects of a mixed effects model.
 }
 \usage{
-ezPredict( 
+ezPredict(
     fit
     , to_predict = NULL
     , numeric_res = 0

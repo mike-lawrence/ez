@@ -127,7 +127,7 @@ p = ezCor(
 )
 print(p)
 
-#you can modify the default colours of the 
+#you can modify the default colours of the
 ##correlation coefficients as follows
 library(ggplot2)
 p = p + scale_colour_manual(values = c('red','blue'))

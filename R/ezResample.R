@@ -74,7 +74,7 @@ function(
 			#, .progress = 'time'
 		)
 		resampled_data = Filter(Negate(empty), resampled_data)
-	}	
+	}
 	if(resample_within){
 		if(!resample_between){
 			resampled_data = dlply(

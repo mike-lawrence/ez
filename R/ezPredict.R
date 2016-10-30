@@ -105,11 +105,11 @@ function(
 	}else{
 		mm <- predict(fit,to_return,type="lpmatrix") # get a coefficient matrix
 		for(i in randoms){
-			mm[,grep(paste('s(',i,')',sep=''),dimnames(mm)[[2]],fixed=T)] = 0 #zero the subject entry	
+			mm[,grep(paste('s(',i,')',sep=''),dimnames(mm)[[2]],fixed=T)] = 0 #zero the subject entry
 		}
 		f = coef(fit)
 		for(i in randoms){
-			f[grep(paste('s(',i,')',sep=''),names(f),fixed=T)] = 0 #zero the subject entry	
+			f[grep(paste('s(',i,')',sep=''),names(f),fixed=T)] = 0 #zero the subject entry
 		}
 		v = vcov(fit)
 		if(zero_intercept_variance){
@@ -145,7 +145,7 @@ function(
 		to_return = list(
 			cells = to_return
 			, boots = boots
-		)		
+		)
 	}
 	return(to_return)
 }

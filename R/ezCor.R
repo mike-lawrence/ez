@@ -1,4 +1,4 @@
-ezCor <- 
+ezCor <-
 function(
 	data
 	, r_size_lims = c(10,30)

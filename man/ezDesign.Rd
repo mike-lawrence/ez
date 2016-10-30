@@ -83,9 +83,9 @@ ezDesign(
     , row = cue
 )
 #again, subnum#7 stands out because they have half the data as the rest
-#also, subnum#14 has no data in any incongruent cells, suggesting that 
+#also, subnum#14 has no data in any incongruent cells, suggesting that
 ##they made all errors in this condition
-#finally, subnum#12 has virtually no data, suggesting that they mistakenly 
+#finally, subnum#12 has virtually no data, suggesting that they mistakenly
 ##swapped responses
 }
 }
