@@ -1,13 +1,34 @@
 Package: ez
-Version: 4.3
-Date: 2015-11-10
+Version: 4.4
+Date: 2016-10-30
 Title: Easy Analysis and Visualization of Factorial Experiments
 Author: Michael A. Lawrence <mike.lwrnc@gmail.com>
 Maintainer: Michael A. Lawrence <mike.lwrnc@gmail.com>
 URL: http://github.com/mike-lawrence/ez
-Depends: R (>= 3.0.0) 
-Imports: car (>= 2.0-12), ggplot2 (>= 0.9.1), lme4 (>= 0.999999-0), MASS (>= 7.3-29), Matrix (>= 1.0-6), mgcv (>= 1.7-13), plyr (>= 1.7.1), reshape2 (>= 1.2.1), scales (>= 0.2.1), stringr (>= 0.6.1)
-Description: Facilitates easy analysis of factorial experiments, including purely within-Ss designs (a.k.a. "repeated measures"), purely between-Ss designs, and mixed within-and-between-Ss designs. The functions in this package aim to provide simple, intuitive and consistent specification of data analysis and visualization. Visualization functions also include design visualization for pre-analysis data auditing, and correlation matrix visualization. Finally, this package includes functions for non-parametric analysis, including permutation tests and bootstrap resampling. The bootstrap function obtains predictions either by cell means or by more advanced/powerful mixed effects models, yielding predictions and confidence intervals that may be easily visualized at any level of the experiment's design.
+Depends:
+    R (>= 3.1)
+Imports:
+    car (>= 2.1-3),
+    ggplot2 (>= 2.1.0),
+    lme4 (>= 1.1-12),
+    MASS (>= 7.3-45),
+    Matrix (>= 1.2-7.1),
+    mgcv (>= 1.8-12),
+    plyr (>= 1.8.4),
+    reshape2 (>= 1.4.2),
+    scales (>= 0.4.0),
+    stringr (>= 1.1.0)
+Description: Facilitates easy analysis of factorial experiments, including
+    purely within-Ss designs (a.k.a. "repeated measures"), purely between-Ss
+    designs, and mixed within-and-between-Ss designs. The functions in this package
+    aim to provide simple, intuitive and consistent specification of data analysis
+    and visualization. Visualization functions also include design visualization for
+    pre-analysis data auditing, and correlation matrix visualization. Finally, this
+    package includes functions for non-parametric analysis, including permutation
+    tests and bootstrap resampling. The bootstrap function obtains predictions
+    either by cell means or by more advanced/powerful mixed effects models, yielding
+    predictions and confidence intervals that may be easily visualized at any level
+    of the experiment's design.
 License: GPL (>= 2)
 LazyLoad: yes
 ByteCompile: true

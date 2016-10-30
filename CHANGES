@@ -1,3 +1,8 @@
+4.4
+- eliminated warning about "show.guide" with plots
+- ensured compatibility with ggplot2 v2.2
+- now compatible with dplyr
+
 4.3
 - Update for compatibility with ggplot2 v1.1
 
@@ -25,7 +30,7 @@
 4.0-2
 - updated .Rbuildignore to ignore .gitignore
 - reduced time it takes to check examples by encapsulating unnecessary examples in \dontrun{}
-- fixed bug in ezANOVA/ezStats/ezPlot code that attempts to automatically fix situations when there are repeated wid levels across levels of between variables 
+- fixed bug in ezANOVA/ezStats/ezPlot code that attempts to automatically fix situations when there are repeated wid levels across levels of between variables
 
 4.0-1
 - All functions
@@ -70,7 +75,7 @@
 -     Fixed bug that prevented obtaining predictions when the name of one variable appeared in the name of other variables.
 -     Fixed bug preventing custom specification of to_predict
 - ezResample
--     Speed improvements achieved by more efficient code 
+-     Speed improvements achieved by more efficient code
 -     Added "resample_between" argument
 -     eliminated superfluous "dv" argument
 - progress_time_CI
