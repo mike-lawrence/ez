@@ -2,3 +2,4 @@
 .md
 .DS_Store
 .Rapp.history
+^cran-comments\.md$
